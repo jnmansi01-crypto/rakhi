@@ -1,0 +1,532 @@
+'use client';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { createExperience } from '@/lib/storage';
+import { compressImage, fileToBase64 } from '@/lib/imageUtils';
+import { useAudioRecorder } from '@/hooks/useAudioRecorder';
+import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
+import { t } from '@/lib/i18n';
+
+// ─── Step config ─────────────────────────────────────────────
+const STEPS = ['names','letter','photos','voice','gift','preview'] as const;
+type Step = typeof STEPS[number];
+
+interface FormState {
+  senderName: string;
+  recipientName: string;
+  letterText: string;
+  photos: File[];
+  voiceBlob: Blob | null;
+  voiceUrl: string | null; // local preview
+  giftType: GiftType;
+  giftTitle: string;
+  giftValue: string;
+  locale: Locale;
+}
+
+const INITIAL: FormState = {
+  senderName: '', recipientName: '', letterText: '',
+  photos: [], voiceBlob: null, voiceUrl: null,
+  giftType: 'surprise_message', giftTitle: '', giftValue: '',
+  locale: 'en',
+};
+
+const GIFT_OPTIONS: { type: GiftType; icon: string; label: string; hint: string }[] = [
+  { type: 'voucher',          icon: '🎁', label: 'Gift Voucher',    hint: 'Paste a gift card / voucher link' },
+  { type: 'payment_link',     icon: '💸', label: 'Send Money',      hint: 'UPI / PayPal / Venmo link' },
+  { type: 'coupon',           icon: '🎟️', label: 'Coupon Code',    hint: 'Enter the coupon/promo code' },
+  { type: 'surprise_message', icon: '💌', label: 'Secret Message',  hint: 'Write a hidden surprise message' },
+];
+
+// ─── Progress bar ─────────────────────────────────────────────
+function ProgressBar({ step }: { step: Step }) {
+  const idx = STEPS.indexOf(step);
+  const pct = ((idx) / (STEPS.length - 1)) * 100;
+  return (
+    <div style={{ height: 3, background: 'rgba(201,168,76,0.15)', borderRadius: 2, overflow: 'hidden', marginBottom: 8 }}>
+      <motion.div
+        animate={{ width: `${pct}%` }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        style={{ height: '100%', background: 'linear-gradient(90deg, var(--saffron), var(--gold))' }}
+      />
+    </div>
+  );
+}
+
+import { NavBtn, Row, labelStyle, inputStyle, btnStyle } from './shared';
+
+// ─── Main CreatePage ──────────────────────────────────────────
+export default function CreatePage() {
+  const [step, setStep]         = useState<Step>('names');
+  const [form, setForm]         = useState<FormState>(INITIAL);
+  const [submitting, setSub]    = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [copied, setCopied]     = useState(false);
+  const { recording, startRecording, stopRecording } = useAudioRecorder((blob, url) => {
+    update('voiceBlob', blob);
+    update('voiceUrl', url);
+  });
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [isCompressing, setIsCompressing] = useState(false);
+
+  // Allow scrolling on create page
+  useEffect(() => {
+    document.body.classList.add('sender-flow');
+    return () => document.body.classList.remove('sender-flow');
+  }, []);
+
+  // Handle photo previews and memory cleanup
+  useEffect(() => {
+    const newPreviews = form.photos.map(f => URL.createObjectURL(f));
+    setPhotoPreviews(newPreviews);
+    return () => {
+      newPreviews.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [form.photos]);
+
+  const update = useCallback(<K extends keyof FormState>(key: K, val: FormState[K]) => {
+    setForm(f => ({ ...f, [key]: val }));
+  }, []);
+
+  const goNext = () => {
+    const idx = STEPS.indexOf(step);
+    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+  };
+  const goBack = () => {
+    const idx = STEPS.indexOf(step);
+    if (idx > 0) setStep(STEPS[idx - 1]);
+  };
+
+
+
+  // ─── Submit ──────────────────────────────────────────────────
+  const handleSubmit = async () => {
+    setSub(true);
+    try {
+      // 1. Convert photos and voice to Base64
+      const photoUrls = await Promise.all(
+        form.photos.map(f => fileToBase64(f))
+      );
+      
+      const voiceUrl = form.voiceBlob 
+        ? await fileToBase64(form.voiceBlob)
+        : null;
+
+      // 2. Add Base64 data directly to the draft
+      const draft: ExperienceDraft = {
+        senderName:    form.senderName,
+        recipientName: form.recipientName,
+        letterText:    form.letterText,
+        giftType:      form.giftType,
+        giftTitle:     form.giftTitle,
+        giftValue:     form.giftValue,
+        photoUrls:     photoUrls,
+        voiceUrl:      voiceUrl,
+        locale:        form.locale,
+      };
+      
+      const id = await createExperience(draft);
+
+      const base = typeof window !== 'undefined' ? window.location.origin : '';
+      setShareUrl(`${base}/gift/${id}`);
+      setStep('preview');
+    } catch (err: any) {
+      console.error('Failed to create:', err);
+      if (err.message === 'DATABASE_UNAVAILABLE') {
+        alert('Unable to connect to server. Please check your connection and try again.');
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } finally {
+      setSub(false);
+    }
+  };
+
+  const copyLink = () => {
+    if (!shareUrl) return;
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
+
+  const share = async () => {
+    if (!shareUrl) return;
+    if (navigator.share) {
+      navigator.share({ title: 'Your Rakhi Gift 🌸', url: shareUrl });
+    } else copyLink();
+  };
+
+  // ─── Label helpers ────────────────────────────────────────────
+  const locale = form.locale;
+
+  // ─── Steps ───────────────────────────────────────────────────
+  const steps: Record<Step, React.ReactNode> = {
+    names: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {/* Language toggle */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+          {(['en','hi'] as Locale[]).map(l => (
+            <button key={l} onClick={() => update('locale', l)} style={{
+              padding: '6px 16px', borderRadius: 100, cursor: 'pointer',
+              border: '1.5px solid rgba(201,168,76,0.4)',
+              background: locale === l ? 'var(--gold)' : 'transparent',
+              color: locale === l ? '#fff' : 'var(--gold)',
+              fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '0.1em',
+            }}>
+              {l === 'en' ? 'English' : 'हिन्दी'}
+            </button>
+          ))}
+        </div>
+
+        <div>
+          <label style={labelStyle}>{t('sender_name', locale)}</label>
+          <input
+            style={inputStyle}
+            value={form.senderName}
+            onChange={e => update('senderName', e.target.value)}
+            placeholder={locale === 'hi' ? 'आपका नाम' : 'Your name'}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>{t('recipient_name', locale)}</label>
+          <input
+            style={inputStyle}
+            value={form.recipientName}
+            onChange={e => update('recipientName', e.target.value)}
+            placeholder={locale === 'hi' ? 'भाई/बहन का नाम' : "Brother's / Sister's name"}
+          />
+        </div>
+        <NavBtn
+          onNext={() => form.senderName && form.recipientName ? goNext() : null}
+          disabled={!form.senderName || !form.recipientName}
+          locale={locale}
+        />
+      </div>
+    ),
+
+    letter: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <label style={labelStyle}>{t('write_letter', locale)}</label>
+        <textarea
+          style={{ ...inputStyle, height: 200, resize: 'none', lineHeight: 1.8 }}
+          value={form.letterText}
+          onChange={e => update('letterText', e.target.value)}
+          placeholder={locale === 'hi'
+            ? 'अपने दिल की बात यहाँ लिखें...'
+            : 'Pour your heart out… what do they mean to you?'}
+        />
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(26,42,74,0.4)', marginTop: -8 }}>
+          {form.letterText.length} characters
+        </p>
+        <NavBtn onNext={goNext} onBack={goBack} disabled={form.letterText.length < 10} locale={locale} />
+      </div>
+    ),
+
+    photos: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <label style={labelStyle}>{t('add_photos', locale)}</label>
+        <label style={{
+          ...inputStyle,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          gap: 12, height: 140, cursor: 'pointer',
+          borderStyle: 'dashed', textAlign: 'center',
+        }}>
+          <span style={{ fontSize: '2.4rem' }}>📷</span>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(26,42,74,0.5)' }}>
+            {isCompressing 
+              ? (locale === 'hi' ? 'कंप्रेस कर रहे हैं...' : 'Compressing...') 
+              : (locale === 'hi' ? 'फ़ोटो चुनें (अधिकतम 5)' : 'Choose photos (max 5)')}
+          </span>
+          <input
+            type="file" accept="image/*" multiple style={{ display: 'none' }}
+            disabled={isCompressing}
+            onChange={async e => {
+              const files = Array.from(e.target.files ?? []).slice(0, 5);
+              if (files.length === 0) return;
+              setIsCompressing(true);
+              try {
+                const compressedFiles = await Promise.all(files.map(f => compressImage(f)));
+                update('photos', compressedFiles);
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setIsCompressing(false);
+              }
+            }}
+          />
+        </label>
+
+        {/* Photo previews */}
+        {photoPreviews.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {photoPreviews.map((url, i) => (
+              <img
+                key={i}
+                src={url}
+                alt=""
+                style={{ width: 72, height: 72, borderRadius: 8, objectFit: 'cover',
+                  boxShadow: '0 2px 12px rgba(26,42,74,0.15)', border: '2px solid rgba(201,168,76,0.3)' }}
+              />
+            ))}
+          </div>
+        )}
+        <NavBtn onNext={goNext} onBack={goBack} locale={locale} />
+      </div>
+    ),
+
+    voice: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <label style={labelStyle}>{t('record_voice', locale)}</label>
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={recording ? stopRecording : startRecording}
+          style={{
+            height: 120, borderRadius: 20, border: 'none', cursor: 'pointer',
+            background: recording
+              ? 'radial-gradient(circle at 40% 35%, var(--saffron), var(--deep-red))'
+              : 'rgba(201,168,76,0.08)',
+            borderWidth: 1.5, borderStyle: 'dashed', borderColor: recording ? 'transparent' : 'rgba(201,168,76,0.4)',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}
+        >
+          <span style={{ fontSize: '2.5rem' }}>{recording ? '⏹' : '🎙'}</span>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem',
+            color: recording ? '#FFF8F0' : 'rgba(26,42,74,0.5)',
+            letterSpacing: '0.08em' }}>
+            {recording
+              ? (locale === 'hi' ? 'रोकने के लिए टैप करें' : 'Tap to stop')
+              : form.voiceUrl
+              ? (locale === 'hi' ? 'फिर से रिकॉर्ड करें' : 'Re-record')
+              : (locale === 'hi' ? 'रिकॉर्ड करने के लिए टैप करें' : 'Tap to record')}
+          </span>
+        </motion.button>
+
+        {form.voiceUrl && !recording && (
+          <audio controls src={form.voiceUrl}
+            style={{ width: '100%', borderRadius: 8 }} />
+        )}
+
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(26,42,74,0.4)' }}>
+          {locale === 'hi' ? 'वैकल्पिक – छोड़ सकते हैं' : 'Optional — you can skip this'}
+        </p>
+        <NavBtn onNext={goNext} onBack={goBack} locale={locale} />
+      </div>
+    ),
+
+    gift: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <label style={labelStyle}>{t('choose_gift_type', locale)}</label>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          {GIFT_OPTIONS.map(opt => (
+            <button
+              key={opt.type}
+              onClick={() => update('giftType', opt.type)}
+              style={{
+                padding: '16px 12px', borderRadius: 16, cursor: 'pointer',
+                border: `2px solid ${form.giftType === opt.type ? 'var(--gold)' : 'rgba(201,168,76,0.2)'}`,
+                background: form.giftType === opt.type ? 'rgba(201,168,76,0.1)' : 'transparent',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+                transition: 'all 0.2s',
+              }}
+            >
+              <span style={{ fontSize: '2rem' }}>{opt.icon}</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: 'var(--night-blue)', fontWeight: 500 }}>
+                {opt.label}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Gift details */}
+        <div>
+          <label style={labelStyle}>
+            {locale === 'hi' ? 'उपहार का नाम / शीर्षक' : 'Gift title'}
+          </label>
+          <input
+            style={inputStyle}
+            value={form.giftTitle}
+            onChange={e => update('giftTitle', e.target.value)}
+            placeholder={GIFT_OPTIONS.find(o => o.type === form.giftType)?.hint ?? ''}
+          />
+        </div>
+
+        <div>
+          <label style={labelStyle}>
+            {form.giftType === 'coupon'           ? (locale === 'hi' ? 'कूपन कोड' : 'Coupon code') :
+             form.giftType === 'surprise_message' ? (locale === 'hi' ? 'सरप्राइज संदेश' : 'Surprise message') :
+             (locale === 'hi' ? 'लिंक' : 'Link (URL)')}
+          </label>
+          {form.giftType === 'surprise_message' ? (
+            <textarea
+              style={{ ...inputStyle, height: 100, resize: 'none' }}
+              value={form.giftValue}
+              onChange={e => update('giftValue', e.target.value)}
+              placeholder={locale === 'hi' ? 'कुछ मीठा लिखें...' : 'Write something sweet…'}
+            />
+          ) : (
+            <input
+              style={inputStyle}
+              value={form.giftValue}
+              onChange={e => update('giftValue', e.target.value)}
+              placeholder={form.giftType === 'coupon' ? 'RAKHI2025' : 'https://…'}
+            />
+          )}
+        </div>
+
+        <NavBtn
+          onNext={goNext} onBack={goBack}
+          disabled={!form.giftTitle || !form.giftValue}
+          locale={locale}
+        />
+      </div>
+    ),
+
+    preview: shareUrl ? (
+      /* ── SHARE SCREEN ──────────────────────────────── */
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center', textAlign: 'center' }}>
+        <motion.div
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ fontSize: '5rem' }}
+        >
+          🎁
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: 'var(--night-blue)', fontStyle: 'italic' }}
+        >
+          {t('gift_sent', locale)}
+        </motion.p>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(26,42,74,0.5)' }}>
+          {t('share_link_hint', locale)}
+        </p>
+
+        {/* Link box */}
+        <div style={{
+          width: '100%',
+          background: 'rgba(201,168,76,0.07)',
+          border: '1.5px dashed rgba(201,168,76,0.4)',
+          borderRadius: 12, padding: '14px 16px',
+          fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--night-blue)',
+          wordBreak: 'break-all',
+        }}>
+          {shareUrl}
+        </div>
+
+        <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+          <button
+            onClick={copyLink}
+            style={{ ...btnStyle, flex: 1, background: copied ? 'var(--gold)' : 'transparent', color: copied ? '#fff' : 'var(--gold)' }}
+          >
+            {copied ? t('copied', locale) : t('copy_link', locale)}
+          </button>
+          <button
+            onClick={share}
+            style={{ ...btnStyle, flex: 1, background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff' }}
+          >
+            {t('share_now', locale)} ↗
+          </button>
+        </div>
+      </div>
+    ) : (
+      /* ── PREVIEW / SEND ──────────────────────────────── */
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{
+          background: 'rgba(201,168,76,0.06)',
+          border: '1.5px solid rgba(201,168,76,0.2)',
+          borderRadius: 16, padding: '20px',
+        }}>
+          <Row label="To"     value={form.recipientName} />
+          <Row label="From"   value={form.senderName} />
+          <Row label="Gift"   value={`${form.giftTitle} (${form.giftType})`} />
+          <Row label="Photos" value={form.photos.length > 0 ? `${form.photos.length} photos` : 'None'} />
+          <Row label="Voice"  value={form.voiceUrl ? 'Recorded ✓' : 'None'} />
+        </div>
+
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          disabled={submitting}
+          onClick={handleSubmit}
+          style={{
+            ...btnStyle,
+            background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))',
+            border: 'none', color: '#FFF8F0',
+            fontSize: '1rem', padding: '16px',
+            boxShadow: '0 8px 30px rgba(232,117,26,0.35)',
+            opacity: submitting ? 0.7 : 1,
+          }}
+        >
+          {submitting ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: 8 }}>
+              <span>{t('sending', locale)}</span>
+            </div>
+          ) : t('send_gift', locale)}
+        </motion.button>
+
+        <button onClick={goBack} style={{ ...btnStyle, background: 'transparent' }}>
+          ← {locale === 'hi' ? 'वापस जाएं' : 'Back'}
+        </button>
+      </div>
+    ),
+  };
+
+  const stepLabels: Record<Step, string> = {
+    names:   locale === 'hi' ? 'नाम'         : 'Names',
+    letter:  locale === 'hi' ? 'पत्र'        : 'Letter',
+    photos:  locale === 'hi' ? 'फ़ोटो'       : 'Photos',
+    voice:   locale === 'hi' ? 'आवाज़'       : 'Voice',
+    gift:    locale === 'hi' ? 'उपहार'       : 'Gift',
+    preview: locale === 'hi' ? 'भेजें'       : 'Send',
+  };
+
+  return (
+    <div style={{
+      minHeight: '100dvh',
+      background: 'linear-gradient(160deg, #FFF8F0 0%, #FAF0E6 50%, #F5E6D0 100%)',
+      padding: '0 0 40px',
+    }}>
+      {/* Header */}
+      <div style={{
+        position: 'sticky', top: 0, zIndex: 50,
+        background: 'rgba(255,248,240,0.88)',
+        backdropFilter: 'blur(12px)',
+        padding: '16px 24px 12px',
+        borderBottom: '1px solid rgba(201,168,76,0.15)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+          <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.15rem', color: 'var(--night-blue)' }}>
+            🌸 Rakhi
+          </span>
+          <div style={{ flex: 1 }} />
+          <span className="hint-text">{stepLabels[step]}</span>
+        </div>
+        <ProgressBar step={step} />
+      </div>
+
+      {/* Step content */}
+      <div style={{ padding: '28px 24px', maxWidth: 480, margin: '0 auto' }}>
+        {/* Step title */}
+        <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <p style={{
+            fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontStyle: 'italic',
+            color: 'var(--night-blue)', marginBottom: 24,
+          }}>
+            {stepLabels[step]}
+          </p>
+          {steps[step]}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Helper components ────────────────────────────────────────
+

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { useHaptics } from '@/hooks/useHaptics';
+import { audioEngine } from '@/lib/audio';
 import type { Locale } from '@/lib/types';
 import confetti from 'canvas-confetti';
 
@@ -168,6 +169,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
     } else if (step === 2) {
       vibrate('HEAVY');
       setStep(3); // Show Rakhi drag button
+      audioEngine.playMagic();
     }
   };
 
@@ -191,6 +193,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
     if (info.offset.y < -150) {
       vibrate('FINAL_REVEAL');
       setStep(5); // Snap to center, draw threads
+      audioEngine.playSwoosh();
     } else {
       vibrate('MEDIUM');
     }
@@ -322,6 +325,42 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         }}
       />
 
+      {/* Subtle Ambient Dust (Like Scene 6) */}
+      <AnimatePresence>
+        {step >= 5 && [...Array(30)].map((_, i) => {
+          const left = (i * 13) % 100;
+          const top = (i * 29) % 100;
+          const duration = 5 + (i % 4) * 2;
+          const delay = (i % 5) * 0.5;
+          return (
+            <motion.div
+              key={`dust-bg-${i}`}
+              initial={{ opacity: 0, y: 0, x: 0 }}
+              animate={{ 
+                opacity: [0, 0.5, 0.5, 0], 
+                y: [-10, 40],
+                x: [(i % 2 === 0 ? -15 : 15), (i % 2 === 0 ? 15 : -15)],
+              }}
+              transition={{ 
+                duration: duration, 
+                repeat: Infinity, 
+                delay: delay,
+                ease: "easeInOut"
+              }}
+              style={{
+                position: 'absolute',
+                width: 2.5, height: 2.5, borderRadius: '50%',
+                background: 'var(--gold)',
+                left: `${left}%`,
+                top: `${top}%`,
+                filter: 'blur(1px)',
+                zIndex: 1, pointerEvents: 'none'
+              }}
+            />
+          );
+        })}
+      </AnimatePresence>
+
       {/* Elegant Bokeh Fireflies */}
       <AnimatePresence>
         {step >= 7 && Array.from({ length: 30 }).map((_, i) => {
@@ -353,13 +392,13 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         initial={{ opacity: 0, scale: 0.8, y: 50 }}
         animate={{ 
           opacity: step >= 8 ? 1 : 0, 
-          scale: step >= 8 ? 0.9 : 0.8, 
-          y: step >= 8 ? -70 : 50 
+          scale: step >= 8 ? 1 : 0.8, 
+          y: step >= 8 ? 0 : 50 
         }}
         transition={{ duration: 3, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
-          width: '100%', top: '25%', height: '40%',
+          width: '100%', top: '25%', height: '50%',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
       >
@@ -380,7 +419,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 0.9 }} 
             transition={{ duration: 1.5, ease: 'easeOut' }}
-            style={{ position: 'absolute', bottom: '18%', zIndex: 15 }}
+            style={{ position: 'absolute', bottom: '15%', zIndex: 15 }}
           >
             <MithaiBoxCSS />
           </motion.div>
@@ -395,7 +434,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, ease: 'easeOut' }}
             style={{
-              position: 'absolute', bottom: '8%', width: '100%', textAlign: 'center', zIndex: 20
+              position: 'absolute', bottom: '5%', width: '100%', textAlign: 'center', zIndex: 20
             }}
           >
              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', letterSpacing: '0.1em', color: '#C9A84C', textTransform: 'uppercase' }}>
@@ -421,12 +460,12 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             }}
             initial={{ opacity: 0, y: 100, scale: 0.5 }}
             animate={{ 
-              opacity: step >= 8 ? 0 : 1, 
-              y: step >= 7 ? -320 : (step >= 5 ? -220 : 0), 
-              scale: isDragging ? 1.1 : (step >= 7 ? 0.5 : (step >= 5 ? 1.2 : 1)) 
+              opacity: 1, 
+              y: step >= 7 ? -420 : (step >= 5 ? -220 : 0), 
+              scale: isDragging ? 1.1 : (step >= 7 ? 0.6 : (step >= 5 ? 1.2 : 1)) 
             }}
             transition={{ 
-              opacity: { duration: 1.0, delay: step >= 8 ? 0.5 : 0.5 }, 
+              opacity: { duration: 1.0, delay: 0.5 }, 
               y: { duration: 1.5, type: 'spring', bounce: 0.3 }, 
               scale: { duration: 1.5, ease: 'easeInOut' }
             }}

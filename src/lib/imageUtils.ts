@@ -1,0 +1,26 @@
+import imageCompression from 'browser-image-compression';
+
+export async function compressImage(file: File): Promise<File> {
+  const options = {
+    maxSizeMB: 0.08,
+    maxWidthOrHeight: 800,
+    useWebWorker: true,
+  };
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (error) {
+    console.error('Error compressing image:', error);
+    // fallback to returning the original file
+    return file;
+  }
+}
+
+export function fileToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+}

@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /experiences/{experienceId} {
+      // Anyone can read an experience
+      allow read: if true;
+      // Only authenticated users can create, and they must set themselves as the creator
+      allow create: if request.auth != null && request.resource.data.creatorUid == request.auth.uid;
+      // Only the creator can update the experience
+      allow update: if request.auth != null && resource.data.creatorUid == request.auth.uid;
+      // Deletion is not allowed from the client
+      allow delete: if false;
+    }
+  }
+}
