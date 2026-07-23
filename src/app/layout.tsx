@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Yatra_One } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 
 const yatraOne = Yatra_One({ 
@@ -31,7 +32,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${yatraOne.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX'} />
+      </body>
     </html>
   );
 }

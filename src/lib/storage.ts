@@ -93,4 +93,10 @@ export async function markOpened(id: string): Promise<void> {
   }
 }
 
+export async function saveReply(id: string, message: string): Promise<void> {
+  if (isFirebaseConfigured) {
+    await fbUpdate(id, { replyMessage: message } as Partial<RakhiExperience>);
+  }
+}
+
 

@@ -53,18 +53,18 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
         }}
       />
 
-      {/* ── Sapphire blue gem glow (delayed) ── */}
+      {/* ── Cinematic warm glow (delayed) ── */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.7, 0.45, 0.7] }}
-        transition={{ duration: 2.5, delay: 1.8, repeat: Infinity, times: [0, 0.3, 0.7, 1] }}
+        animate={{ opacity: [0, 0.5, 0.2, 0.5] }}
+        transition={{ duration: 4, delay: 1.8, repeat: Infinity, times: [0, 0.3, 0.7, 1] }}
         style={{
           position: 'absolute',
-          width: 100,
-          height: 100,
+          width: 200,
+          height: 200,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(66,133,244,0.6) 0%, transparent 70%)',
-          filter: 'blur(18px)',
+          background: 'radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%)',
+          filter: 'blur(30px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -119,22 +119,32 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
         animate={{ y: [0, -12, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div
+        <motion.div
+          animate={{
+            boxShadow: [
+              '0 10px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02), 0 0 0px rgba(201,168,76,0)',
+              '0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,255,255,0.08), 0 0 40px rgba(201,168,76,0.15)',
+              '0 10px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02), 0 0 0px rgba(201,168,76,0)',
+            ]
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           style={{
             position: 'relative',
-            width: 300,
-            height: 300,
+            width: 320,
+            height: 320,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            WebkitMaskImage: 'radial-gradient(ellipse 75% 68% at 50% 40%, black 40%, transparent 72%)',
-            maskImage: 'radial-gradient(ellipse 75% 68% at 50% 40%, black 40%, transparent 72%)',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '50%',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
           }}
         >
-          {/* ── Circular reveal mask for "building" animation ── */}
           <motion.div
-            initial={{ clipPath: 'circle(0% at 50% 50%)' }}
-            animate={{ clipPath: 'circle(100% at 50% 50%)' }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
             style={{ position: 'absolute', width: 280, height: 280 }}
           >
@@ -150,6 +160,8 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 display: 'block',
+                WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 45%, transparent 68%)',
+                maskImage: 'radial-gradient(circle at 50% 50%, black 45%, transparent 68%)',
               }}
             />
           </motion.div>
@@ -195,7 +207,7 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
               }}
             />
           </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* ── Ground shadow (appears after build, syncs with float) ── */}

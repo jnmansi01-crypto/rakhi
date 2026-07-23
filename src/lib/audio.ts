@@ -22,16 +22,16 @@ class AudioEngine {
     if (typeof window === 'undefined') return;
     if (this.bgmAudio) return; // Already playing
 
-    this.bgmAudio = new Audio('https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a4/79/2a/a4792a98-00e4-92bb-07e2-238cdfc76ab5/mzaf_14015335601883409579.plus.aac.p.m4a');
+    this.bgmAudio = new Audio('/audio/premium-lofi.mp3');
     this.bgmAudio.loop = true;
     this.bgmAudio.volume = 0;
     
     this.bgmAudio.play().then(() => {
-      // Fade in smoothly
+      // Fade in smoothly to a very subtle volume
       let vol = 0;
       const fade = setInterval(() => {
-        vol += 0.02;
-        if (vol >= 0.4) {
+        vol += 0.01;
+        if (vol >= 0.15) {
           clearInterval(fade);
         } else if (this.bgmAudio) {
           this.bgmAudio.volume = vol;
@@ -65,8 +65,8 @@ class AudioEngine {
   }
 
   restoreBGM() {
-    if (this.bgmAudio && this.bgmAudio.volume < 0.4) {
-      this.bgmAudio.volume = 0.4;
+    if (this.bgmAudio && this.bgmAudio.volume < 0.15) {
+      this.bgmAudio.volume = 0.15;
     }
   }
 
@@ -74,25 +74,27 @@ class AudioEngine {
     this.init();
     if (!this.ctx) return;
     
-    // Soft, premium paper rustle
-    const bufferSize = this.ctx.sampleRate * 0.15; // 150ms
+    // Lo-Fi warm paper slide / vinyl crackle texture
+    const bufferSize = this.ctx.sampleRate * 0.3; // 300ms
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.5; // Softer noise
+      // Create a warm, gritty noise profile
+      data[i] = (Math.random() * 2 - 1) * (Math.random() > 0.9 ? 0.8 : 0.2);
     }
     
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
     
+    // Heavy lowpass for that muffled lo-fi tape warmth
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 800; // Even more muffled
-    filter.Q.value = 0.3;
+    filter.type = 'lowpass';
+    filter.frequency.value = 400; 
+    filter.Q.value = 0.5;
     
     const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.04, this.ctx.currentTime); // Very subtle
-    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
     
     noise.connect(filter);
     filter.connect(gain);
@@ -105,50 +107,66 @@ class AudioEngine {
     this.init();
     if (!this.ctx) return;
     
-    const osc = this.ctx.createOscillator();
-    osc.type = 'triangle'; // Softer than sine for swooshes
+    // Lo-Fi chillhop transition (warm, filtered noise sweep)
+    const bufferSize = this.ctx.sampleRate * 0.6; 
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    // Sweep the frequency down like a tape slow-down
+    filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.5);
+    filter.Q.value = 0.8;
     
     const gain = this.ctx.createGain();
-    
-    // Very light, airy sweep
-    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.2);
-    
     gain.gain.setValueAtTime(0, this.ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.03, this.ctx.currentTime + 0.05); // Barely audible
-    gain.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + 0.25);
+    gain.gain.linearRampToValueAtTime(0.06, this.ctx.currentTime + 0.1); 
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
     
-    osc.connect(gain);
+    noise.connect(filter);
+    filter.connect(gain);
     gain.connect(this.ctx.destination);
     
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.4);
+    noise.start();
   }
 
   playMagic() {
     this.init();
     if (!this.ctx) return;
     
-    // Playful, festive pentatonic chimes (Sa, Re, Ga, Pa, Dha style)
-    const freqs = [783.99, 880.00, 1046.50, 1174.66, 1318.51]; // G5, A5, C6, D6, E6
+    // Lush Lo-Fi Chillhop Chord (Eb Major 9) instead of traditional chimes
+    // Notes: Eb4, G4, Bb4, D5, F5
+    const freqs = [311.13, 392.00, 466.16, 587.33, 698.46]; 
     const now = this.ctx.currentTime;
     
     freqs.forEach((f, i) => {
       const osc = this.ctx!.createOscillator();
       const gain = this.ctx!.createGain();
       
+      // Sine wave with slight detune for analog warmth
       osc.type = 'sine';
-      osc.frequency.value = f;
+      osc.frequency.value = f + (Math.random() * 2 - 1); // slight tape flutter effect
       
-      gain.gain.setValueAtTime(0, now + i * 0.08);
-      gain.gain.linearRampToValueAtTime(0.03, now + i * 0.08 + 0.02); // Extremely subtle volume
-      gain.gain.exponentialRampToValueAtTime(0.005, now + i * 0.08 + 0.4);
+      // Soft, Rhodes-like envelope
+      gain.gain.setValueAtTime(0, now);
+      // Strum the chord slightly by delaying each note
+      const start = now + i * 0.04; 
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.06, start + 0.1); // soft attack
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 2.5); // long lush release
       
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.ctx!.destination);
       
-      osc.start(now + i * 0.08);
-      osc.stop(now + i * 0.08 + 0.6);
+      osc.start(start);
+      osc.stop(start + 3.0);
     });
   }
 }

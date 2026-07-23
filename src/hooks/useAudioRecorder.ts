@@ -20,8 +20,9 @@ export function useAudioRecorder(onRecordingComplete: (blob: Blob, url: string) 
       mr.start();
       mediaRecorder.current = mr;
       setRec(true);
-    } catch { 
-      alert('Microphone access denied'); 
+    } catch (err: any) { 
+      console.error(err);
+      alert('Microphone access requires a secure connection (HTTPS) or localhost. Please test on localhost, or deploy the app to test this feature on mobile.'); 
     }
   };
 

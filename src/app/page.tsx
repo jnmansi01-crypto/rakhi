@@ -73,6 +73,11 @@ export default function HomePage() {
   const [daysInfo, setDaysInfo] = useState<{ days: number, date: Date | null }>({ days: 0, date: null });
   const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    document.body.classList.add('sender-flow');
+    return () => document.body.classList.remove('sender-flow');
+  }, []);
+
   // Parallax on mouse/gyro
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -178,23 +183,26 @@ export default function HomePage() {
       style={{
         minHeight: '100dvh',
         position: 'relative',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0',
-        background: '#0D1526',
+        background: '#080408',
       }}
     >
-      {/* ── Background mandala image ───────────────────────── */}
+      {/* ── Cinematic dark receiver theme ────────────────── */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(ellipse at 55% 15%, #2A0D1E 0%, #160818 50%, #080408 100%)',
+      }}/>
+
       <motion.div
         style={{
           position: 'absolute', inset: 0,
-          backgroundImage: 'url(/hero-bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.5,
+          background: 'radial-gradient(circle at 80% 20%, rgba(201,168,76,0.12) 0%, transparent 60%)',
           x: glowX, y: glowY,
         }}
       />
@@ -202,7 +210,7 @@ export default function HomePage() {
       {/* ── Vignette overlay ───────────────────────────────── */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse at 50% 40%, transparent 15%, rgba(13,21,38,0.55) 55%, rgba(13,21,38,0.92) 100%)',
+        background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(8,4,8,0.85) 100%)',
         pointerEvents: 'none',
       }}/>
 
@@ -248,11 +256,14 @@ export default function HomePage() {
           {/* Days counter */}
           {daysInfo.days > 0 && mounted && daysInfo.date && (
             <div style={{
-              background: 'rgba(201,168,76,0.12)',
-              border: '1px solid rgba(201,168,76,0.28)',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(201,168,76,0.5)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
               borderRadius: 100,
-              padding: '5px 14px',
+              padding: '6px 16px',
               display: 'flex', alignItems: 'center', gap: 6,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
             }}>
               <span style={{
                 fontFamily: 'var(--font-sans)', fontSize: '0.68rem',
@@ -366,12 +377,12 @@ export default function HomePage() {
           {/* Headline */}
           <h1 style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(1.75rem, 8vw, 2.6rem)',
+            fontSize: 'clamp(2.2rem, 10vw, 3.8rem)',
             color: '#FFF8F0',
-            lineHeight: 1.2,
-            marginBottom: 12,
-            fontWeight: 700,
-            letterSpacing: '-0.01em',
+            lineHeight: 1.1,
+            marginBottom: 16,
+            fontWeight: 400,
+            letterSpacing: '-0.02em',
           }}>
             Send a Rakhi<br />
             <span style={{
@@ -388,12 +399,13 @@ export default function HomePage() {
 
           {/* Sub */}
           <p style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontSize: '0.97rem',
-            color: 'rgba(255,248,240,0.48)',
-            lineHeight: 1.75,
-            marginBottom: 32,
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 300,
+            fontSize: '1rem',
+            color: 'rgba(255,255,255,0.6)',
+            lineHeight: 1.6,
+            marginBottom: 36,
+            letterSpacing: '0.02em',
           }}>
             An immersive digital ritual — letter, voice,<br />
             memories, Rakhi-tying &amp; a gift, all in one link.
@@ -424,14 +436,15 @@ export default function HomePage() {
                   }}
                 >
                   <motion.div
-                    whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(201,168,76,0.25)' }}
+                    whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(201,168,76,0.45)' }}
                     style={{
                       width: 50, height: 50, borderRadius: '50%',
-                      background: 'linear-gradient(145deg, rgba(201,168,76,0.14), rgba(201,168,76,0.04))',
-                      border: '1px solid rgba(201,168,76,0.28)',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(201,168,76,0.4)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       backdropFilter: 'blur(10px)',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
                     }}
                   >
                     {step.icon}
@@ -473,10 +486,13 @@ export default function HomePage() {
               style={{
                 position: 'relative',
                 width: '100%',
-                padding: '19px 32px',
+                padding: '18px 40px',
                 borderRadius: 100,
-                background: 'linear-gradient(135deg, #E8751A 0%, #C0392B 100%)',
-                boxShadow: '0 16px 60px rgba(232,117,26,0.5), 0 4px 20px rgba(192,57,43,0.3)',
+                background: 'rgba(201,168,76,0.1)',
+                border: '1px solid rgba(201,168,76,0.5)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.05)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -495,15 +511,15 @@ export default function HomePage() {
                   pointerEvents: 'none',
                 }}
               />
-              <span style={{ fontSize: '1.2rem' }}>🎀</span>
               <span style={{
                 fontFamily: 'var(--font-sans)',
                 fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.04em',
+                fontWeight: 400,
+                letterSpacing: '0.06em',
                 color: '#FFF8F0',
+                textTransform: 'uppercase',
               }}>
-                Create Rakhi Gift
+                Craft Your Experience <span style={{ fontFamily: 'serif' }}>→</span>
               </span>
             </motion.div>
           </Link>

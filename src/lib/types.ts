@@ -16,6 +16,7 @@ export interface RakhiExperience {
   locale: Locale;
   createdAt: number;
   openedAt: number | null;
+  replyMessage?: string;
 }
 
 export type ExperienceDraft = Omit<RakhiExperience, 'id' | 'createdAt' | 'openedAt'>;

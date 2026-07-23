@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.11",
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.4",
     "classnames": "^2.5.1",

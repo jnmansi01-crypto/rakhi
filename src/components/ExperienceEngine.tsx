@@ -62,6 +62,19 @@ export function ExperienceEngine({ experience }: Props) {
   });
   const currentDotIdx = dotScenes.indexOf(scene);
 
+  const previousSkipping = (current: SceneName) => {
+    audioEngine.playSwoosh();
+    const idx = SCENES.indexOf(current);
+    let prevIdx = idx - 1;
+    while (prevIdx >= 0) {
+      const s = SCENES[prevIdx];
+      if (s === 'photos' && experience.photoUrls.length === 0) { prevIdx--; continue; }
+      if (s === 'voice'  && !experience.voiceUrl)             { prevIdx--; continue; }
+      break;
+    }
+    if (prevIdx >= 0) setScene(SCENES[prevIdx]);
+  };
+
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
       <AnimatePresence mode="wait">
@@ -123,7 +136,7 @@ export function ExperienceEngine({ experience }: Props) {
               giftValue={experience.giftValue}
               senderName={experience.senderName}
               locale={locale}
-              onComplete={() => {}}
+              onComplete={() => { window.location.href = `/reply/${experience.id}`; }}
             />
           )}
         </motion.div>
@@ -142,6 +155,30 @@ export function ExperienceEngine({ experience }: Props) {
           />
         ))}
       </div>
+
+      {/* Back button (Only show for scenes after arrival) */}
+      <AnimatePresence>
+        {currentDotIdx > 0 && (
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            onClick={() => previousSkipping(scene)}
+            style={{
+              position: 'fixed', top: 32, left: 24, zIndex: 110,
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(201,168,76,0.3)',
+              borderRadius: '50%', width: 44, height: 44,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+              cursor: 'pointer', color: '#C9A84C', fontSize: '1.2rem',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            }}
+          >
+            ←
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -166,12 +166,13 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
       <AnimatePresence>
         {phase === 'idle' && (
           <motion.p
+            key="hint"
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.7, 0.7, 0] }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.3 } }}
             transition={{ duration: 2.8, repeat: Infinity, delay: 1 }}
             className="hint-text"
-            style={{ position: 'absolute', bottom: '15%', color: 'rgba(201,168,76,0.8)', pointerEvents: 'none' }}
+            style={{ position: 'absolute', bottom: '15%', color: 'rgba(201,168,76,0.8)', pointerEvents: 'none', letterSpacing: '0.1em', fontSize: '0.8rem' }}
           >
             {t('lift_to_reveal', locale)}
           </motion.p>
@@ -363,24 +364,49 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
 
       <AnimatePresence>
         {phase === 'revealed' && (
-          <motion.button
-            key="done"
+          <motion.div
+            key="actions"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            onClick={onComplete}
             style={{
               position: 'absolute', bottom: '8%',
-              background: 'transparent',
-              border: '1.5px solid var(--gold)',
-              borderRadius: 100, padding: '12px 36px',
-              fontFamily: 'var(--font-sans)', fontSize: '0.75rem',
-              letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: 'var(--gold)', cursor: 'pointer', zIndex: 100
+              display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12, zIndex: 100,
+              width: '100%', justifyContent: 'center'
             }}
           >
-            {locale === 'hi' ? 'धन्यवाद 🌸' : 'Thank you 🌸'}
-          </motion.button>
+            <button
+              onClick={onComplete}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(201,168,76,0.4)',
+                borderRadius: 100, padding: '12px 20px',
+                fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: '#FFF8F0', cursor: 'pointer',
+                backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}
+            >
+              {locale === 'hi' ? 'धन्यवाद 🌸' : 'Thank You 🌸'}
+            </button>
+            
+            <a
+              href="/create"
+              style={{
+                background: 'rgba(201,168,76,0.15)',
+                border: '1px solid rgba(201,168,76,0.6)',
+                borderRadius: 100, padding: '12px 20px',
+                fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: '#FFF8F0', cursor: 'pointer', textDecoration: 'none',
+                backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}
+            >
+              {locale === 'hi' ? 'गिफ्ट भेजें 🎁' : 'Send a Gift 🎁'}
+            </a>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

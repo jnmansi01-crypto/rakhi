@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
+import Image from 'next/image';
 import { useHaptics } from '@/hooks/useHaptics';
 import { audioEngine } from '@/lib/audio';
 import type { Locale } from '@/lib/types';
@@ -257,17 +258,17 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             key={p.id}
             initial={p.type === 'dust' ? { opacity: 1, scale: 0, x: 0, y: 0 } : { opacity: 0, y: typeof window !== 'undefined' ? -window.innerHeight / 2 : -400, x: p.x, rotate: Math.random() * 360 }}
             animate={p.type === 'dust'
-              ? { opacity: 0, scale: Math.random() * 4 + 1, x: p.x, y: p.y, filter: 'blur(3px)' }
+              ? { opacity: 0, scale: Math.random() * 3 + 1.5, x: p.x, y: p.y, filter: 'blur(1px)' }
               : { opacity: [0, 1, 0], y: typeof window !== 'undefined' ? window.innerHeight / 2 : 400, rotate: Math.random() * 720 }
             }
             transition={{ duration: p.type === 'dust' ? 1.5 + Math.random() : 2.5 + Math.random() * 2, ease: p.type === 'dust' ? 'easeOut' : 'linear' }}
             style={{
               position: 'absolute', zIndex: 5, pointerEvents: 'none',
-              width: p.type === 'dust' ? Math.random() * 20 + 10 : 6,
-              height: p.type === 'dust' ? Math.random() * 20 + 10 : 12,
+              width: p.type === 'dust' ? Math.random() * 25 + 15 : 6,
+              height: p.type === 'dust' ? Math.random() * 25 + 15 : 12,
               borderRadius: p.type === 'dust' ? '50%' : '2px',
-              background: p.type === 'dust' ? 'rgba(211, 47, 47, 0.7)' : '#FFF8E7',
-              boxShadow: p.type === 'dust' ? '0 0 20px rgba(211,47,47,0.8)' : '0 2px 5px rgba(212,175,55,0.8)',
+              background: p.type === 'dust' ? 'rgba(211, 47, 47, 0.85)' : '#FFF8E7',
+              boxShadow: p.type === 'dust' ? '0 0 25px rgba(211,47,47,0.9)' : '0 2px 5px rgba(212,175,55,0.8)',
             }}
           />
         ))}
@@ -285,7 +286,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             whileTap={{ scale: 0.97 }}
             style={{ position: 'relative', width: '90%', maxWidth: 400, aspectRatio: '1/1', cursor: 'pointer', zIndex: 10, borderRadius: '50%' }}
           >
-            <img src="/images/rakhi_thali.png" alt="Rakhi Thali" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+            <Image src="/images/rakhi_thali.png" alt="Rakhi Thali" fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover', borderRadius: '50%' }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -398,17 +399,15 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         transition={{ duration: 3, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
-          width: '100%', top: '25%', height: '50%',
+          width: '100%', top: '15%', height: '45%',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
       >
-        <img 
+        <Image 
           src="/images/rakhi_transparent.png" 
-          alt="Happy Raksha Bandhan" 
-          style={{ 
-            width: '80%', height: '100%', objectFit: 'contain', 
-            filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.95))' 
-          }} 
+          alt="Rakhi" 
+          fill
+          style={{ objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.8))' }}
         />
       </motion.div>
 
@@ -419,7 +418,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 0.9 }} 
             transition={{ duration: 1.5, ease: 'easeOut' }}
-            style={{ position: 'absolute', bottom: '15%', zIndex: 15 }}
+            style={{ position: 'absolute', bottom: '26%', zIndex: 15 }}
           >
             <MithaiBoxCSS />
           </motion.div>
@@ -434,7 +433,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, ease: 'easeOut' }}
             style={{
-              position: 'absolute', bottom: '5%', width: '100%', textAlign: 'center', zIndex: 20
+              position: 'absolute', bottom: '12%', width: '100%', textAlign: 'center', zIndex: 20
             }}
           >
              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', letterSpacing: '0.1em', color: '#C9A84C', textTransform: 'uppercase' }}>

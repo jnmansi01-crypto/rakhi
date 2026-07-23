@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { useHaptics } from '@/hooks/useHaptics';
 import { audioEngine } from '@/lib/audio';
 import type { Locale } from '@/lib/types';
@@ -306,7 +307,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             filter: `grayscale(1) brightness(0.25) contrast(1.2) blur(${status === 'idle' ? 8 : Math.max(0, 8 - progress * 20)}px)`,
             transition: 'filter 0.5s ease',
           }}>
-            <img src="/images/laxmi-coin.png" alt="Coin base" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)' }} />
+            <Image src="/images/laxmi-coin.png" alt="Coin base" fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover', transform: 'scale(1.15)' }} />
           </div>
 
           {/* Top Golden Coin (Fades in and focuses) */}

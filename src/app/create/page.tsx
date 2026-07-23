@@ -2,7 +2,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createExperience } from '@/lib/storage';
-import { compressImage, fileToBase64 } from '@/lib/imageUtils';
+import { compressImage } from '@/lib/imageUtils';
+import { uploadMedia } from '@/lib/cloudinary';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
@@ -104,13 +105,13 @@ export default function CreatePage() {
   const handleSubmit = async () => {
     setSub(true);
     try {
-      // 1. Convert photos and voice to Base64
+      // 1. Upload photos and voice to Cloudinary
       const photoUrls = await Promise.all(
-        form.photos.map(f => fileToBase64(f))
+        form.photos.map(f => uploadMedia(f, 'image'))
       );
       
       const voiceUrl = form.voiceBlob 
-        ? await fileToBase64(form.voiceBlob)
+        ? await uploadMedia(form.voiceBlob, 'video')
         : null;
 
       // 2. Add Base64 data directly to the draft
@@ -145,16 +146,46 @@ export default function CreatePage() {
 
   const copyLink = () => {
     if (!shareUrl) return;
-    navigator.clipboard.writeText(shareUrl);
+    
+    const shareText = locale === 'hi'
+      ? `मैंने आपके लिए एक डिजिटल राखी गिफ्ट बनाया है! 🌸 इसे खोलने के लिए यहाँ क्लिक करें: ${shareUrl}`
+      : `I made a digital Rakhi gift for you! 🌸 Click here to open it: ${shareUrl}`;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(shareText).catch(() => {});
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = shareText;
+      textArea.style.position = 'fixed';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(textArea);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
 
   const share = async () => {
     if (!shareUrl) return;
-    if (navigator.share) {
-      navigator.share({ title: 'Your Rakhi Gift 🌸', url: shareUrl });
-    } else copyLink();
+    
+    const shareText = locale === 'hi'
+      ? `मैंने आपके लिए एक डिजिटल राखी गिफ्ट बनाया है! 🌸 इसे खोलने के लिए यहाँ क्लिक करें: ${shareUrl}`
+      : `I made a digital Rakhi gift for you! 🌸 Click here to open it: ${shareUrl}`;
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (navigator.share && window.isSecureContext) {
+      navigator.share({ 
+        title: 'Your Rakhi Gift 🌸', 
+        text: shareText
+      }).catch(() => {});
+    } else if (isMobile) {
+      window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+    }
   };
 
   // ─── Label helpers ────────────────────────────────────────────
@@ -216,7 +247,7 @@ export default function CreatePage() {
             ? 'अपने दिल की बात यहाँ लिखें...'
             : 'Pour your heart out… what do they mean to you?'}
         />
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(26,42,74,0.4)', marginTop: -8 }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
           {form.letterText.length} characters
         </p>
         <NavBtn onNext={goNext} onBack={goBack} disabled={form.letterText.length < 10} locale={locale} />
@@ -234,7 +265,7 @@ export default function CreatePage() {
           borderStyle: 'dashed', textAlign: 'center',
         }}>
           <span style={{ fontSize: '2.4rem' }}>📷</span>
-          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(26,42,74,0.5)' }}>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(255,248,240,0.5)' }}>
             {isCompressing 
               ? (locale === 'hi' ? 'कंप्रेस कर रहे हैं...' : 'Compressing...') 
               : (locale === 'hi' ? 'फ़ोटो चुनें (अधिकतम 5)' : 'Choose photos (max 5)')}
@@ -295,7 +326,7 @@ export default function CreatePage() {
         >
           <span style={{ fontSize: '2.5rem' }}>{recording ? '⏹' : '🎙'}</span>
           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem',
-            color: recording ? '#FFF8F0' : 'rgba(26,42,74,0.5)',
+            color: recording ? '#FFF8F0' : 'rgba(255,248,240,0.5)',
             letterSpacing: '0.08em' }}>
             {recording
               ? (locale === 'hi' ? 'रोकने के लिए टैप करें' : 'Tap to stop')
@@ -310,7 +341,7 @@ export default function CreatePage() {
             style={{ width: '100%', borderRadius: 8 }} />
         )}
 
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(26,42,74,0.4)' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)' }}>
           {locale === 'hi' ? 'वैकल्पिक – छोड़ सकते हैं' : 'Optional — you can skip this'}
         </p>
         <NavBtn onNext={goNext} onBack={goBack} locale={locale} />
@@ -329,13 +360,13 @@ export default function CreatePage() {
               style={{
                 padding: '16px 12px', borderRadius: 16, cursor: 'pointer',
                 border: `2px solid ${form.giftType === opt.type ? 'var(--gold)' : 'rgba(201,168,76,0.2)'}`,
-                background: form.giftType === opt.type ? 'rgba(201,168,76,0.1)' : 'transparent',
+                background: form.giftType === opt.type ? 'rgba(255,255,255,0.05)' : 'transparent',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                 transition: 'all 0.2s',
               }}
             >
               <span style={{ fontSize: '2rem' }}>{opt.icon}</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: 'var(--night-blue)', fontWeight: 500 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: '#FFF8F0', fontWeight: 500 }}>
                 {opt.label}
               </span>
             </button>
@@ -401,21 +432,21 @@ export default function CreatePage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: 'var(--night-blue)', fontStyle: 'italic' }}
+          style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: '#FFF8F0', fontStyle: 'italic' }}
         >
           {t('gift_sent', locale)}
         </motion.p>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(26,42,74,0.5)' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(255,248,240,0.5)' }}>
           {t('share_link_hint', locale)}
         </p>
 
         {/* Link box */}
         <div style={{
           width: '100%',
-          background: 'rgba(201,168,76,0.07)',
+          background: 'rgba(255,255,255,0.05)',
           border: '1.5px dashed rgba(201,168,76,0.4)',
           borderRadius: 12, padding: '14px 16px',
-          fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--night-blue)',
+          fontFamily: 'monospace', fontSize: '0.8rem', color: '#FFF8F0',
           wordBreak: 'break-all',
         }}>
           {shareUrl}
@@ -490,19 +521,20 @@ export default function CreatePage() {
   return (
     <div style={{
       minHeight: '100dvh',
-      background: 'linear-gradient(160deg, #FFF8F0 0%, #FAF0E6 50%, #F5E6D0 100%)',
+      background: 'radial-gradient(ellipse at 55% 15%, #2A0D1E 0%, #160818 50%, #080408 100%)',
       padding: '0 0 40px',
     }}>
       {/* Header */}
       <div style={{
         position: 'sticky', top: 0, zIndex: 50,
-        background: 'rgba(255,248,240,0.88)',
+        background: 'rgba(8,4,8,0.85)',
         backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         padding: '16px 24px 12px',
         borderBottom: '1px solid rgba(201,168,76,0.15)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-          <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.15rem', color: 'var(--night-blue)' }}>
+          <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.15rem', color: '#FFF8F0' }}>
             🌸 Rakhi
           </span>
           <div style={{ flex: 1 }} />
@@ -517,7 +549,7 @@ export default function CreatePage() {
         <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <p style={{
             fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontStyle: 'italic',
-            color: 'var(--night-blue)', marginBottom: 24,
+            color: '#FFF8F0', marginBottom: 24,
           }}>
             {stepLabels[step]}
           </p>
