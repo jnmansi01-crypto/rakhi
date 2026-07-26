@@ -70,6 +70,7 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
   const [phase, setPhase] = useState<'idle' | 'opening' | 'revealed'>('idle');
   const { vibrate } = useHaptics();
   const y = useMotionValue(0);
+  const isPreview = typeof window !== 'undefined' && window.location.search.includes('preview=true');
 
   const action = giftType === 'voucher' || giftType === 'payment_link'
     ? { label: locale === 'hi' ? 'पाएं →' : 'Claim Gift →', href: giftValue }
@@ -375,37 +376,41 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
               width: '100%', justifyContent: 'center'
             }}
           >
-            <button
-              onClick={onComplete}
-              style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(201,168,76,0.4)',
-                borderRadius: 100, padding: '12px 20px',
-                fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
-                letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: '#FFF8F0', cursor: 'pointer',
-                backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-              }}
-            >
-              {locale === 'hi' ? 'धन्यवाद 🌸' : 'Thank You 🌸'}
-            </button>
-            
-            <a
-              href="/create"
-              style={{
-                background: 'rgba(201,168,76,0.15)',
-                border: '1px solid rgba(201,168,76,0.6)',
-                borderRadius: 100, padding: '12px 20px',
-                fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
-                letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: '#FFF8F0', cursor: 'pointer', textDecoration: 'none',
-                backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-              }}
-            >
-              {locale === 'hi' ? 'गिफ्ट भेजें 🎁' : 'Send a Gift 🎁'}
-            </a>
+            {!isPreview && (
+              <>
+                <button
+                  onClick={onComplete}
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(201,168,76,0.4)',
+                    borderRadius: 100, padding: '12px 20px',
+                    fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: '#FFF8F0', cursor: 'pointer',
+                    backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }}
+                >
+                  {locale === 'hi' ? 'धन्यवाद 🌸' : 'Thank You 🌸'}
+                </button>
+                
+                <a
+                  href="/create"
+                  style={{
+                    background: 'rgba(201,168,76,0.15)',
+                    border: '1px solid rgba(201,168,76,0.6)',
+                    borderRadius: 100, padding: '12px 20px',
+                    fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: '#FFF8F0', cursor: 'pointer', textDecoration: 'none',
+                    backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }}
+                >
+                  {locale === 'hi' ? 'गिफ्ट भेजें 🎁' : 'Send a Gift 🎁'}
+                </a>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

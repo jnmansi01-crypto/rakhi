@@ -5,6 +5,7 @@ import { createExperience } from '@/lib/storage';
 import { compressImage } from '@/lib/imageUtils';
 import { uploadMedia } from '@/lib/cloudinary';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
+import { usePayment } from '@/hooks/usePayment';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 
@@ -63,7 +64,11 @@ export default function CreatePage() {
   const [submitting, setSub]    = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [cardId, setCardId] = useState<string | null>(null);
+  const [isCardPaid, setIsCardPaid] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [copied, setCopied]     = useState(false);
+  const { loading: paymentLoading, error: paymentError, paymentStatusMessage, payAndShare } = usePayment();
   const { recording, startRecording, stopRecording } = useAudioRecorder((blob, url) => {
     update('voiceBlob', blob);
     update('voiceUrl', url);
@@ -74,7 +79,19 @@ export default function CreatePage() {
   // Allow scrolling on create page
   useEffect(() => {
     document.body.classList.add('sender-flow');
-    return () => document.body.classList.remove('sender-flow');
+    
+    // Listen for closePreview from iframe
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data === 'closePreview') {
+        setIsPreviewModalOpen(false);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      document.body.classList.remove('sender-flow');
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   // Handle photo previews and memory cleanup
@@ -130,6 +147,8 @@ export default function CreatePage() {
       const id = await createExperience(draft);
 
       const base = typeof window !== 'undefined' ? window.location.origin : '';
+      setCardId(id);
+      setIsCardPaid(false); // Reset for new cards
       setShareUrl(`${base}/gift/${id}`);
       setStep('preview');
     } catch (err: any) {
@@ -171,20 +190,21 @@ export default function CreatePage() {
     if (!shareUrl) return;
     
     const shareText = locale === 'hi'
-      ? `मैंने आपके लिए एक डिजिटल राखी गिफ्ट बनाया है! 🌸 इसे खोलने के लिए यहाँ क्लिक करें: ${shareUrl}`
-      : `I made a digital Rakhi gift for you! 🌸 Click here to open it: ${shareUrl}`;
+      ? `मैंने आपके लिए एक डिजिटल राखी गिफ्ट बनाया है! 🌸 इसे खोलने के लिए यहाँ क्लिक करें:`
+      : `I made a digital Rakhi gift for you! 🌸 Click here to open it:`;
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (navigator.share && window.isSecureContext) {
       navigator.share({ 
         title: 'Your Rakhi Gift 🌸', 
-        text: shareText
+        text: shareText,
+        url: shareUrl
       }).catch(() => {});
     } else if (isMobile) {
-      window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
+      window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
     } else {
-      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank');
     }
   };
 
@@ -344,7 +364,14 @@ export default function CreatePage() {
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)' }}>
           {locale === 'hi' ? 'वैकल्पिक – छोड़ सकते हैं' : 'Optional — you can skip this'}
         </p>
-        <NavBtn onNext={goNext} onBack={goBack} locale={locale} />
+        <NavBtn 
+          onNext={() => {
+            if (recording) stopRecording();
+            goNext();
+          }} 
+          onBack={goBack} 
+          locale={locale} 
+        />
       </div>
     ),
 
@@ -436,36 +463,43 @@ export default function CreatePage() {
         >
           {t('gift_sent', locale)}
         </motion.p>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(255,248,240,0.5)' }}>
-          {t('share_link_hint', locale)}
-        </p>
-
-        {/* Link box */}
-        <div style={{
-          width: '100%',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1.5px dashed rgba(201,168,76,0.4)',
-          borderRadius: 12, padding: '14px 16px',
-          fontFamily: 'monospace', fontSize: '0.8rem', color: '#FFF8F0',
-          wordBreak: 'break-all',
-        }}>
-          {shareUrl}
-        </div>
+        {/* Link is hidden per user request */}
 
         <div style={{ display: 'flex', gap: 12, width: '100%' }}>
           <button
-            onClick={copyLink}
-            style={{ ...btnStyle, flex: 1, background: copied ? 'var(--gold)' : 'transparent', color: copied ? '#fff' : 'var(--gold)' }}
+            onClick={() => {
+              if (shareUrl) setIsPreviewModalOpen(true);
+            }}
+            style={{ ...btnStyle, flex: 1, background: 'transparent', color: 'var(--gold)' }}
           >
-            {copied ? t('copied', locale) : t('copy_link', locale)}
+            {locale === 'hi' ? 'पूर्वावलोकन' : 'Preview'}
           </button>
           <button
-            onClick={share}
-            style={{ ...btnStyle, flex: 1, background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff' }}
+            onClick={() => {
+              if (cardId) {
+                if (isCardPaid) {
+                  share();
+                } else {
+                  payAndShare(cardId, false, () => {
+                    setIsCardPaid(true);
+                    // Do not call share() here because the browser blocks navigator.share() 
+                    // without an immediate, synchronous user click.
+                  });
+                }
+              }
+            }}
+            disabled={paymentLoading}
+            style={{ ...btnStyle, flex: 1, background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff', opacity: paymentLoading ? 0.7 : 1 }}
           >
-            {t('share_now', locale)} ↗
+            {paymentLoading ? (paymentStatusMessage || 'Processing...') : (isCardPaid ? `${t('share_now', locale)} ↗` : `${t('share_now', locale)} ↗`)}
           </button>
         </div>
+        
+        {paymentError && (
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#ff4d4f', marginTop: 8 }}>
+            {paymentError}
+          </p>
+        )}
       </div>
     ) : (
       /* ── PREVIEW / SEND ──────────────────────────────── */
@@ -515,7 +549,7 @@ export default function CreatePage() {
     photos:  locale === 'hi' ? 'फ़ोटो'       : 'Photos',
     voice:   locale === 'hi' ? 'आवाज़'       : 'Voice',
     gift:    locale === 'hi' ? 'उपहार'       : 'Gift',
-    preview: locale === 'hi' ? 'भेजें'       : 'Send',
+    preview: locale === 'hi' ? 'बनाएं'       : 'Create',
   };
 
   return (
@@ -556,6 +590,45 @@ export default function CreatePage() {
           {steps[step]}
         </motion.div>
       </div>
+
+      {/* Preview Modal */}
+      {isPreviewModalOpen && shareUrl && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.85)', zIndex: 9999,
+          display: 'flex', flexDirection: 'column',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+        }}>
+          <div style={{ 
+            padding: '16px 24px', 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <span style={{ color: '#FFF8F0', fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 500 }}>
+              {locale === 'hi' ? 'पूर्वावलोकन' : 'Preview'}
+            </span>
+            <button 
+              onClick={() => setIsPreviewModalOpen(false)}
+              style={{
+                background: 'rgba(255,255,255,0.1)', border: 'none',
+                width: 36, height: 36, borderRadius: 18,
+                color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}
+            >
+              ✕
+            </button>
+          </div>
+          <iframe 
+            src={shareUrl + '?preview=true'} 
+            style={{ flex: 1, width: '100%', border: 'none', background: '#fff' }}
+            title="Preview"
+          />
+        </div>
+      )}
     </div>
   );
 }
