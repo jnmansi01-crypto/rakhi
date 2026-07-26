@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { razorpay, SHARE_PRICE } from '@/lib/razorpay';
+import { getRazorpay, SHARE_PRICE } from '@/lib/razorpay';
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +23,7 @@ export async function POST(req: Request) {
       },
     };
 
+    const razorpay = getRazorpay();
     const order = await razorpay.orders.create(options);
 
     return NextResponse.json({
