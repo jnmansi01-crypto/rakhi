@@ -399,7 +399,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         transition={{ duration: 3, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
-          width: '100%', top: '15%', height: '45%',
+          width: '100%', top: '8%', height: '38%',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
       >
@@ -418,7 +418,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 0.9 }} 
             transition={{ duration: 1.5, ease: 'easeOut' }}
-            style={{ position: 'absolute', bottom: '26%', zIndex: 15 }}
+            style={{ position: 'absolute', bottom: '22%', zIndex: 15 }}
           >
             <MithaiBoxCSS />
           </motion.div>
@@ -433,7 +433,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, ease: 'easeOut' }}
             style={{
-              position: 'absolute', bottom: '12%', width: '100%', textAlign: 'center', zIndex: 20
+              position: 'absolute', bottom: '10%', width: '100%', textAlign: 'center', zIndex: 20
             }}
           >
              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', letterSpacing: '0.1em', color: '#C9A84C', textTransform: 'uppercase' }}>
