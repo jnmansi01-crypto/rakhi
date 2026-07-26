@@ -3,6 +3,7 @@
 class AudioEngine {
   private ctx: AudioContext | null = null;
   private bgmAudio: HTMLAudioElement | null = null;
+  private bgmGain: GainNode | null = null;
 
   init() {
     if (typeof window === 'undefined') return;
@@ -24,48 +25,59 @@ class AudioEngine {
 
     this.bgmAudio = new Audio('/audio/premium-lofi.mp3');
     this.bgmAudio.loop = true;
-    this.bgmAudio.volume = 0;
+    this.bgmAudio.crossOrigin = 'anonymous';
+
+    try {
+      const source = this.ctx!.createMediaElementSource(this.bgmAudio);
+      this.bgmGain = this.ctx!.createGain();
+      this.bgmGain.gain.value = 0;
+      source.connect(this.bgmGain);
+      this.bgmGain.connect(this.ctx!.destination);
+    } catch (e) {
+      console.warn('Failed to connect BGM to Web Audio API', e);
+    }
     
     this.bgmAudio.play().then(() => {
-      // Fade in smoothly to a very subtle volume
-      let vol = 0;
-      const fade = setInterval(() => {
-        vol += 0.01;
-        if (vol >= 0.15) {
-          clearInterval(fade);
-        } else if (this.bgmAudio) {
-          this.bgmAudio.volume = vol;
-        }
-      }, 100);
+      // Fade in smoothly
+      if (this.bgmGain) {
+        this.bgmGain.gain.linearRampToValueAtTime(0.15, this.ctx!.currentTime + 2);
+      } else if (this.bgmAudio) {
+        // Fallback
+        this.bgmAudio.volume = 0.15;
+      }
     }).catch(e => console.warn('BGM autoplay blocked by browser:', e));
   }
 
   stopBGM() {
     if (this.bgmAudio) {
-      let vol = this.bgmAudio.volume;
-      const fade = setInterval(() => {
-        vol -= 0.05;
-        if (vol <= 0 || !this.bgmAudio) {
-          clearInterval(fade);
+      if (this.bgmGain) {
+        this.bgmGain.gain.linearRampToValueAtTime(0.001, this.ctx!.currentTime + 1);
+        setTimeout(() => {
           if (this.bgmAudio) {
             this.bgmAudio.pause();
             this.bgmAudio = null;
+            this.bgmGain = null;
           }
-        } else {
-          this.bgmAudio.volume = vol;
-        }
-      }, 100);
+        }, 1000);
+      } else {
+        this.bgmAudio.pause();
+        this.bgmAudio = null;
+      }
     }
   }
 
   dimBGM() {
-    if (this.bgmAudio) {
-      this.bgmAudio.volume = 0.05; // Fade down for voice notes
+    if (this.bgmGain && this.ctx) {
+      this.bgmGain.gain.setTargetAtTime(0.03, this.ctx.currentTime, 0.5);
+    } else if (this.bgmAudio) {
+      this.bgmAudio.volume = 0.03;
     }
   }
 
   restoreBGM() {
-    if (this.bgmAudio && this.bgmAudio.volume < 0.15) {
+    if (this.bgmGain && this.ctx) {
+      this.bgmGain.gain.setTargetAtTime(0.15, this.ctx.currentTime, 1.0);
+    } else if (this.bgmAudio) {
       this.bgmAudio.volume = 0.15;
     }
   }

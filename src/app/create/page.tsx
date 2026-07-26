@@ -624,7 +624,7 @@ export default function CreatePage() {
           </div>
           <iframe 
             src={shareUrl + '?preview=true'} 
-            style={{ flex: 1, width: '100%', border: 'none', background: '#fff' }}
+            style={{ flex: 1, width: '100%', height: '100%', border: 'none', background: '#fff' }}
             title="Preview"
           />
         </div>

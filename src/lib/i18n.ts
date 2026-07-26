@@ -32,7 +32,7 @@ const strings: Record<I18nKey, { en: string; hi: string }> = {
   step_preview:     { en: 'Preview & Send',                        hi: 'देखें और भेजें' },
   send_gift:        { en: 'Create Rakhi Gift 🎁',                  hi: 'राखी का उपहार बनाएं 🎁' },
   sending:          { en: 'Creating...',                           hi: 'बना रहे हैं...' },
-  gift_sent:        { en: 'Gift sent! Share the link below.',      hi: 'उपहार भेजा गया! नीचे लिंक शेयर करें।' },
+  gift_sent:        { en: 'Gift created! Share the link below.',   hi: 'उपहार बन गया! नीचे लिंक शेयर करें।' },
   share_link_hint:  { en: 'Send this link to your sibling',        hi: 'यह लिंक अपने भाई/बहन को भेजें' },
   recipient_name:   { en: "Your sibling's name",                   hi: 'भाई/बहन का नाम' },
   sender_name:      { en: 'Your name',                             hi: 'आपका नाम' },

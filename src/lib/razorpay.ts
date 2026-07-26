@@ -8,7 +8,8 @@ export function getRazorpay() {
   });
 }
 
-export const SHARE_PRICE = 2000; // 20 INR in paise
+// Reads from env var (in paise), defaults to 2000 (20 INR)
+export const SHARE_PRICE = parseInt(process.env.NEXT_PUBLIC_SHARE_PRICE || '2000', 10);
 
 export function verifyPaymentSignature(
   orderId: string,
