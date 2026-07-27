@@ -241,6 +241,16 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
                   }}>
                     {giftType === 'payment_link' ? `₹ ${giftValue}` : giftValue}
                   </p>
+                  
+                  {giftType === 'payment_link' && (
+                    <p style={{
+                      fontFamily: 'var(--font-sans)', fontSize: '0.75rem',
+                      color: 'var(--night-blue)', opacity: 0.7, marginTop: 8,
+                      fontWeight: 500
+                    }}>
+                      {locale === 'hi' ? 'अपना GPay/UPI चेक करें! 😉' : 'Check your GPay/UPI! 😉'}
+                    </p>
+                  )}
                 </div>
               )}
 
