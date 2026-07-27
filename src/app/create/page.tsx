@@ -35,7 +35,7 @@ const INITIAL: FormState = {
 
 const GIFT_OPTIONS: { type: GiftType; icon: string; label: string; hint: string }[] = [
   { type: 'voucher',          icon: '🎁', label: 'Gift Voucher',    hint: 'Paste a gift card / voucher link' },
-  { type: 'payment_link',     icon: '💸', label: 'Send Money',      hint: 'UPI / PayPal / Venmo link' },
+  { type: 'payment_link',     icon: '💸', label: 'Send Money',      hint: 'e.g. 1100' },
   { type: 'coupon',           icon: '🎟️', label: 'Coupon Code',    hint: 'Enter the coupon/promo code' },
   { type: 'surprise_message', icon: '💌', label: 'Secret Message',  hint: 'Write a hidden surprise message' },
 ];
@@ -417,6 +417,7 @@ export default function CreatePage() {
           <label style={labelStyle}>
             {form.giftType === 'coupon'           ? (locale === 'hi' ? 'कूपन कोड' : 'Coupon code') :
              form.giftType === 'surprise_message' ? (locale === 'hi' ? 'सरप्राइज संदेश' : 'Surprise message') :
+             form.giftType === 'payment_link'     ? (locale === 'hi' ? 'राशि (₹)' : 'Amount (₹)') :
              (locale === 'hi' ? 'लिंक' : 'Link (URL)')}
           </label>
           {form.giftType === 'surprise_message' ? (
@@ -431,7 +432,7 @@ export default function CreatePage() {
               style={inputStyle}
               value={form.giftValue}
               onChange={e => update('giftValue', e.target.value)}
-              placeholder={form.giftType === 'coupon' ? 'RAKHI2025' : 'https://…'}
+              placeholder={form.giftType === 'coupon' ? 'RAKHI2025' : form.giftType === 'payment_link' ? '1100' : 'https://…'}
             />
           )}
         </div>

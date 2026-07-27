@@ -72,7 +72,7 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
   const y = useMotionValue(0);
   const isPreview = typeof window !== 'undefined' && window.location.search.includes('preview=true');
 
-  const action = giftType === 'voucher' || giftType === 'payment_link'
+  const action = giftType === 'voucher'
     ? { label: locale === 'hi' ? 'पाएं →' : 'Claim Gift →', href: giftValue }
     : null;
 
@@ -225,20 +225,21 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
                 {giftTitle}
               </p>
 
-              {(giftType === 'coupon' || giftType === 'surprise_message') && (
+              {(giftType === 'coupon' || giftType === 'surprise_message' || giftType === 'payment_link') && (
                 <div style={{
                   background: 'rgba(201,168,76,0.05)',
                   border: '1px dashed rgba(201,168,76,0.4)',
                   borderRadius: 8, padding: '12px 16px', marginBottom: 20,
                 }}>
                   <p style={{
-                    fontFamily: giftType === 'coupon' ? 'monospace' : 'var(--font-serif)',
-                    fontSize: giftType === 'coupon' ? '1.2rem' : '0.95rem',
+                    fontFamily: (giftType === 'coupon' || giftType === 'payment_link') ? 'monospace' : 'var(--font-serif)',
+                    fontSize: (giftType === 'coupon' || giftType === 'payment_link') ? '1.2rem' : '0.95rem',
                     color: 'var(--night-blue)',
                     fontStyle: giftType === 'surprise_message' ? 'italic' : undefined,
                     letterSpacing: giftType === 'coupon' ? '0.12em' : undefined,
+                    fontWeight: giftType === 'payment_link' ? 700 : 400,
                   }}>
-                    {giftValue}
+                    {giftType === 'payment_link' ? `₹ ${giftValue}` : giftValue}
                   </p>
                 </div>
               )}
