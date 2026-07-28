@@ -484,6 +484,21 @@ export function Scene2_Envelope({
               </svg>
             </motion.div>
 
+
+            {/* Instruction Text */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.7, 0.7, 0] }}
+              transition={{ duration: 2.8, repeat: Infinity, delay: 1 }}
+              style={{
+                position: 'absolute', bottom: '-20%', width: '100%', textAlign: 'center',
+                fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.1em',
+                color: 'rgba(201,168,76,0.8)', pointerEvents: 'none', textTransform: 'uppercase'
+              }}
+            >
+              {locale === 'hi' ? 'आशीर्वाद पाने के लिए ॐ को नीचे खींचें' : 'Drag the ॐ symbol down to receive your blessings'}
+            </motion.p>
+
           </motion.div>
         )}
       </AnimatePresence>
