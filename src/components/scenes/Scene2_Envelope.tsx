@@ -496,7 +496,7 @@ export function Scene2_Envelope({
                 color: 'rgba(201,168,76,0.8)', pointerEvents: 'none', textTransform: 'uppercase'
               }}
             >
-              {locale === 'hi' ? 'आशीर्वाद पाने के लिए ॐ को नीचे खींचें' : 'Drag the ॐ symbol down to receive your blessings'}
+              {locale === 'hi' ? 'आशीर्वाद पाने के लिए ॐ को स्वाइप करें' : 'Swipe the ॐ symbol to receive your blessings'}
             </motion.p>
 
           </motion.div>
