@@ -90,6 +90,54 @@ function MithaiBoxCSS() {
   );
 }
 
+function SiblingAnimation({ step }: { step: number }) {
+  return (
+    <AnimatePresence>
+      {(step === 6 || step === 7) && (
+        <div style={{
+          position: 'absolute', top: '15%', width: '100%', height: '40%',
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          pointerEvents: 'none', zIndex: 25
+        }}>
+          {/* Boy (Brother) */}
+          <motion.div
+            initial={{ x: -200, opacity: 0 }}
+            animate={step === 6 ? { x: -40, opacity: 1 } : { x: -30, opacity: 0, scale: 1.2, filter: 'blur(10px)' }}
+            transition={{ duration: step === 6 ? 2.5 : 1.5, ease: 'easeInOut' }}
+            style={{ position: 'absolute' }}
+          >
+            <svg width="100" height="180" viewBox="0 0 100 200">
+              <circle cx="50" cy="30" r="18" fill="var(--gold)" />
+              <path d="M35 55 L65 55 Q75 55 80 130 L20 130 Q25 55 35 55 Z" fill="var(--gold)" />
+              <path d="M35 130 L35 190 L45 190 L45 130 Z" fill="var(--gold)" />
+              <path d="M55 130 L55 190 L65 190 L65 130 Z" fill="var(--gold)" />
+              <path d="M60 65 L90 85 L85 92 L55 75 Z" fill="var(--gold)" />
+              <path d="M40 65 L20 105 L26 110 L45 75 Z" fill="var(--gold)" />
+            </svg>
+          </motion.div>
+
+          {/* Girl (Sister) */}
+          <motion.div
+            initial={{ x: 200, opacity: 0 }}
+            animate={step === 6 ? { x: 40, opacity: 1 } : { x: 30, opacity: 0, scale: 1.2, filter: 'blur(10px)' }}
+            transition={{ duration: step === 6 ? 2.5 : 1.5, ease: 'easeInOut' }}
+            style={{ position: 'absolute' }}
+          >
+            <svg width="100" height="180" viewBox="0 0 100 200">
+              <circle cx="50" cy="30" r="16" fill="var(--gold)" />
+              <path d="M50 20 Q70 20 65 60 Q60 100 70 120" fill="none" stroke="var(--gold)" strokeWidth="8" strokeLinecap="round" />
+              <path d="M35 55 L65 55 L60 85 L40 85 Z" fill="var(--gold)" />
+              <path d="M40 90 L60 90 Q80 140 90 190 L10 190 Q20 140 40 90 Z" fill="var(--gold)" />
+              <path d="M40 65 L10 85 L15 92 L45 75 Z" fill="var(--gold)" />
+              <path d="M60 65 L80 105 L74 110 L55 75 Z" fill="var(--gold)" />
+            </svg>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: Props) {
   const [step, setStep] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -115,19 +163,19 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
       return () => clearTimeout(t);
     }
     if (step === 6) {
-      // Glow + Confetti
-      triggerConfetti();
-      vibrate('FINAL_REVEAL');
-      const t = setTimeout(() => setStep(7), 1500);
+      // Sibling Animation starts (Walking)
+      const t = setTimeout(() => setStep(7), 2500);
       return () => clearTimeout(t);
     }
     if (step === 7) {
-      // Bokeh appears
-      const t = setTimeout(() => setStep(8), 1000);
+      // Siblings meet, Confetti pops, Dissolve begins
+      triggerConfetti();
+      vibrate('FINAL_REVEAL');
+      const t = setTimeout(() => setStep(8), 2000);
       return () => clearTimeout(t);
     }
     if (step === 8) {
-      // Typography appears
+      // Cinematic Rakhi Image & Bokeh appears
       const t = setTimeout(() => setStep(9), 1500);
       return () => clearTimeout(t);
     }
@@ -364,7 +412,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
 
       {/* Elegant Bokeh Fireflies */}
       <AnimatePresence>
-        {step >= 7 && Array.from({ length: 30 }).map((_, i) => {
+        {step >= 8 && Array.from({ length: 30 }).map((_, i) => {
           const startX = typeof window !== 'undefined' ? (Math.random() * window.innerWidth) : 250;
           return (
             <motion.div
@@ -387,6 +435,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           );
         })}
       </AnimatePresence>
+      {/* Sibling Animation Sequence */}
+      <SiblingAnimation step={step} />
 
       {/* The Cinematic Reveal (Premium Transparent Image) */}
       <motion.div
@@ -459,9 +509,9 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             }}
             initial={{ opacity: 0, y: 100, scale: 0.5 }}
             animate={{ 
-              opacity: 1, 
-              y: step >= 7 ? -420 : (step >= 5 ? -220 : 0), 
-              scale: isDragging ? 1.1 : (step >= 7 ? 0.6 : (step >= 5 ? 1.2 : 1)) 
+              opacity: step >= 6 ? 0 : 1, 
+              y: step >= 8 ? -420 : (step >= 5 ? -220 : 0), 
+              scale: isDragging ? 1.1 : (step >= 8 ? 0.6 : (step >= 5 ? 1.2 : 1)) 
             }}
             transition={{ 
               opacity: { duration: 1.0, delay: 0.5 }, 
