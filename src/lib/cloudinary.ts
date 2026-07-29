@@ -32,6 +32,9 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
     if (err.name === 'AbortError') {
       throw new Error(`Cloudinary upload timed out after 15 seconds.`);
     }
+    if (err.message && err.message.includes('Failed to fetch')) {
+      throw new Error(`Failed to reach Cloudinary (Network error or Ad-blocker).`);
+    }
     throw err;
   } finally {
     clearTimeout(timeoutId);

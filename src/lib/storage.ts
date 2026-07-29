@@ -75,8 +75,11 @@ export async function createExperience(draft: ExperienceDraft): Promise<string> 
       const userCredential = await Promise.race([authPromise, timeoutPromise]) as any;
       creatorUid = userCredential.user.uid;
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Anonymous auth failed:', err);
+    if (err.message && err.message.includes('Failed to fetch')) {
+      throw new Error(`Failed to reach Firebase Auth (Network error or Ad-blocker).`);
+    }
   }
 
   const experience: RakhiExperience & { creatorUid?: string | null } = { 
