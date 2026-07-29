@@ -90,47 +90,29 @@ function MithaiBoxCSS() {
   );
 }
 
-function SiblingAnimation({ step }: { step: number }) {
+function PaintedSiblingImage({ step }: { step: number }) {
   return (
     <AnimatePresence>
       {(step === 6 || step === 7) && (
         <div style={{
-          position: 'absolute', top: '15%', width: '100%', height: '40%',
+          position: 'absolute', top: '10%', width: '100%', height: '50%',
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           pointerEvents: 'none', zIndex: 25
         }}>
-          {/* Boy (Brother) */}
+          {/* Watercolor Bloom Animation */}
           <motion.div
-            initial={{ x: -200, opacity: 0 }}
-            animate={step === 6 ? { x: -40, opacity: 1 } : { x: -30, opacity: 0, scale: 1.2, filter: 'blur(10px)' }}
-            transition={{ duration: step === 6 ? 2.5 : 1.5, ease: 'easeInOut' }}
-            style={{ position: 'absolute' }}
+            initial={{ opacity: 0, filter: 'grayscale(100%) blur(15px)', scale: 0.85 }}
+            animate={step === 6 ? { opacity: 1, filter: 'grayscale(0%) blur(0px)', scale: 1 } : { opacity: 0, scale: 1.15, filter: 'blur(20px)' }}
+            transition={{ duration: step === 6 ? 3.0 : 1.5, ease: 'easeOut' }}
+            style={{ position: 'relative', width: '100%', height: '100%' }}
           >
-            <svg width="100" height="180" viewBox="0 0 100 200">
-              <circle cx="50" cy="30" r="18" fill="var(--gold)" />
-              <path d="M35 55 L65 55 Q75 55 80 130 L20 130 Q25 55 35 55 Z" fill="var(--gold)" />
-              <path d="M35 130 L35 190 L45 190 L45 130 Z" fill="var(--gold)" />
-              <path d="M55 130 L55 190 L65 190 L65 130 Z" fill="var(--gold)" />
-              <path d="M60 65 L90 85 L85 92 L55 75 Z" fill="var(--gold)" />
-              <path d="M40 65 L20 105 L26 110 L45 75 Z" fill="var(--gold)" />
-            </svg>
-          </motion.div>
-
-          {/* Girl (Sister) */}
-          <motion.div
-            initial={{ x: 200, opacity: 0 }}
-            animate={step === 6 ? { x: 40, opacity: 1 } : { x: 30, opacity: 0, scale: 1.2, filter: 'blur(10px)' }}
-            transition={{ duration: step === 6 ? 2.5 : 1.5, ease: 'easeInOut' }}
-            style={{ position: 'absolute' }}
-          >
-            <svg width="100" height="180" viewBox="0 0 100 200">
-              <circle cx="50" cy="30" r="16" fill="var(--gold)" />
-              <path d="M50 20 Q70 20 65 60 Q60 100 70 120" fill="none" stroke="var(--gold)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M35 55 L65 55 L60 85 L40 85 Z" fill="var(--gold)" />
-              <path d="M40 90 L60 90 Q80 140 90 190 L10 190 Q20 140 40 90 Z" fill="var(--gold)" />
-              <path d="M40 65 L10 85 L15 92 L45 75 Z" fill="var(--gold)" />
-              <path d="M60 65 L80 105 L74 110 L55 75 Z" fill="var(--gold)" />
-            </svg>
+            <Image 
+              src="/images/siblings.png"
+              alt="Siblings Celebrating"
+              fill
+              style={{ objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))' }}
+              priority
+            />
           </motion.div>
         </div>
       )}
@@ -436,7 +418,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         })}
       </AnimatePresence>
       {/* Sibling Animation Sequence */}
-      <SiblingAnimation step={step} />
+      <PaintedSiblingImage step={step} />
 
       {/* The Cinematic Reveal (Premium Transparent Image) */}
       <motion.div
