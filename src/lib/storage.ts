@@ -38,7 +38,7 @@ async function fbSet(id: string, data: RakhiExperience) {
   
   const setPromise = setDoc(doc(db, 'experiences', id), { ...data, createdAt: serverTimestamp() });
   const timeoutPromise = new Promise<never>((_, reject) => 
-    setTimeout(() => reject(new Error('Firebase timeout')), 15000)
+    setTimeout(() => reject(new Error('Firebase timeout')), 60000)
   );
   
   await Promise.race([setPromise, timeoutPromise]);
@@ -69,7 +69,7 @@ export async function createExperience(draft: ExperienceDraft): Promise<string> 
       
       const authPromise = signInAnonymously(auth);
       const timeoutPromise = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('Firebase Auth timeout')), 15000)
+        setTimeout(() => reject(new Error('Firebase Auth timeout')), 60000)
       );
       
       const userCredential = await Promise.race([authPromise, timeoutPromise]) as any;

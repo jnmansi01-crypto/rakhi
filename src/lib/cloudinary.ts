@@ -19,7 +19,7 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
   const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
   let response;
   try {
@@ -30,7 +30,7 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
     });
   } catch (err: any) {
     if (err.name === 'AbortError') {
-      throw new Error(`Cloudinary upload timed out after 15 seconds.`);
+      throw new Error(`Cloudinary upload timed out after 60 seconds. Please check your internet connection.`);
     }
     if (err.message && err.message.includes('Failed to fetch')) {
       throw new Error(`Failed to reach Cloudinary (Network error or Ad-blocker).`);
