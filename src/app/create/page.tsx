@@ -156,7 +156,7 @@ export default function CreatePage() {
       if (err.message === 'DATABASE_UNAVAILABLE') {
         alert('Unable to connect to server. Please check your connection and try again.');
       } else {
-        alert('Something went wrong. Please try again.');
+        alert(`Error: ${err.message || 'Something went wrong. Please try again.'}`);
       }
     } finally {
       setSub(false);
