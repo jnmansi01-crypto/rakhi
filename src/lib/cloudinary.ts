@@ -18,10 +18,24 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
 
   const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    body: formData,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal,
+    });
+  } catch (err: any) {
+    if (err.name === 'AbortError') {
+      throw new Error(`Cloudinary upload timed out after 15 seconds.`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));

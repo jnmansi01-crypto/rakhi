@@ -35,7 +35,13 @@ async function fbSet(id: string, data: RakhiExperience) {
   const { db } = await import('./firebase');
   if (!db) return;
   const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
-  await setDoc(doc(db, 'experiences', id), { ...data, createdAt: serverTimestamp() });
+  
+  const setPromise = setDoc(doc(db, 'experiences', id), { ...data, createdAt: serverTimestamp() });
+  const timeoutPromise = new Promise<never>((_, reject) => 
+    setTimeout(() => reject(new Error('Firebase timeout')), 15000)
+  );
+  
+  await Promise.race([setPromise, timeoutPromise]);
 }
 
 async function fbUpdate(id: string, fields: Partial<RakhiExperience>) {
@@ -60,7 +66,13 @@ export async function createExperience(draft: ExperienceDraft): Promise<string> 
     const { auth } = await import('./firebase');
     if (auth) {
       const { signInAnonymously } = await import('firebase/auth');
-      const userCredential = await signInAnonymously(auth);
+      
+      const authPromise = signInAnonymously(auth);
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Firebase Auth timeout')), 15000)
+      );
+      
+      const userCredential = await Promise.race([authPromise, timeoutPromise]) as any;
       creatorUid = userCredential.user.uid;
     }
   } catch (err) {
