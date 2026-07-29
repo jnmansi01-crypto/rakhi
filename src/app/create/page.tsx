@@ -630,6 +630,58 @@ export default function CreatePage() {
           />
         </div>
       )}
+
+      {/* Submitting Overlay */}
+      <AnimatePresence>
+        {submitting && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 9999,
+              background: 'radial-gradient(ellipse at 50% 60%, #2A0D1E 0%, #160818 50%, #080408 100%)',
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', gap: 32,
+              padding: '0 24px', textAlign: 'center',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)'
+            }}
+          >
+            <div style={{ position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {[120, 160, 200].map((size, i) => (
+                <motion.div key={i}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 10 + i * 5, repeat: Infinity, ease: 'linear' }}
+                  style={{
+                    position: 'absolute',
+                    width: size, height: size,
+                    borderRadius: '50%',
+                    border: '1px dashed rgba(201,168,76,0.3)',
+                    borderTopColor: 'rgba(232,117,26,0.8)'
+                  }}
+                />
+              ))}
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ fontSize: '3.5rem' }}
+              >
+                🪔
+              </motion.div>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.5rem', color: '#FFF8F0' }}>
+                {locale === 'hi' ? 'आपका उपहार तैयार हो रहा है...' : 'Crafting your gift...'}
+              </p>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'rgba(255,248,240,0.6)' }}>
+                {locale === 'hi' ? 'इसमें कुछ सेकंड लग सकते हैं' : 'This might take a few seconds'}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
