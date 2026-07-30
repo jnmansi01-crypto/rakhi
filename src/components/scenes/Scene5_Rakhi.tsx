@@ -99,43 +99,20 @@ function PaintedSiblingImage({ step }: { step: number }) {
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           pointerEvents: 'none', zIndex: 25
         }}>
-          {/* Watercolor Bloom Animation */}
+          {/* Happy Raksha Bandhan Typography Graphic */}
           <motion.div
-            initial={{ opacity: 0, filter: 'grayscale(100%) blur(15px)', scale: 0.85 }}
-            animate={step === 6 ? { opacity: 1, filter: 'grayscale(0%) blur(0px)', scale: 1 } : { opacity: 0, scale: 1.15, filter: 'blur(20px)' }}
-            transition={{ duration: step === 6 ? 3.0 : 1.5, ease: 'easeOut' }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={step === 6 || step === 7 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.1 }}
+            transition={{ duration: 2.0, ease: 'easeOut' }}
             style={{ position: 'relative', width: '100%', height: '100%' }}
           >
             <Image 
-              src="/images/siblings.png"
-              alt="Siblings Celebrating"
+              src="/images/rakhi_typography.png"
+              alt="Happy Raksha Bandhan"
               fill
-              style={{ objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))' }}
+              style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
               priority
             />
-          </motion.div>
-          
-          {/* Happy Raksha Bandhan Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={step === 6 ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
-            transition={{ duration: 1.5, delay: 1, ease: 'easeOut' }}
-            style={{
-              position: 'absolute',
-              bottom: '-25%',
-              width: '100%',
-              textAlign: 'center',
-            }}
-          >
-            <h1 style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: '2.5rem',
-              color: 'var(--gold)',
-              textShadow: '0 4px 12px rgba(0,0,0,0.8)',
-              margin: 0
-            }}>
-              Happy Raksha Bandhan
-            </h1>
           </motion.div>
         </div>
       )}
