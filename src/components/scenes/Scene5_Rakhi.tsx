@@ -114,6 +114,29 @@ function PaintedSiblingImage({ step }: { step: number }) {
               priority
             />
           </motion.div>
+          
+          {/* Happy Raksha Bandhan Text */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={step === 6 ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
+            transition={{ duration: 1.5, delay: 1, ease: 'easeOut' }}
+            style={{
+              position: 'absolute',
+              bottom: '-25%',
+              width: '100%',
+              textAlign: 'center',
+            }}
+          >
+            <h1 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: '2.5rem',
+              color: 'var(--gold)',
+              textShadow: '0 4px 12px rgba(0,0,0,0.8)',
+              margin: 0
+            }}>
+              Happy Raksha Bandhan
+            </h1>
+          </motion.div>
         </div>
       )}
     </AnimatePresence>
@@ -443,19 +466,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         />
       </motion.div>
 
-      {/* 3D Mithai Box */}
-      <AnimatePresence>
-        {step >= 9 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 0.9 }} 
-            transition={{ duration: 1.5, ease: 'easeOut' }}
-            style={{ position: 'absolute', bottom: '22%', zIndex: 15 }}
-          >
-            <MithaiBoxCSS />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Removed Mithai Box per user request, just keeping the Rakhi graphic */}
 
       {/* Final Message */}
       <AnimatePresence>
