@@ -93,24 +93,24 @@ function MithaiBoxCSS() {
 function PaintedSiblingImage({ step }: { step: number }) {
   return (
     <AnimatePresence>
-      {(step === 6 || step === 7) && (
+      {step >= 6 && (
         <div style={{
-          position: 'absolute', top: '10%', width: '100%', height: '50%',
+          position: 'absolute', top: '35%', width: '100%', height: '45%',
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           pointerEvents: 'none', zIndex: 25
         }}>
-          {/* Happy Raksha Bandhan Typography Graphic */}
+          {/* Watercolor Bloom Animation */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={step === 6 || step === 7 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.1 }}
-            transition={{ duration: 2.0, ease: 'easeOut' }}
+            initial={{ opacity: 0, filter: 'grayscale(100%) blur(15px)', scale: 0.85 }}
+            animate={{ opacity: 1, filter: 'grayscale(0%) blur(0px)', scale: 1 }}
+            transition={{ duration: 3.0, ease: 'easeOut' }}
             style={{ position: 'relative', width: '100%', height: '100%' }}
           >
             <Image 
-              src="/images/rakhi_typography.png"
-              alt="Happy Raksha Bandhan"
+              src="/images/siblings_no_cap_transparent.png"
+              alt="Siblings Celebrating"
               fill
-              style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
+              style={{ objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))' }}
               priority
             />
           </motion.div>
@@ -422,22 +422,22 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
 
       {/* The Cinematic Reveal (Premium Transparent Image) */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+        initial={{ opacity: 0, scale: 0.8, y: 30 }}
         animate={{ 
           opacity: step >= 8 ? 1 : 0, 
           scale: step >= 8 ? 1 : 0.8, 
-          y: step >= 8 ? 0 : 50 
+          y: step >= 8 ? 0 : 30 
         }}
         transition={{ duration: 3, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
-          width: '100%', top: '8%', height: '38%',
+          width: '100%', top: '10%', height: '35%',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
       >
         <Image 
           src="/images/rakhi_transparent.png" 
-          alt="Rakhi" 
+          alt="Happy Raksha Bandhan Text Graphic" 
           fill
           style={{ objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.8))' }}
         />
