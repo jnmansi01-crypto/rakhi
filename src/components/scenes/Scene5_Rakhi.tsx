@@ -432,7 +432,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
           width: '100%', top: '3%', height: '28%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginLeft: '4%' // Optical centering
         }}
       >
         <Image 
