@@ -23,7 +23,7 @@ class AudioEngine {
     if (typeof window === 'undefined') return;
     if (this.bgmAudio) return; // Already playing
 
-    this.bgmAudio = new Audio('/audio/premium-lofi.mp3');
+    this.bgmAudio = new Audio('/audio/joyful_bgm.webm');
     this.bgmAudio.loop = true;
     this.bgmAudio.crossOrigin = 'anonymous';
 
