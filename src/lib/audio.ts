@@ -23,7 +23,7 @@ class AudioEngine {
     if (typeof window === 'undefined') return;
     if (this.bgmAudio) return; // Already playing
 
-    this.bgmAudio = new Audio('/audio/kalsstockmedia-free-soul-non-lexical-wordless-indian-traditional-and-modern-fusion-463784.mp3');
+    this.bgmAudio = new Audio('/audio/musicforpeople-indian-music-491998.mp3');
     this.bgmAudio.loop = true;
     this.bgmAudio.crossOrigin = 'anonymous';
 
