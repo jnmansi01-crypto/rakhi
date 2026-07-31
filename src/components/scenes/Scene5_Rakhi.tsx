@@ -95,7 +95,7 @@ function PaintedSiblingImage({ step }: { step: number }) {
     <AnimatePresence>
       {step >= 6 && (
         <div style={{
-          position: 'absolute', top: '25%', width: '100%', height: '60%',
+          position: 'absolute', top: '20%', width: '100%', height: '70%',
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           pointerEvents: 'none', zIndex: 25
         }}>
@@ -425,13 +425,13 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         initial={{ opacity: 0, scale: 0.8, y: 30 }}
         animate={{ 
           opacity: step >= 8 ? 1 : 0, 
-          scale: step >= 8 ? 1.2 : 0.8, 
+          scale: step >= 8 ? 1.5 : 0.8, 
           y: step >= 8 ? 0 : 30 
         }}
         transition={{ duration: 3, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
-          width: '100%', top: '5%', height: '25%',
+          width: '100%', top: '3%', height: '28%',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
       >
