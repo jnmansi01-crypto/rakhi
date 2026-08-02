@@ -258,7 +258,22 @@ export default function CreatePage() {
 
     letter: (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <label style={labelStyle}>{t('write_letter', locale)}</label>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <label style={labelStyle}>{t('write_letter', locale)}</label>
+          <button 
+            onClick={() => update('letterText', locale === 'hi' 
+              ? "रक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸 हमेशा मेरा साथ देने के लिए धन्यवाद। हम भले ही छोटी-छोटी बातों पर लड़ते हों, लेकिन मैं जानता/जानती हूँ कि हम हमेशा एक-दूसरे के साथ खड़े हैं।\n\nमुझे अपनी ज़िंदगी में तुम्हारे होने की बहुत ख़ुशी है। चलो हमेशा एक-दूसरे का साथ निभाने का वादा करें!"
+              : "Happy Raksha Bandhan! 🌸 Thank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. Let's promise to always have each other's backs!"
+            )}
+            style={{ 
+              background: 'rgba(201,168,76,0.15)', border: '1px solid var(--gold)', 
+              color: 'var(--gold)', padding: '4px 10px', borderRadius: 20, 
+              fontSize: '0.7rem', cursor: 'pointer', fontFamily: 'var(--font-sans)' 
+            }}
+          >
+            ✨ {locale === 'hi' ? 'टेम्पलेट का उपयोग करें' : 'Use Template'}
+          </button>
+        </div>
         <textarea
           style={{ ...inputStyle, height: 200, resize: 'none', lineHeight: 1.8 }}
           value={form.letterText}
