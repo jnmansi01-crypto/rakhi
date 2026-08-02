@@ -264,8 +264,8 @@ export default function CreatePage() {
           value={form.letterText}
           onChange={e => update('letterText', e.target.value)}
           placeholder={locale === 'hi'
-            ? 'अपने दिल की बात यहाँ लिखें...'
-            : 'Pour your heart out… what do they mean to you?'}
+            ? 'प्रिय भाई/बहन, याद है जब हम टीवी के रिमोट के लिए लड़ते थे? हमेशा मेरा साथ देने के लिए शुक्रिया...'
+            : 'Dear brother/sister, remember when we used to fight over the TV remote? Thank you for always protecting me...'}
         />
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
           {form.letterText.length} characters
@@ -409,7 +409,12 @@ export default function CreatePage() {
             style={inputStyle}
             value={form.giftTitle}
             onChange={e => update('giftTitle', e.target.value)}
-            placeholder={GIFT_OPTIONS.find(o => o.type === form.giftType)?.hint ?? ''}
+            placeholder={
+              form.giftType === 'voucher' ? (locale === 'hi' ? 'उदा. Amazon Gift Card' : 'e.g. Amazon Gift Card') :
+              form.giftType === 'payment_link' ? (locale === 'hi' ? 'उदा. राखी शगुन' : 'e.g. Rakhi Shagun') :
+              form.giftType === 'coupon' ? (locale === 'hi' ? 'उदा. Zara पर 20% छूट' : 'e.g. 20% off at Zara') :
+              (locale === 'hi' ? 'उदा. एक प्यारा सा सरप्राइज' : 'e.g. A sweet surprise message')
+            }
           />
         </div>
 
@@ -425,14 +430,20 @@ export default function CreatePage() {
               style={{ ...inputStyle, height: 100, resize: 'none' }}
               value={form.giftValue}
               onChange={e => update('giftValue', e.target.value)}
-              placeholder={locale === 'hi' ? 'कुछ मीठा लिखें...' : 'Write something sweet…'}
+              placeholder={locale === 'hi' ? 'मैं तुम्हें बहुत प्यार करता/करती हूँ...' : 'I love you so much and I am so proud of you...'}
             />
           ) : (
             <input
               style={inputStyle}
               value={form.giftValue}
               onChange={e => update('giftValue', e.target.value)}
-              placeholder={form.giftType === 'coupon' ? 'RAKHI2025' : form.giftType === 'payment_link' ? '1100' : 'https://…'}
+              placeholder={
+                form.giftType === 'voucher' ? (locale === 'hi' ? 'https://...' : 'https://...') :
+                form.giftType === 'payment_link' ? (locale === 'hi' ? 'उदा. 1100' : 'e.g. 1100') :
+                form.giftType === 'coupon' ? 'RAKHI2025' :
+                (locale === 'hi' ? 'यहां दर्ज करें...' : 'Enter here...')
+              }
+              type={form.giftType === 'payment_link' ? 'number' : 'text'}
             />
           )}
         </div>
