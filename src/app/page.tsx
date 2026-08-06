@@ -269,14 +269,21 @@ export default function HomePage() {
         >
           {/* Logo & Lang Toggle */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: '1.3rem' }}>🌸</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <img 
+                src="/images/loment-logo.svg" 
+                alt="Loment Logo" 
+                style={{ width: 32, height: 32, objectFit: 'contain' }}
+              />
               <span style={{
-                fontFamily: 'var(--font-serif)', fontStyle: 'italic',
-                fontSize: '1.1rem', color: '#FFF8F0',
-                letterSpacing: '0.02em',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 600,
+                fontSize: '1.25rem',
+                color: '#FFF8F0',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase'
               }}>
-                Rakhi
+                Loment
               </span>
             </div>
             {/* Language toggle */}

@@ -8,6 +8,8 @@ import type { RakhiExperience, Locale } from '@/lib/types';
 export interface ExperiencePlayerProps {
   experience: RakhiExperience;
   onSceneChange?: (scene: string) => void;
+  /** True when rendered in the sender's preview — hides reply/thank-you actions */
+  isPreview?: boolean;
 }
 
 // ─── Props passed to every template's LandingPage ────────────────────────────

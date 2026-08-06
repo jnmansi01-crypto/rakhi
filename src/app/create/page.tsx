@@ -776,35 +776,55 @@ function CreatePageContent() {
               WebkitBackdropFilter: 'blur(10px)'
             }}
           >
-            <div style={{ position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {[120, 160, 200].map((size, i) => (
-                <motion.div key={i}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 10 + i * 5, repeat: Infinity, ease: 'linear' }}
-                  style={{
-                    position: 'absolute',
-                    width: size, height: size,
-                    borderRadius: '50%',
-                    border: '1px dashed rgba(201,168,76,0.3)',
-                    borderTopColor: 'rgba(232,117,26,0.8)'
-                  }}
-                />
-              ))}
+            <div style={{ position: 'relative', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* Outer pulsing glow */}
               <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ fontSize: '3.5rem' }}
+                animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.45, 0.2] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  position: 'absolute', width: 140, height: 140, borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%)',
+                  filter: 'blur(10px)'
+                }}
+              />
+              {/* Premium Rotating Geometric Mandala rings */}
+              <motion.svg
+                animate={{ rotate: 360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', width: 130, height: 130 }}
+                viewBox="0 0 100 100"
               >
-                🪔
+                <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(201,168,76,0.18)" strokeWidth="0.8" strokeDasharray="3 6" />
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(201,168,76,0.35)" strokeWidth="1" strokeDasharray="15 5" />
+              </motion.svg>
+              <motion.svg
+                animate={{ rotate: -360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', width: 90, height: 90 }}
+                viewBox="0 0 100 100"
+              >
+                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(229,201,122,0.4)" strokeWidth="1.2" strokeDasharray="4 8" />
+              </motion.svg>
+              {/* Center custom vector golden polaroid Loment logo icon (NO Emojis) */}
+              <motion.div
+                animate={{ scale: [0.95, 1.05, 0.95] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <img 
+                  src="/images/loment-logo.svg" 
+                  alt="Loment Loading Logo" 
+                  style={{ width: 44, height: 44, objectFit: 'contain' }}
+                />
               </motion.div>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.5rem', color: '#FFF8F0' }}>
-                {locale === 'hi' ? 'आपका उपहार तैयार हो रहा है...' : 'Crafting your gift...'}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, zIndex: 2 }}>
+              <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#FFF8F0', letterSpacing: '0.04em', margin: 0 }}>
+                {locale === 'hi' ? 'आपका उपहार तैयार हो रहा है...' : 'Crafting your experience...'}
               </p>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'rgba(255,248,240,0.6)' }}>
-                {locale === 'hi' ? 'इसमें कुछ सेकंड लग सकते हैं' : 'This might take a few seconds'}
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(201,168,76,0.6)', letterSpacing: '0.05em', margin: 0, textTransform: 'uppercase' }}>
+                {locale === 'hi' ? 'कृपया प्रतीक्षा करें' : 'creating your keepsake link'}
               </p>
             </div>
           </motion.div>

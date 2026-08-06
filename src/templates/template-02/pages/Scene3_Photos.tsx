@@ -1,6 +1,7 @@
 'use client';
 // Template 02 — Scene 3: Photos
-// Polaroid photo snaps with yellowed adhesive tape.
+// Premium 3D open scrapbook spread with a scattered photo collage 
+// across two cardstock pages, decorated with neutral Rakhi-themed annotations.
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,23 +28,18 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
     onComplete();
   };
 
-  // Fixed visual rotations/offsets for polaroids to give a scattered look
-  const layoutPresets = [
-    { rotate: -6, x: -10, y: -15 },
-    { rotate: 5, x: 20, y: 10 },
-    { rotate: -3, x: -30, y: 120 },
-    { rotate: 8, x: 15, y: 150 },
-    { rotate: -4, x: -5, y: 260 },
-  ];
+  // Separate photos between left and right pages
+  const leftPagePhotos = photoUrls.slice(0, 2);
+  const rightPagePhotos = photoUrls.slice(2, 5);
 
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: '#1d1412',
-      backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
+      background: '#120e0d',
+      backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
       display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'space-between',
-      padding: '40px 24px 28px 24px',
+      alignItems: 'center', justifyContent: 'center',
+      padding: '24px 12px',
       overflow: 'hidden',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -53,71 +49,264 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         }
       ` }} />
 
-      {/* Header */}
-      <div style={{ textAlign: 'center', zIndex: 10 }}>
-        <p style={{
-          fontFamily: 'monospace', fontSize: '0.75rem',
-          color: 'rgba(201,168,76,0.6)', letterSpacing: '0.15em',
-          textTransform: 'uppercase', margin: 0,
+      {/* 3D Open Book Spread Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          width: '96%',
+          maxWidth: 720,
+          height: '80vh',
+          maxHeight: 520,
+          display: 'flex',
+          position: 'relative',
+          boxShadow: '0 30px 70px rgba(0,0,0,0.7)',
+          borderRadius: 12,
+          overflow: 'hidden',
+          background: '#3d160e',
+          padding: '8px 4px 8px 8px',
+        }}
+      >
+        {/* LEFT PAGE: Scrapbook Cardstock (Photos 1 & 2) */}
+        <div style={{
+          flex: 1,
+          background: '#f2e6cf',
+          borderRadius: '8px 0 0 8px',
+          padding: '24px 16px',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'space-between',
+          position: 'relative',
+          boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
         }}>
-          {locale === 'hi' ? 'खट्टी-मीठी यादें' : 'SNAPSHOTS OF US'}
-        </p>
-      </div>
+          {/* Subtle grid lines background */}
+          <div style={{
+            position: 'absolute', inset: 12,
+            border: '1px solid rgba(199,151,116,0.3)',
+            borderRadius: 4,
+          }} />
 
-      {/* Scattered Polaroid Pile */}
-      <div style={{
-        position: 'relative', width: '100%', flex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        minHeight: 340,
-      }}>
-        {photoUrls.map((url, i) => {
-          const preset = layoutPresets[i % layoutPresets.length];
-          return (
-            <motion.div
+          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
+              <defs>
+                {/* 3D Chawal (Rice) Gradient */}
+                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#fdfcf0" />
+                  <stop offset="100%" stopColor="#d4cdab" />
+                </radialGradient>
+                {/* 3D Roli (Crimson powder) Gradient */}
+                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#d42617" />
+                  <stop offset="70%" stopColor="#9c150b" />
+                  <stop offset="100%" stopColor="#690a03" />
+                </radialGradient>
+              </defs>
+              {/* Rice grain shadows */}
+              <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(35 40 40)"/>
+              <ellipse cx="65" cy="38" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-15 64 36)"/>
+              {/* Rice grain bodies */}
+              <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(35 40 40)"/>
+              <ellipse cx="64" cy="36" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-15 64 36)"/>
+              {/* Roli splatters */}
+              <circle cx="27" cy="71" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="26" cy="70" r="6" fill="url(#roli3d)"/>
+              <circle cx="34" cy="80" r="3.5" fill="url(#roli3d)"/>
+
+              {/* Gold Dust Scatter */}
+              <circle cx="25" cy="120" r="2.2" fill="#d4af37" opacity="0.8"/>
+              <circle cx="80" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
+              <circle cx="95" cy="130" r="2.0" fill="#d4af37" opacity="0.8"/>
+
+              {/* Bottom Right Rice */}
+              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-30 250 380)"/>
+              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-30 250 380)"/>
+            </svg>
+          </div>
+
+          {/* Left Collage Content */}
+          <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {leftPagePhotos.map((url, i) => {
+              const rotation = i === 0 ? -6 : 8;
+              const yOffset = i === 0 ? -40 : 50;
+              const xOffset = i === 0 ? -15 : 15;
+              return (
+                <motion.div
+                  key={i}
+                  onClick={() => { vibrate(); setActiveIdx(i); }}
+                  style={{
+                    position: 'absolute',
+                    background: '#fff',
+                    padding: '8px 8px 24px 8px',
+                    width: 125,
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.25)',
+                    cursor: 'pointer',
+                    transform: `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`,
+                    zIndex: 5 + i,
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute', top: -10, left: '30%', width: 45, height: 14,
+                    background: 'rgba(242,238,209,0.5)', border: '1px dashed rgba(0,0,0,0.05)',
+                  }} />
+                  <div style={{ width: '100%', height: 110, background: '#1c1b18', overflow: 'hidden' }}>
+                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <p className="handwritten-label" style={{ fontSize: '0.95rem', color: '#554734', textAlign: 'center', margin: '6px 0 0 0' }}>
+                    {i === 0 
+                      ? (locale === 'hi' ? 'बचपन की अटखेलियां' : 'Sweet Childhood') 
+                      : (locale === 'hi' ? 'वो नोक-झोंक और प्यार' : 'Playful Fights')
+                    }
+                  </p>
+                </motion.div>
+              );
+            })}
+
+            {/* Sticky note handwritten caption */}
+            {leftPagePhotos.length > 0 && (
+              <div className="handwritten-label" style={{
+                position: 'absolute', bottom: 12, left: 16,
+                transform: 'rotate(-4deg)',
+                color: '#654f3b', fontSize: '1.25rem',
+                lineHeight: 1.2,
+              }}>
+                {locale === 'hi' ? 'प्यार के कच्चे धागे, रिश्ते पक्के...' : 'Our thread of love...'}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* CENTRAL BINDER SPINE */}
+        <div style={{
+          width: 24,
+          background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
+          position: 'relative', zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-around', alignItems: 'center',
+        }}>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
               key={i}
-              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-              animate={{ opacity: 1, scale: 1, rotate: preset.rotate, x: preset.x, y: preset.y - 60 }}
-              transition={{ delay: i * 0.15, duration: 0.6, ease: 'easeOut' }}
-              onClick={() => { vibrate(); setActiveIdx(i); }}
               style={{
-                position: 'absolute',
-                background: '#fff',
-                border: '1px solid #e0dcd3',
-                padding: '12px 12px 32px 12px',
-                width: 170,
-                boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
-                cursor: 'pointer',
-                zIndex: 5 + i,
+                width: 28, height: 8,
+                background: 'linear-gradient(to bottom, #d4af37, #856414, #d4af37)',
+                borderRadius: 4,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
+                transform: 'rotate(-5deg)',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* RIGHT PAGE: Scrapbook Cardstock (Photos 3, 4 & 5) */}
+        <div style={{
+          flex: 1,
+          background: '#f2e6cf',
+          borderRadius: '0 8px 8px 0',
+          padding: '24px 16px 20px 16px',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between',
+          position: 'relative',
+          boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
+        }}>
+          <div style={{
+            position: 'absolute', inset: 12,
+            border: '1px solid rgba(199,151,116,0.3)',
+            borderRadius: 4,
+          }} />
+
+          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
+              {/* Top Right Cluster */}
+              <ellipse cx="251" cy="42" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 40)"/>
+              <ellipse cx="250" cy="40" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 40)"/>
+              <circle cx="263" cy="56" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="262" cy="55" r="6" fill="url(#roli3d)"/>
+
+              {/* Gold Dust Scatter */}
+              <circle cx="270" cy="90" r="2.2" fill="#d4af37" opacity="0.8"/>
+              <circle cx="215" cy="140" r="1.5" fill="#d4af37" opacity="0.7"/>
+              <circle cx="235" cy="210" r="1.2" fill="#e5c07b" opacity="0.8"/>
+
+              {/* Bottom Left Cluster */}
+              <circle cx="35" cy="381" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="34" cy="380" r="6" fill="url(#roli3d)"/>
+              <ellipse cx="51" cy="377" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-40 50 375)"/>
+              <ellipse cx="50" cy="375" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-40 50 375)"/>
+            </svg>
+          </div>
+
+          {/* Right Collage Content */}
+          <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {rightPagePhotos.map((url, i) => {
+              const rotation = i === 0 ? 5 : i === 1 ? -6 : 4;
+              const yOffset = i === 0 ? -50 : i === 1 ? 40 : 100;
+              const xOffset = i === 0 ? -25 : i === 1 ? 25 : -10;
+              const globalIdx = 2 + i;
+              return (
+                <motion.div
+                  key={globalIdx}
+                  onClick={() => { vibrate(); setActiveIdx(globalIdx); }}
+                  style={{
+                    position: 'absolute',
+                    background: '#fff',
+                    padding: '8px 8px 24px 8px',
+                    width: 120,
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.25)',
+                    cursor: 'pointer',
+                    transform: `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`,
+                    zIndex: 5 + i,
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute', top: -10, left: '30%', width: 40, height: 14,
+                    background: 'rgba(242,238,209,0.5)', border: '1px dashed rgba(0,0,0,0.05)',
+                  }} />
+                  <div style={{ width: '100%', height: 105, background: '#1c1b18', overflow: 'hidden' }}>
+                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <p className="handwritten-label" style={{ fontSize: '0.95rem', color: '#554734', textAlign: 'center', margin: '4px 0 0 0' }}>
+                    {locale === 'hi' ? 'हर मुश्किल में साथ' : 'Love & Protection'}
+                  </p>
+                </motion.div>
+              );
+            })}
+
+            {/* Handwritten overlay text */}
+            <div className="handwritten-label" style={{
+              position: 'absolute', top: 12, right: 16,
+              transform: 'rotate(5deg)',
+              color: '#a36f4d', fontSize: '1.25rem',
+            }}>
+              {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
+            </div>
+          </div>
+
+          {/* Action button */}
+          <div style={{ zIndex: 10 }}>
+            <button
+              onClick={handleNext}
+              style={{
+                ...btnStyle,
+                width: '100%',
+                background: 'linear-gradient(135deg, #c79774, #a36f4d)',
+                border: 'none',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                padding: '10px 16px',
+                boxShadow: '0 4px 12px rgba(163,111,77,0.3)',
               }}
             >
-              {/* Tape piece */}
-              <div style={{
-                position: 'absolute', top: -10, left: '35%',
-                width: 50, height: 16,
-                background: 'rgba(242,238,209,0.5)',
-                border: '1px dashed rgba(0,0,0,0.05)',
-                transform: `rotate(${preset.rotate * -0.5}deg)`,
-                zIndex: 10,
-              }} />
+              {locale === 'hi' ? 'आवाज़ सुनें →' : 'Listen to Voice →'}
+            </button>
+          </div>
+        </div>
+      </motion.div>
 
-              {/* Image Frame */}
-              <div style={{ width: '100%', height: 160, background: '#1c1b18', overflow: 'hidden' }}>
-                <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-
-              {/* Polaroid Footer caption */}
-              <p className="handwritten-label" style={{
-                fontSize: '1.2rem', color: '#3d2b1f', textAlign: 'center',
-                margin: '12px 0 0 0', whiteSpace: 'nowrap', overflow: 'hidden',
-              }}>
-                {locale === 'hi' ? 'यादें...' : 'Memories...'}
-              </p>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Fullscreen Zoom overlay */}
+      {/* Fullscreen zoom overlay */}
       <AnimatePresence>
         {activeIdx !== null && (
           <motion.div
@@ -151,30 +340,12 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
                 fontSize: '1.4rem', color: '#3d2b1f', textAlign: 'center',
                 margin: '16px 0 0 0',
               }}>
-                {locale === 'hi' ? 'हमारा खूबसूरत पल 🌸' : 'A special moment 🌸'}
+                {locale === 'hi' ? 'हमारा खूबसूरत पल' : 'A special moment'}
               </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Next Button */}
-      <div style={{ width: '100%', maxWidth: 360, zIndex: 10 }}>
-        <button
-          onClick={handleNext}
-          style={{
-            ...btnStyle,
-            width: '100%',
-            background: 'linear-gradient(135deg, #c79774, #a36f4d)',
-            border: 'none',
-            color: '#fff',
-            fontWeight: 600,
-            boxShadow: '0 6px 20px rgba(163,111,77,0.3)',
-          }}
-        >
-          {locale === 'hi' ? 'आवाज़ सुनें →' : 'Listen to Voice →'}
-        </button>
-      </div>
     </div>
   );
 }

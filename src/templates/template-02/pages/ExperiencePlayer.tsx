@@ -17,7 +17,7 @@ import type { ExperiencePlayerProps } from '@/template-engine/types';
 const SCENES = ['welcome', 'letter', 'photos', 'voice', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
-export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
+export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlayerProps) {
   const [scene, setScene] = useState<SceneName>('welcome');
   const { locale } = experience;
   const { vibrate } = useHaptics();
@@ -65,15 +65,39 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
       backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
       color: '#FFF8F0',
       overflow: 'hidden',
+      perspective: 1200,
     }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={scene}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.8 }}
-          style={{ position: 'absolute', inset: 0 }}
+          initial={{ 
+            opacity: 0, 
+            scale: 0.94, 
+            rotateY: 8, 
+            rotateX: 4 
+          }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1, 
+            rotateY: 0, 
+            rotateX: 0 
+          }}
+          exit={{ 
+            opacity: 0, 
+            scale: 0.94, 
+            rotateY: -8, 
+            rotateX: -4 
+          }}
+          transition={{ 
+            duration: 0.65, 
+            ease: [0.25, 1, 0.5, 1] 
+          }}
+          style={{ 
+            position: 'absolute', 
+            inset: 0,
+            transformStyle: 'preserve-3d',
+            backfaceVisibility: 'hidden',
+          }}
         >
           {scene === 'welcome' && (
             <Scene1_Welcome
@@ -129,6 +153,7 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
               giftValue={experience.giftValue}
               senderName={experience.senderName}
               locale={locale}
+              isPreview={isPreview}
               onComplete={() => {
                 vibrate();
                 window.location.href = `/reply/${experience.id}`;

@@ -28,8 +28,8 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
     <div
       style={{
         position: 'relative',
-        width: 320,
-        height: 300,
+        width: 240,
+        height: 240,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -42,12 +42,12 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
         transition={{ duration: 1.6, times: [0, 0.5, 1], ease: 'easeOut' }}
         style={{
           position: 'absolute',
-          width: 260,
-          height: 260,
+          width: 200,
+          height: 200,
           borderRadius: '50%',
           background:
             'radial-gradient(circle, rgba(232,117,26,0.45) 0%, rgba(201,168,76,0.22) 45%, transparent 72%)',
-          filter: 'blur(38px)',
+          filter: 'blur(32px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -60,11 +60,11 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
         transition={{ duration: 4, delay: 1.8, repeat: Infinity, times: [0, 0.3, 0.7, 1] }}
         style={{
           position: 'absolute',
-          width: 200,
-          height: 200,
+          width: 150,
+          height: 150,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%)',
-          filter: 'blur(30px)',
+          filter: 'blur(24px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -130,8 +130,8 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           style={{
             position: 'relative',
-            width: 320,
-            height: 320,
+            width: 240,
+            height: 240,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -146,7 +146,7 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: 'absolute', width: 280, height: 280 }}
+            style={{ position: 'absolute', width: 210, height: 210 }}
           >
             <motion.img
               src="/modern-rakhi.png"
@@ -155,8 +155,8 @@ export function RakhiHero({ rotateX, rotateY }: Props) {
               animate={{ scale: 1, rotate: 0, opacity: 1 }}
               transition={{ duration: 1.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                width: 280,
-                height: 280,
+                width: 210,
+                height: 210,
                 objectFit: 'contain',
                 pointerEvents: 'none',
                 display: 'block',

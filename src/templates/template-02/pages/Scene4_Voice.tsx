@@ -1,6 +1,6 @@
 'use client';
 // Template 02 — Scene 4: Voice (Retro Cassette Tape Player)
-// Vintage cassette tape graphics wrapped in a craft paper page container.
+// Vintage cassette tape player presented inside the 3D open scrapbook spread.
 
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -18,7 +18,6 @@ interface Props {
 
 export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isDone, setIsDone] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { vibrate } = useHaptics();
 
@@ -26,7 +25,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
     if (audioRef.current) {
       audioRef.current.onended = () => {
         setIsPlaying(false);
-        setIsDone(true);
+        audioEngine.restoreBGM();
       };
     }
   }, [voiceUrl]);
@@ -37,9 +36,9 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
-      audioEngine.restoreBGM(); // Restore background music on pause
+      audioEngine.restoreBGM();
     } else {
-      audioEngine.dimBGM(); // Dim background music to listen to voice
+      audioEngine.dimBGM();
       audioRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
@@ -50,7 +49,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    audioEngine.restoreBGM(); // Make sure BGM volume is restored
+    audioEngine.restoreBGM();
     audioEngine.playSwoosh();
     onComplete();
   };
@@ -58,186 +57,296 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: '#1d1412',
-      backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
+      background: '#120e0d',
+      backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: 24,
+      padding: '24px 12px',
       overflow: 'hidden',
     }}>
-      {/* Hidden Audio element */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
+        .handwritten-label {
+          font-family: 'Caveat', cursive;
+        }
+      ` }} />
+
       {voiceUrl && <audio ref={audioRef} src={voiceUrl} />}
 
-      {/* Premium Scrapbook Craft Paper Page Container */}
+      {/* 3D Open Book Spread Container */}
       <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
         style={{
-          width: '100%',
-          maxWidth: 380,
-          background: '#f6eedd', // Craft paper color
-          border: '1px solid #dfd3bb',
-          borderRadius: 4,
-          padding: '40px 24px 32px 24px',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
+          width: '96%',
+          maxWidth: 720,
+          height: '80vh',
+          maxHeight: 520,
+          display: 'flex',
           position: 'relative',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '75vh',
-          justifyContent: 'space-between',
+          boxShadow: '0 30px 70px rgba(0,0,0,0.7)',
+          borderRadius: 12,
+          overflow: 'hidden',
+          background: '#3d160e',
+          padding: '8px 4px 8px 8px',
         }}
       >
-        {/* Golden Photo Corners */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: 16, height: 16, borderTop: '3px solid #c79774', borderLeft: '3px solid #c79774' }} />
-        <div style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderTop: '3px solid #c79774', borderRight: '3px solid #c79774' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 16, height: 16, borderBottom: '3px solid #c79774', borderLeft: '3px solid #c79774' }} />
-        <div style={{ position: 'absolute', bottom: 0, right: 0, width: 16, height: 16, borderBottom: '3px solid #c79774', borderRight: '3px solid #c79774' }} />
-
-        {/* Header */}
-        <div style={{ textAlign: 'center', zIndex: 10 }}>
-          <p style={{
-            fontFamily: 'monospace', fontSize: '0.72rem',
-            color: '#8c7662', letterSpacing: '0.15em',
-            textTransform: 'uppercase', margin: 0,
-          }}>
-            {locale === 'hi' ? 'आवाज़ की याद' : 'A VOICE FROM THE PAST'}
-          </p>
-        </div>
-
-        {/* Retro Cassette Graphic Wrapper */}
+        {/* LEFT PAGE: Decorative keepsakes */}
         <div style={{
-          width: '100%', maxWidth: 300, display: 'flex', flexDirection: 'column', alignItems: 'center',
-          position: 'relative', flex: 1, justifyContent: 'center',
+          flex: 1,
+          background: '#f2e6cf',
+          borderRadius: '8px 0 0 8px',
+          padding: 24,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          position: 'relative',
+          boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
         }}>
-          {/* Semi-transparent tape holding cassette */}
           <div style={{
-            position: 'absolute', top: 40, width: 80, height: 20,
-            background: 'rgba(235,224,196,0.6)', transform: 'rotate(-3deg)',
-            border: '1px dashed rgba(0,0,0,0.06)', zIndex: 10,
+            position: 'absolute', inset: 12,
+            border: '1px solid rgba(199,151,116,0.3)',
+            borderRadius: 4,
           }} />
 
-          <motion.div
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-            style={{
-              width: '100%',
-              height: 164,
-              background: 'linear-gradient(135deg, #2b2b2b 0%, #171717 100%)',
-              border: '6px solid #0f0f0f',
-              borderRadius: 12,
-              position: 'relative',
-              boxShadow: '0 12px 30px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.08)',
-              padding: 6,
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            }}
-          >
-            {/* Top Label */}
-            <div style={{
-              background: '#d4c09d',
-              height: 44,
-              borderRadius: 4,
-              padding: '4px 10px',
-              display: 'flex', flexDirection: 'column', justifyContent: 'center',
-              borderBottom: '3px solid #bba683',
+          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
+              <defs>
+                {/* 3D Chawal (Rice) Gradient */}
+                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#fdfcf0" />
+                  <stop offset="100%" stopColor="#d4cdab" />
+                </radialGradient>
+                {/* 3D Roli (Crimson powder) Gradient */}
+                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#d42617" />
+                  <stop offset="70%" stopColor="#9c150b" />
+                  <stop offset="100%" stopColor="#690a03" />
+                </radialGradient>
+              </defs>
+              {/* Rice grain shadows */}
+              <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(-15 40 40)"/>
+              <ellipse cx="65" cy="74" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(35 64 70)"/>
+              {/* Rice grain bodies */}
+              <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(-15 40 40)"/>
+              <ellipse cx="64" cy="70" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(35 64 70)"/>
+              {/* Roli splatters */}
+              <circle cx="27" cy="81" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="26" cy="80" r="6" fill="url(#roli3d)"/>
+
+              {/* Gold Dust Scatter */}
+              <circle cx="36" cy="136" r="2.2" fill="#d4af37" opacity="0.8"/>
+              <circle cx="90" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
+              <circle cx="70" cy="170" r="2.0" fill="#d4af37" opacity="0.8"/>
+
+              {/* Bottom Right Rice */}
+              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 380)"/>
+              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 380)"/>
+            </svg>
+          </div>
+
+          {/* Sibling card decoration */}
+          <div style={{
+            width: '80%', height: '65%',
+            border: '1px solid #d4c8af',
+            background: '#faf6ee',
+            padding: 12,
+            boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+            transform: 'rotate(-3deg)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: 16,
+          }}>
+            <svg width="54" height="38" viewBox="0 0 54 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="52" height="36" rx="4" fill="#2b2b2b" stroke="#444" strokeWidth="1.5"/>
+              <rect x="5" y="4" width="44" height="14" rx="2" fill="#c5b08a"/>
+              <circle cx="14" cy="26" r="5" fill="#1a1a1a" stroke="#555" strokeWidth="1.5"/>
+              <circle cx="14" cy="26" r="2" fill="#333"/>
+              <circle cx="40" cy="26" r="5" fill="#1a1a1a" stroke="#555" strokeWidth="1.5"/>
+              <circle cx="40" cy="26" r="2" fill="#333"/>
+              <rect x="20" y="22" width="14" height="8" rx="1" fill="#1a1a1a"/>
+              <text x="27" y="12" textAnchor="middle" fontFamily="monospace" fontSize="5" fill="#554734">SIDE A</text>
+            </svg>
+            <p className="handwritten-label" style={{
+              fontSize: '1.4rem', color: '#8c7662', margin: 0, textAlign: 'center', lineHeight: 1.2
             }}>
-              <span style={{ fontFamily: 'monospace', fontSize: '0.52rem', color: '#554734', letterSpacing: '0.05em' }}>
-                SIDE A · STEREO
-              </span>
-              <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '0.78rem', color: '#1f1a14', fontWeight: 600 }}>
-                Message from {senderName}
-              </span>
-            </div>
+              {locale === 'hi' ? 'दिल की बात, मेरी आवाज़ में...' : 'Hear my voice...'}
+            </p>
+          </div>
+        </div>
 
-            {/* Central window with sprockets */}
-            <div style={{
-              background: '#0a0a0a',
-              height: 52,
-              borderRadius: 6,
-              margin: '6px 8px',
-              border: '1.5px solid #222',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              position: 'relative',
-              overflow: 'hidden',
-            }}>
-              {/* Left sprocket */}
-              <motion.div
-                animate={isPlaying ? { rotate: 360 } : {}}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
-                style={{
-                  width: 28, height: 28,
-                  borderRadius: '50%',
-                  border: '3px dashed #666',
-                  background: '#1a1a1a',
-                  position: 'relative',
-                }}
+        {/* CENTRAL BINDER SPINE */}
+        <div style={{
+          width: 24,
+          background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
+          position: 'relative', zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-around', alignItems: 'center',
+        }}>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: 28, height: 8,
+                background: 'linear-gradient(to bottom, #d4af37, #856414, #d4af37)',
+                borderRadius: 4,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
+                transform: 'rotate(-5deg)',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* RIGHT PAGE: Cassette Tape Player */}
+        <div style={{
+          flex: 1,
+          background: '#faf6ee',
+          borderRadius: '0 8px 8px 0',
+          padding: '24px 16px 20px 24px',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between',
+          position: 'relative',
+          boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
+        }}>
+          <div style={{
+            position: 'absolute', inset: 12,
+            border: '1px solid rgba(199,151,116,0.3)',
+            borderRadius: 4,
+          }} />
+
+          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+              {/* Top Right Cluster */}
+              <ellipse cx="251" cy="22" rx="6.5" ry="2.8" fill="rgba(0,0,0,0.15)" transform="rotate(-30 250 20)"/>
+              <ellipse cx="250" cy="20" rx="6.5" ry="2.8" fill="url(#rice3d)" transform="rotate(-30 250 20)"/>
+              <circle cx="263" cy="31" r="3.5" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="262" cy="30" r="3.5" fill="url(#roli3d)"/>
+
+              {/* Gold Dust Scatter */}
+              <circle cx="270" cy="55" r="1.2" fill="#d4af37" opacity="0.6"/>
+              <circle cx="215" cy="115" r="1.6" fill="#d4af37" opacity="0.7"/>
+              <circle cx="230" cy="210" r="0.8" fill="#e5c07b" opacity="0.8"/>
+
+              {/* Bottom Left Cluster */}
+              <circle cx="25" cy="281" r="4.5" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="24" cy="280" r="4.5" fill="url(#roli3d)"/>
+              <ellipse cx="41" cy="277" rx="6.8" ry="3" fill="rgba(0,0,0,0.15)" transform="rotate(45 40 275)"/>
+              <ellipse cx="40" cy="275" rx="6.8" ry="3" fill="url(#rice3d)" transform="rotate(45 40 275)"/>
+            </svg>
+          </div>
+
+          {/* Tape Player Centerpiece */}
+          <div style={{
+            position: 'relative', width: '100%', flex: 1,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          }}>
+            {/* Cassette Graphic Wrapper */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: 220 }}>
+              {/* Left corner tape */}
+              <div style={{
+                position: 'absolute', top: -6, left: -12, width: 40, height: 14,
+                background: 'rgba(235,224,196,0.5)', transform: 'rotate(-20deg)',
+                border: '1px dashed rgba(0,0,0,0.05)', zIndex: 10,
+              }} />
+              {/* Right corner tape */}
+              <div style={{
+                position: 'absolute', top: -6, right: -12, width: 40, height: 14,
+                background: 'rgba(235,224,196,0.5)', transform: 'rotate(20deg)',
+                border: '1px dashed rgba(0,0,0,0.05)', zIndex: 10,
+              }} />
+
+              {/* Cassette Graphic */}
+              <div style={{
+                width: '100%',
+                height: 130,
+                background: 'linear-gradient(135deg, #2b2b2b 0%, #171717 100%)',
+                border: '4px solid #0f0f0f',
+                borderRadius: 8,
+                position: 'relative',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.35)',
+                padding: 4,
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              }}
               >
-                <div style={{ position: 'absolute', inset: 6, background: '#0a0a0a', borderRadius: '50%' }} />
-              </motion.div>
+                <div style={{
+                  background: '#d4c09d',
+                  height: 32,
+                  borderRadius: 4,
+                  padding: '2px 8px',
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                }}>
+                <span style={{ fontFamily: 'monospace', fontSize: '0.45rem', color: '#554734' }}>SIDE A · STEREO</span>
+                <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '0.68rem', color: '#1f1a14', fontWeight: 600 }}>
+                  Message from {senderName}
+                </span>
+              </div>
 
-              {/* Clear plastic window */}
-              <div style={{ width: 70, height: 16, background: 'rgba(50,50,50,0.1)', border: '1px solid #333', borderRadius: 4 }} />
+              <div style={{
+                background: '#0a0a0a',
+                height: 40,
+                borderRadius: 4,
+                margin: '4px 6px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+              }}>
+                <motion.div
+                  animate={isPlaying ? { rotate: 360 } : {}}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
+                  style={{ width: 22, height: 22, borderRadius: '50%', border: '2.5px dashed #666', background: '#1a1a1a' }}
+                />
+                <div style={{ width: 50, height: 12, background: 'rgba(50,50,50,0.1)', borderRadius: 2 }} />
+                <motion.div
+                  animate={isPlaying ? { rotate: 360 } : {}}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
+                  style={{ width: 22, height: 22, borderRadius: '50%', border: '2.5px dashed #666', background: '#1a1a1a' }}
+                />
+              </div>
 
-              {/* Right sprocket */}
-              <motion.div
-                animate={isPlaying ? { rotate: 360 } : {}}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
-                style={{
-                  width: 28, height: 28,
-                  borderRadius: '50%',
-                  border: '3px dashed #666',
-                  background: '#1a1a1a',
-                  position: 'relative',
-                }}
-              >
-                <div style={{ position: 'absolute', inset: 6, background: '#0a0a0a', borderRadius: '50%' }} />
-              </motion.div>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
+                <div style={{ width: 8, height: 4, background: '#0a0a0a' }} />
+                <div style={{ width: 8, height: 4, background: '#0a0a0a' }} />
+              </div>
+            </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 20, paddingBottom: 2 }}>
-              <div style={{ width: 10, height: 6, background: '#0a0a0a', borderRadius: 1 }} />
-              <div style={{ width: 10, height: 6, background: '#0a0a0a', borderRadius: 1 }} />
-            </div>
-          </motion.div>
-
-          {/* Play Key */}
-          <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+            {/* Play Key */}
             <button
               onClick={togglePlay}
               style={{
-                width: 58, height: 40,
+                marginTop: 16,
+                width: 50, height: 34,
                 background: isPlaying ? '#a13b2b' : '#3c6e4d',
-                border: 'none', borderBottom: '4px solid rgba(0,0,0,0.4)',
-                borderRadius: 6,
-                color: '#fff', fontSize: '1rem',
+                border: 'none', borderBottom: '3px solid rgba(0,0,0,0.4)',
+                borderRadius: 4,
+                color: '#fff',
                 cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 6px 12px rgba(0,0,0,0.25)',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
               }}
             >
               {isPlaying ? '⏸' : '▶'}
             </button>
           </div>
-        </div>
 
-        {/* Footer Next Button */}
-        <div style={{ width: '100%', zIndex: 10 }}>
-          <button
-            onClick={handleNext}
-            style={{
-              ...btnStyle,
-              width: '100%',
-              background: 'linear-gradient(135deg, #c79774, #a36f4d)',
-              border: 'none',
-              color: '#fff',
-              fontWeight: 600,
-              boxShadow: '0 6px 20px rgba(163,111,77,0.3)',
-            }}
-          >
-            {locale === 'hi' ? 'राखी बांधें →' : 'Tie Rakhi →'}
-          </button>
+          {/* Action button */}
+          <div style={{ zIndex: 10 }}>
+            <button
+              onClick={handleNext}
+              style={{
+                ...btnStyle,
+                width: '100%',
+                background: 'linear-gradient(135deg, #c79774, #a36f4d)',
+                border: 'none',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                padding: '10px 16px',
+                boxShadow: '0 4px 12px rgba(163,111,77,0.3)',
+              }}
+            >
+              {locale === 'hi' ? 'राखी बांधें →' : 'Tie Rakhi →'}
+            </button>
+          </div>
         </div>
       </motion.div>
     </div>

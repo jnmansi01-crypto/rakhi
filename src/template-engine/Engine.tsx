@@ -5,6 +5,7 @@
 // All scene logic lives inside the template's ExperiencePlayer.
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import type { RakhiExperience } from '@/lib/types';
 import { markOpened } from '@/core/database/storage';
 import { getTemplate, DEFAULT_TEMPLATE_ID } from './index';
@@ -122,6 +123,8 @@ export function ExperienceEngine({ experience }: Props) {
   const [plugin, setPlugin] = useState<TemplatePlugin | null>(null);
   const [captureWarningDismissed, setCaptureWarningDismissed] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get('preview') === 'true';
 
   // Load the correct template plugin
   useEffect(() => {
@@ -163,7 +166,7 @@ export function ExperienceEngine({ experience }: Props) {
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
       {/* Delegate all presentation to the template's ExperiencePlayer */}
-      <ExperiencePlayer experience={experience} />
+      <ExperiencePlayer experience={experience} isPreview={isPreview} />
 
       {/* Shared concerns — applied on top of every template */}
       <ExperienceWatermark

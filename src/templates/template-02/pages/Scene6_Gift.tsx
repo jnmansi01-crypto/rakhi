@@ -2,7 +2,7 @@
 // Template 02 — Scene 6: Gift Reveal (Wrapped parcel package)
 // Paper package wrapped in jute twine. Clicking it unfolds it to reveal voucher.
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
@@ -15,11 +15,13 @@ interface Props {
   giftValue: string;
   senderName: string;
   locale: Locale;
+  isPreview?: boolean;
   onComplete: () => void;
 }
 
-export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale, onComplete }: Props) {
+export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale, isPreview, onComplete }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const { vibrate } = useHaptics();
 
   const handleOpen = () => {
@@ -27,8 +29,35 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
       vibrate();
       audioEngine.playPaper?.(); // Play a nice paper rustling sound
       setIsOpen(true);
+      setShowConfetti(true);
+      
+      // Stop BGM after 4 seconds of opening the parcel
+      setTimeout(() => {
+        audioEngine.stopBGM?.();
+      }, 4000);
     }
   };
+
+  // Generate 45 randomized gold dust/foil confetti particles radiating outwards
+  const confettiParticles = Array.from({ length: 45 }).map((_, i) => {
+    const angle = (i / 45) * 360 + (Math.random() * 15 - 7.5);
+    const distance = 80 + Math.random() * 180;
+    const xDest = Math.cos(angle * Math.PI / 180) * distance;
+    const yDest = Math.sin(angle * Math.PI / 180) * distance - (50 + Math.random() * 100);
+    const size = 6 + Math.random() * 8;
+    const color = ['#d4af37', '#ffd700', '#f3e5ab', '#c5a059', '#b89335'][i % 5];
+    const delay = Math.random() * 0.15;
+    
+    return {
+      id: i,
+      x: xDest,
+      y: yDest,
+      size,
+      color,
+      delay,
+      rotate: Math.random() * 720 - 360,
+    };
+  });
 
   return (
     <div style={{
@@ -47,7 +76,7 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
           color: 'rgba(201,168,76,0.6)', letterSpacing: '0.15em',
           textTransform: 'uppercase', margin: 0,
         }}>
-          {locale === 'hi' ? 'उपहार पेटी' : 'THE PARCEL'}
+          {locale === 'hi' ? 'स्नेह की पोटली' : 'THE PARCEL'}
         </p>
       </div>
 
@@ -56,6 +85,40 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
         position: 'relative', width: '100%', flex: 1,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
+        {/* Golden Pop Confetti Shower */}
+        {showConfetti && (
+          <div style={{ position: 'absolute', pointerEvents: 'none', zIndex: 12, width: '100%', height: '100%' }}>
+            {confettiParticles.map((p) => (
+              <motion.div
+                key={p.id}
+                initial={{ x: 0, y: 0, scale: 0.2, opacity: 1, rotate: 0 }}
+                animate={{
+                  x: p.x,
+                  y: p.y,
+                  scale: [1, 1, 0.5],
+                  opacity: [1, 1, 0],
+                  rotate: p.rotate,
+                }}
+                transition={{
+                  duration: 1.6 + Math.random() * 0.6,
+                  ease: [0.1, 0.8, 0.25, 1],
+                  delay: p.delay,
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  width: p.size,
+                  height: p.size * (0.4 + Math.random() * 0.6), // varied rectangle flakes
+                  background: p.color,
+                  borderRadius: Math.random() > 0.5 ? '50%' : '1px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+                }}
+              />
+            ))}
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           {!isOpen ? (
             // Wrapped Parcel Box
@@ -91,7 +154,7 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: '#fff', fontSize: '0.9rem', fontWeight: 'bold',
               }}>
-                印
+                ✦
               </div>
 
               {/* Tiny sticker with text */}
@@ -102,7 +165,7 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
                 transform: 'rotate(-5deg)',
                 fontFamily: 'monospace', fontSize: '0.55rem', color: '#555',
               }}>
-                {locale === 'hi' ? 'खोलें' : 'OPEN ME'}
+                {locale === 'hi' ? 'खोलें और मुस्कुराएं' : 'OPEN ME'}
               </div>
             </motion.div>
           ) : (
@@ -124,7 +187,15 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
               }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: 16 }}>🎁</div>
+              <div style={{ marginBottom: 16 }}>
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="20" width="36" height="26" rx="2" fill="#c5906a" stroke="#a36f4d" strokeWidth="1.5"/>
+                  <rect x="4" y="16" width="44" height="8" rx="2" fill="#a36f4d"/>
+                  <rect x="23" y="16" width="6" height="30" fill="#d4af37"/>
+                  <path d="M26 16 C26 16 16 10 12 8 C8 6 10 2 14 4 C18 6 26 16 26 16Z" fill="#d4af37"/>
+                  <path d="M26 16 C26 16 36 10 40 8 C44 6 42 2 38 4 C34 6 26 16 26 16Z" fill="#d4af37"/>
+                </svg>
+              </div>
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#3d2b1f', margin: '0 0 8px 0' }}>
                 {giftTitle}
               </h2>
@@ -151,25 +222,26 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
         </AnimatePresence>
       </div>
 
-      {/* Reply Button */}
-      <div style={{ width: '100%', maxWidth: 360, zIndex: 10 }}>
-        <button
-          onClick={() => { vibrate(); onComplete(); }}
-          disabled={!isOpen}
-          style={{
-            ...btnStyle,
-            width: '100%',
-            background: isOpen ? 'linear-gradient(135deg, #c79774, #a36f4d)' : 'rgba(255,255,255,0.05)',
-            border: 'none',
-            color: isOpen ? '#fff' : 'rgba(255,255,255,0.3)',
-            fontWeight: 600,
-            cursor: isOpen ? 'pointer' : 'not-allowed',
-            boxShadow: isOpen ? '0 6px 20px rgba(163,111,77,0.3)' : 'none',
-          }}
-        >
-          {locale === 'hi' ? 'उत्तर भेजें 🌸' : 'Send Reply 🌸'}
-        </button>
-      </div>
+      {!isPreview && (
+        <div style={{ width: '100%', maxWidth: 360, zIndex: 10 }}>
+          <button
+            onClick={() => { vibrate(); onComplete(); }}
+            disabled={!isOpen}
+            style={{
+              ...btnStyle,
+              width: '100%',
+              background: isOpen ? 'linear-gradient(135deg, #c79774, #a36f4d)' : 'rgba(255,255,255,0.05)',
+              border: 'none',
+              color: isOpen ? '#fff' : 'rgba(255,255,255,0.3)',
+              fontWeight: 600,
+              cursor: isOpen ? 'pointer' : 'not-allowed',
+              boxShadow: isOpen ? '0 6px 20px rgba(163,111,77,0.3)' : 'none',
+            }}
+          >
+            {locale === 'hi' ? 'धन्यवाद कहें' : 'Send a Thank You'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
