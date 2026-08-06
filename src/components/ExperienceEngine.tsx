@@ -11,6 +11,94 @@ import type { RakhiExperience } from '@/lib/types';
 import { markOpened } from '@/lib/storage';
 import { audioEngine } from '@/lib/audio';
 
+// ── Watermark component ───────────────────────────────────────────────────────
+function ExperienceWatermark({ senderName, recipientName }: { senderName: string; recipientName: string }) {
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9998,
+        pointerEvents: 'none',
+        overflow: 'hidden',
+        userSelect: 'none',
+      }}
+    >
+      {/* Diagonal tiled watermark text */}
+      {Array.from({ length: 30 }, (_, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${(i % 4) * 28 - 10}%`,
+            top: `${Math.floor(i / 4) * 18 - 5}%`,
+            transform: 'rotate(-30deg)',
+            whiteSpace: 'nowrap',
+            fontFamily: 'system-ui, sans-serif',
+            fontSize: '0.65rem',
+            letterSpacing: '0.12em',
+            color: 'rgba(255,255,255,0.045)',
+            fontWeight: 600,
+          }}
+        >
+          {senderName} → {recipientName} · rakhi.gift
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Screen Capture Warning Overlay ───────────────────────────────────────────
+function ScreenCaptureWarning({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 10000,
+      background: 'rgba(8, 4, 8, 0.97)',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      backdropFilter: 'blur(20px)',
+    }}>
+      <div style={{ textAlign: 'center', maxWidth: 320, padding: 32 }}>
+        <div style={{ fontSize: '3rem', marginBottom: 20 }}>🛋️</div>
+        <h2 style={{
+          fontFamily: 'Georgia, serif',
+          color: '#FFF8F0',
+          fontSize: '1.4rem',
+          fontWeight: 400,
+          marginBottom: 12,
+        }}>
+          This Experience is Private
+        </h2>
+        <p style={{
+          fontFamily: 'system-ui, sans-serif',
+          fontSize: '0.9rem',
+          color: 'rgba(255,248,240,0.6)',
+          lineHeight: 1.6,
+          marginBottom: 28,
+        }}>
+          Screen sharing has been detected. This gift experience is personal and private — crafted just for you.
+          Please stop sharing your screen to continue.
+        </p>
+        <button
+          onClick={onDismiss}
+          style={{
+            background: 'rgba(201,168,76,0.15)',
+            border: '1px solid rgba(201,168,76,0.5)',
+            color: '#C9A84C',
+            padding: '12px 28px',
+            borderRadius: 100,
+            cursor: 'pointer',
+            fontFamily: 'system-ui, sans-serif',
+            fontSize: '0.85rem',
+            letterSpacing: '0.06em',
+          }}
+        >
+          I understand, continue anyway
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface Props { experience: RakhiExperience }
 
 const SCENES = ['arrival','envelope','photos','voice','rakhi','gift'] as const;
@@ -24,7 +112,38 @@ const sceneVariants = {
 
 export function ExperienceEngine({ experience }: Props) {
   const [scene, setScene] = useState<SceneName>('arrival');
+  const [captureWarningDismissed, setCaptureWarningDismissed] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const { locale } = experience;
+
+  // ── Screen Capture Detection (Chrome/Edge via MediaStream API) ────────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let stream: MediaStream | null = null;
+
+    // Hook into the browser's getDisplayMedia to detect when a screen share starts.
+    // We monkey-patch it once so we can intercept calls from *any* extension/tool.
+    const originalGetDisplayMedia = navigator.mediaDevices?.getDisplayMedia?.bind(navigator.mediaDevices);
+    if (originalGetDisplayMedia && navigator.mediaDevices) {
+      (navigator.mediaDevices as any).getDisplayMedia = async (constraints?: DisplayMediaStreamOptions) => {
+        const s: MediaStream = await originalGetDisplayMedia(constraints);
+        stream = s;
+        setIsCapturing(true);
+        s.getVideoTracks()[0]?.addEventListener('ended', () => {
+          setIsCapturing(false);
+          stream = null;
+        });
+        return s;
+      };
+    }
+
+    return () => {
+      // Restore original
+      if (originalGetDisplayMedia && navigator.mediaDevices) {
+        navigator.mediaDevices.getDisplayMedia = originalGetDisplayMedia;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     markOpened(experience.id).catch(() => {});
@@ -179,6 +298,16 @@ export function ExperienceEngine({ experience }: Props) {
           </motion.button>
         )}
       </AnimatePresence>
+      {/* Diagonal watermark (always visible, transparent) */}
+      <ExperienceWatermark
+        senderName={experience.senderName}
+        recipientName={experience.recipientName}
+      />
+
+      {/* Screen capture warning overlay */}
+      {isCapturing && !captureWarningDismissed && (
+        <ScreenCaptureWarning onDismiss={() => setCaptureWarningDismissed(true)} />
+      )}
     </div>
   );
 }
