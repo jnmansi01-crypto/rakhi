@@ -256,38 +256,102 @@ export default function CreatePage() {
       </div>
     ),
 
-    letter: (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    letter: (() => {
+      const TEMPLATES = locale === 'hi' ? [
+        {
+          emoji: '💛',
+          title: 'दिल से',
+          preview: 'हमेशा मेरा साथ देने के लिए...',
+          text: `प्रिय भाई/बहन,\n\nरक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸\n\nहमेशा मेरा साथ देने के लिए, हर मुश्किल में खड़े रहने के लिए, और मुझे हमेशा हँसाने के लिए — शुक्रिया। हम भले ही छोटी-छोटी बातों पर झगड़ते हों, लेकिन मैं जानता/जानती हूँ कि तुम हमेशा मेरे साथ हो।\n\nतुम्हारे होने से मेरी ज़िंदगी बहुत खूबसूरत है। यह राखी उस प्यार का एक छोटा सा इज़हार है।\n\nहमेशा तुम्हारा/तुम्हारी ❤️`,
+        },
+        {
+          emoji: '😄',
+          title: 'मज़ेदार',
+          preview: 'याद है जब हमने मम्मी का...',
+          text: `हे भाई/बहन,\n\nरक्षाबंधन मुबारक! 🎉\n\nयाद है जब हमने मम्मी का खाना चुराया था और एक-दूसरे पर इल्ज़ाम लगाया था? या जब हम TV रिमोट के लिए घंटों लड़ते थे?\n\nसच में, तुम मेरे सबसे पहले दोस्त हो — और सबसे पक्के भी। इस साल की राखी पर, मैं promise करता/करती हूँ कि... थोड़ा कम झगड़ूँगा/झगड़ूँगी। थोड़ा ही! 😄\n\nतुम्हारा/तुम्हारी, हमेशा ❤️`,
+        },
+        {
+          emoji: '🌟',
+          title: 'भावुक',
+          preview: 'दूरी कितनी भी हो...',
+          text: `मेरे प्यारे भाई/बहन,\n\nआज इस खास दिन पर, मैं चाहता/चाहती हूँ कि तुम जानो — चाहे दूरी कितनी भी हो, तुम हमेशा मेरे दिल के करीब हो।\n\nहर सपने में तुमने साथ दिया, हर तकलीफ में हिम्मत बँधाई। तुम सिर्फ मेरे भाई/बहन नहीं, मेरी ताकत हो।\n\nयह राखी उस अटूट रिश्ते की निशानी है। 🌸\n\nतुम्हारा/तुम्हारी, सदा ❤️`,
+        },
+      ] : [
+        {
+          emoji: '💛',
+          title: 'Heartfelt',
+          preview: 'Thank you for always being there...',
+          text: `Dear brother/sister,\n\nHappy Raksha Bandhan! 🌸\n\nThank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. This Rakhi is a small token of the huge love I carry for you.\n\nAlways yours ❤️`,
+        },
+        {
+          emoji: '😄',
+          title: 'Funny',
+          preview: 'Remember when we blamed each other...',
+          text: `Hey bro/sis,\n\nHappy Raksha Bandhan! 🎉\n\nRemember when we used to blame each other for eating the last biscuit? Or when we'd fight over the TV remote for hours on end?\n\nYou were my first best friend — and honestly, my most permanent one. This year, I promise to fight with you a little less. Just a little. 😄\n\nYours forever ❤️`,
+        },
+        {
+          emoji: '🌟',
+          title: 'Emotional',
+          preview: 'No matter the distance between us...',
+          text: `My dearest brother/sister,\n\nOn this special day, I want you to know — no matter the miles between us, you are always close to my heart.\n\nYou've cheered on every dream I've chased, held me up through every storm, and made every ordinary day feel special. You are not just my sibling — you are my strength.\n\nThis Rakhi is a symbol of that unbreakable bond. 🌸\n\nForever yours ❤️`,
+        },
+      ];
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <label style={labelStyle}>{t('write_letter', locale)}</label>
-          <button 
-            onClick={() => update('letterText', locale === 'hi' 
-              ? "रक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸 हमेशा मेरा साथ देने के लिए धन्यवाद। हम भले ही छोटी-छोटी बातों पर लड़ते हों, लेकिन मैं जानता/जानती हूँ कि हम हमेशा एक-दूसरे के साथ खड़े हैं।\n\nमुझे अपनी ज़िंदगी में तुम्हारे होने की बहुत ख़ुशी है। चलो हमेशा एक-दूसरे का साथ निभाने का वादा करें!"
-              : "Happy Raksha Bandhan! 🌸 Thank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. Let's promise to always have each other's backs!"
-            )}
-            style={{ 
-              background: 'rgba(201,168,76,0.15)', border: '1px solid var(--gold)', 
-              color: 'var(--gold)', padding: '4px 10px', borderRadius: 20, 
-              fontSize: '0.7rem', cursor: 'pointer', fontFamily: 'var(--font-sans)' 
-            }}
-          >
-            ✨ {locale === 'hi' ? 'टेम्पलेट का उपयोग करें' : 'Use Template'}
-          </button>
+
+          {/* Template Cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', letterSpacing: '0.1em', color: 'rgba(201,168,76,0.7)', textTransform: 'uppercase', margin: 0 }}>
+              ✨ {locale === 'hi' ? 'एक टेम्पलेट चुनें या खुद लिखें' : 'Pick a template or write your own'}
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              {TEMPLATES.map((tpl, i) => {
+                const isSelected = form.letterText === tpl.text;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => update('letterText', isSelected ? '' : tpl.text)}
+                    style={{
+                      padding: '12px 8px',
+                      borderRadius: 12,
+                      cursor: 'pointer',
+                      border: `1.5px solid ${isSelected ? 'var(--gold)' : 'rgba(201,168,76,0.2)'}`,
+                      background: isSelected ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.03)',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                      textAlign: 'center', transition: 'all 0.2s',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.4rem' }}>{tpl.emoji}</span>
+                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 600, color: isSelected ? 'var(--gold)' : '#FFF8F0', letterSpacing: '0.04em' }}>
+                      {tpl.title}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.62rem', color: 'rgba(255,248,240,0.45)', lineHeight: 1.4 }}>
+                      {tpl.preview}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <textarea
+            style={{ ...inputStyle, height: 200, resize: 'none', lineHeight: 1.8 }}
+            value={form.letterText}
+            onChange={e => update('letterText', e.target.value)}
+            placeholder={locale === 'hi'
+              ? 'प्रिय भाई/बहन, याद है जब हम टीवी के रिमोट के लिए लड़ते थे? हमेशा मेरा साथ देने के लिए शुक्रिया...'
+              : 'Dear brother/sister, remember when we used to fight over the TV remote? Thank you for always protecting me...'}
+          />
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
+            {form.letterText.length} characters
+          </p>
+          <NavBtn onNext={goNext} onBack={goBack} disabled={form.letterText.length < 10} locale={locale} />
         </div>
-        <textarea
-          style={{ ...inputStyle, height: 200, resize: 'none', lineHeight: 1.8 }}
-          value={form.letterText}
-          onChange={e => update('letterText', e.target.value)}
-          placeholder={locale === 'hi'
-            ? 'प्रिय भाई/बहन, याद है जब हम टीवी के रिमोट के लिए लड़ते थे? हमेशा मेरा साथ देने के लिए शुक्रिया...'
-            : 'Dear brother/sister, remember when we used to fight over the TV remote? Thank you for always protecting me...'}
-        />
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
-          {form.letterText.length} characters
-        </p>
-        <NavBtn onNext={goNext} onBack={goBack} disabled={form.letterText.length < 10} locale={locale} />
-      </div>
-    ),
+      );
+    })(),
+
 
     photos: (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
