@@ -1,9 +1,8 @@
 'use client';
-// Template 02 — Scene 1: Welcome
-// Cosmic starfield arrival. Deep navy, silver particles, constellation reveal.
-// Independent of Template 01. Shares only: useHaptics, Locale type.
+// Template 02 — Scene 1: Welcome (The Scrapbook Album Cover)
+// A vintage leather album lying on a rustic wooden desk.
 
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import type { Locale } from '@/lib/types';
@@ -15,212 +14,124 @@ interface Props {
   onComplete: () => void;
 }
 
-// ── Starfield canvas ──────────────────────────────────────────────────────────
-function Starfield() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const stars = Array.from({ length: 180 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: 0.2 + Math.random() * 1.4,
-      alpha: 0.1 + Math.random() * 0.9,
-      speed: 0.002 + Math.random() * 0.004,
-      phase: Math.random() * Math.PI * 2,
-    }));
-
-    let raf: number;
-    let t = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      t += 0.01;
-      stars.forEach(s => {
-        const pulse = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed * 100 + s.phase));
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200,210,255,${pulse})`;
-        ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />;
-}
-
-// ── Main Scene ────────────────────────────────────────────────────────────────
-const MESSAGES_EN = (sender: string) => [
-  `${sender} made something\nspecial for you.`,
-  `Open your heart.\nThis is just for you.`,
-];
-const MESSAGES_HI = (sender: string) => [
-  `${sender} ने तुम्हारे लिए\nकुछ खास बनाया है।`,
-  `दिल खोलो।\nयह सिर्फ तुम्हारे लिए है।`,
-];
-
 export function Scene1_Welcome({ senderName, recipientName, locale, onComplete }: Props) {
-  const [phase, setPhase] = useState(0); // 0=intro, 1=msg1, 2=msg2, 3=name reveal, 4=cta
+  const [isOpen, setIsOpen] = useState(false);
   const { vibrate } = useHaptics();
-  const messages = locale === 'hi' ? MESSAGES_HI(senderName) : MESSAGES_EN(senderName);
 
-  useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 800),
-      setTimeout(() => setPhase(2), 3200),
-      setTimeout(() => setPhase(3), 5600),
-      setTimeout(() => setPhase(4), 7400),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  const handleTap = () => {
-    if (phase < 4) return;
+  const handleOpen = () => {
     vibrate();
-    onComplete();
+    setIsOpen(true);
+    setTimeout(onComplete, 1200); // Allow time for flip animation
   };
 
   return (
-    <div
-      onClick={handleTap}
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'radial-gradient(ellipse at 30% 20%, #1a1f3a 0%, #0a0e1a 60%, #050810 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: phase >= 4 ? 'pointer' : 'default',
-        overflow: 'hidden',
-      }}
-    >
-      <Starfield />
+    <div style={{
+      position: 'fixed', inset: 0,
+      background: '#1d1412', // Dark mahogany wood desk color
+      backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      perspective: 1500,
+      overflow: 'hidden',
+    }}>
+      {/* Table grain overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        opacity: 0.05,
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px)',
+        pointerEvents: 'none',
+      }} />
 
-      {/* Ambient nebula glow */}
+      {/* Cinematic shadow vignette */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(circle at 50% 30%, transparent 30%, rgba(0,0,0,0.8) 100%)',
+        pointerEvents: 'none',
+      }} />
+
       <motion.div
-        animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        initial={{ y: 50, opacity: 0, rotateX: 20 }}
+        animate={isOpen 
+          ? { rotateY: -110, x: '-30%', z: -100, opacity: 0.9, filter: 'brightness(0.5)' } 
+          : { y: 0, opacity: 1, rotateX: 5 }
+        }
+        transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
         style={{
-          position: 'absolute', width: 500, height: 500, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(124,131,253,0.25) 0%, transparent 70%)',
-          filter: 'blur(60px)', pointerEvents: 'none',
+          width: '88%',
+          maxWidth: 360,
+          height: 480,
+          background: 'linear-gradient(135deg, #422a22 0%, #291812 100%)', // Leather textures
+          borderRadius: '8px 24px 24px 8px',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.8), inset -4px 0 10px rgba(0,0,0,0.5)',
+          borderLeft: '15px solid #1a0f0b', // Thick album spine
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          transformStyle: 'preserve-3d',
+          transformOrigin: 'left center',
+          padding: 24,
+          position: 'relative',
         }}
-      />
+        onClick={handleOpen}
+      >
+        {/* Metal corners */}
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 24, height: 24, borderTop: '4px solid #b5945b', borderRight: '4px solid #b5945b', borderRadius: '0 24px 0 0' }} />
+        <div style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderBottom: '4px solid #b5945b', borderRight: '4px solid #b5945b', borderRadius: '0 0 24px 0' }} />
 
-      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 32px', maxWidth: 420 }}>
+        {/* Paper title label taped in center */}
+        <div style={{
+          background: '#fcf8ee',
+          border: '1px solid #d4c8af',
+          borderRadius: 4,
+          padding: '24px 20px',
+          width: '85%',
+          textAlign: 'center',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+          display: 'flex', flexDirection: 'column', gap: 12,
+          transform: 'rotate(-2deg)',
+        }}>
+          {/* Decorative masking tape pieces */}
+          <div style={{ position: 'absolute', top: -14, left: '30%', width: 50, height: 18, background: 'rgba(235,224,196,0.6)', transform: 'rotate(-5deg)', border: '1px dashed rgba(0,0,0,0.08)' }} />
+          <div style={{ position: 'absolute', bottom: -14, right: '25%', width: 55, height: 18, background: 'rgba(235,224,196,0.6)', transform: 'rotate(3deg)', border: '1px dashed rgba(0,0,0,0.08)' }} />
 
-        {/* Phase 1 & 2 — floating messages */}
-        <AnimatePresence mode="wait">
-          {(phase === 1 || phase === 2) && (
-            <motion.p
-              key={phase}
-              initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -16, filter: 'blur(8px)' }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                fontSize: 'clamp(1.2rem, 5vw, 1.6rem)',
-                fontWeight: 300,
-                color: 'rgba(220,225,255,0.85)',
-                lineHeight: 1.5,
-                letterSpacing: '0.02em',
-                whiteSpace: 'pre-line',
-              }}
-            >
-              {messages[phase - 1]}
-            </motion.p>
-          )}
-        </AnimatePresence>
+          <p style={{
+            fontFamily: 'monospace',
+            fontSize: '0.72rem',
+            color: 'rgba(0,0,0,0.4)',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            margin: 0,
+          }}>
+            {locale === 'hi' ? 'स्मृति मंजूषा' : 'MEMORIES INKED'}
+          </p>
 
-        {/* Phase 3 — recipient name */}
-        <AnimatePresence>
-          {phase >= 3 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {/* Decorative line above */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                style={{
-                  height: 1, background: 'linear-gradient(90deg, transparent, rgba(168,174,255,0.6), transparent)',
-                  marginBottom: 28,
-                }}
-              />
-              <p style={{
-                fontFamily: 'system-ui, sans-serif',
-                fontSize: '0.75rem',
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: 'rgba(168,174,255,0.6)',
-                marginBottom: 12,
-                fontWeight: 400,
-              }}>
-                {locale === 'hi' ? 'के लिए' : 'For'}
-              </p>
-              <h1 style={{
-                fontFamily: 'Georgia, serif',
-                fontSize: 'clamp(2.4rem, 10vw, 4rem)',
-                fontWeight: 400,
-                background: 'linear-gradient(135deg, #c8c8ff 0%, #ffffff 40%, #a8aeff 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.01em',
-                lineHeight: 1.1,
-                marginBottom: 28,
-              }}>
-                {recipientName}
-              </h1>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                style={{
-                  height: 1, background: 'linear-gradient(90deg, transparent, rgba(168,174,255,0.6), transparent)',
-                  marginBottom: 40,
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <h1 style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '1.6rem',
+            fontWeight: 400,
+            color: '#3d2b1f',
+            margin: 0,
+            lineHeight: 1.3,
+            fontStyle: 'italic',
+          }}>
+            {locale === 'hi' ? (
+              <>प्रिय {recipientName}<br />के लिए...</>
+            ) : (
+              <>For my dearest<br />{recipientName}</>
+            )}
+          </h1>
 
-        {/* Phase 4 — CTA */}
-        <AnimatePresence>
-          {phase >= 4 && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-            >
-              <motion.div
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                style={{
-                  fontFamily: 'system-ui, sans-serif',
-                  fontSize: '0.78rem',
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(168,174,255,0.7)',
-                }}
-              >
-                {locale === 'hi' ? 'खोलने के लिए टैप करें' : 'Tap to begin'}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          <div style={{ height: 1, background: '#e8dec9', margin: '4px 0' }} />
+
+          <p style={{
+            fontFamily: 'monospace',
+            fontSize: '0.68rem',
+            color: '#8c7662',
+            margin: 0,
+          }}>
+            {locale === 'hi' ? 'खोलने के लिए टैप करें' : 'Tap to open album'}
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }

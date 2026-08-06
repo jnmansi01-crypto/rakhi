@@ -1,15 +1,20 @@
 'use client';
 // src/templates/template-02/pages/ExperiencePlayer.tsx
-// Self-contained ExperiencePlayer for Template 02 (Cosmic theme).
+// Self-contained ExperiencePlayer for Template 02 (Nostalgia Scrapbook theme).
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Scene1_Welcome } from './Scene1_Welcome';
+import { Scene2_Letter }  from './Scene2_Letter';
+import { Scene3_Photos }  from './Scene3_Photos';
+import { Scene4_Voice }   from './Scene4_Voice';
+import { Scene5_Rakhi }   from './Scene5_Rakhi';
+import { Scene6_Gift }    from './Scene6_Gift';
 import { audioEngine } from '@/shared/audio/audio';
 import { useHaptics } from '@/shared/components/useHaptics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
-const SCENES = ['welcome', 'letter', 'photos', 'voice', 'celebration', 'gift'] as const;
+const SCENES = ['welcome', 'letter', 'photos', 'voice', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
 export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
@@ -56,7 +61,8 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'radial-gradient(ellipse at 30% 20%, #1a1f3a 0%, #0a0e1a 60%, #050810 100%)',
+      background: '#1d1412',
+      backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
       color: '#FFF8F0',
       overflow: 'hidden',
     }}>
@@ -69,7 +75,6 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
           transition={{ duration: 0.8 }}
           style={{ position: 'absolute', inset: 0 }}
         >
-          {/* Scene 1: Welcome */}
           {scene === 'welcome' && (
             <Scene1_Welcome
               senderName={experience.senderName}
@@ -79,207 +84,56 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
             />
           )}
 
-          {/* Scene 2: Cosmic Letter */}
           {scene === 'letter' && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 24, textAlign: 'center' }}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(168, 174, 255, 0.2)',
-                  borderRadius: 24,
-                  padding: 32,
-                  maxWidth: 400,
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-                }}
-              >
-                <p style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#a8aeff', marginBottom: 16 }}>
-                  {locale === 'hi' ? 'आपके लिए एक संदेश' : 'A Message For You'}
-                </p>
-                <p style={{ fontSize: '1.1rem', lineHeight: 1.8, fontWeight: 300, fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>
-                  {experience.letterText}
-                </p>
-                <p style={{ marginTop: 24, fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.5)' }}>
-                  — {experience.senderName}
-                </p>
-                <button
-                  onClick={() => nextSkipping('letter')}
-                  style={{
-                    marginTop: 28,
-                    background: 'transparent',
-                    border: '1px solid #a8aeff',
-                    color: '#a8aeff',
-                    padding: '10px 24px',
-                    borderRadius: 100,
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                  }}
-                >
-                  {locale === 'hi' ? 'आगे बढ़ें →' : 'Continue →'}
-                </button>
-              </motion.div>
-            </div>
+            <Scene2_Letter
+              letterText={experience.letterText}
+              senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              locale={locale}
+              onComplete={() => nextSkipping('letter')}
+            />
           )}
 
-          {/* Scene 3: Cosmic Photos */}
           {scene === 'photos' && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 24 }}>
-              <p style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#a8aeff', marginBottom: 24 }}>
-                {locale === 'hi' ? 'साझा यादें' : 'Shared Memories'}
-              </p>
-              <div style={{ display: 'flex', gap: 16, overflowX: 'auto', maxWidth: '100%', paddingBottom: 16 }}>
-                {experience.photoUrls.map((url, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ scale: 1.05 }}
-                    style={{
-                      flex: '0 0 auto',
-                      width: 260,
-                      height: 340,
-                      borderRadius: 20,
-                      border: '1px solid rgba(168, 174, 255, 0.2)',
-                      overflow: 'hidden',
-                      position: 'relative',
-                    }}
-                  >
-                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </motion.div>
-                ))}
-              </div>
-              <button
-                onClick={() => nextSkipping('photos')}
-                style={{
-                  marginTop: 28,
-                  background: 'transparent',
-                  border: '1px solid #a8aeff',
-                  color: '#a8aeff',
-                  padding: '10px 24px',
-                  borderRadius: 100,
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                }}
-              >
-                {locale === 'hi' ? 'आगे बढ़ें →' : 'Continue →'}
-              </button>
-            </div>
+            <Scene3_Photos
+              photoUrls={experience.photoUrls}
+              senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              locale={locale}
+              onComplete={() => nextSkipping('photos')}
+            />
           )}
 
-          {/* Scene 4: Cosmic Voice */}
           {scene === 'voice' && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 24 }}>
-              <p style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#a8aeff', marginBottom: 32 }}>
-                {locale === 'hi' ? 'आवाज़ का संदेश' : 'Voice Message'}
-              </p>
-              <motion.div
-                animate={{ scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                style={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(168, 174, 255, 0.4) 0%, transparent 70%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: 32,
-                }}
-              >
-                🎙️
-              </motion.div>
-              {experience.voiceUrl && (
-                <audio src={experience.voiceUrl} controls style={{ marginBottom: 32 }} />
-              )}
-              <button
-                onClick={() => nextSkipping('voice')}
-                style={{
-                  background: 'transparent',
-                  border: '1px solid #a8aeff',
-                  color: '#a8aeff',
-                  padding: '10px 24px',
-                  borderRadius: 100,
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                }}
-              >
-                {locale === 'hi' ? 'आगे बढ़ें →' : 'Continue →'}
-              </button>
-            </div>
+            <Scene4_Voice
+              voiceUrl={experience.voiceUrl}
+              senderName={experience.senderName}
+              locale={locale}
+              onComplete={() => nextSkipping('voice')}
+            />
           )}
 
-          {/* Scene 5: Celebration / Star connection */}
-          {scene === 'celebration' && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 24, textAlign: 'center' }}>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', marginBottom: 16 }}>✨</h2>
-              <p style={{ fontSize: '1.2rem', fontWeight: 300, color: 'rgba(255,255,255,0.85)', marginBottom: 28, maxWidth: 320 }}>
-                {locale === 'hi'
-                  ? 'सितारे गवाह हैं हमारे अटूट रिश्ते के।'
-                  : 'The stars shine bright for our unbreakable bond.'}
-              </p>
-              <button
-                onClick={() => nextSkipping('celebration')}
-                style={{
-                  background: 'linear-gradient(135deg, #7c83fd, #b156ff)',
-                  border: 'none',
-                  color: '#fff',
-                  padding: '12px 32px',
-                  borderRadius: 100,
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  boxShadow: '0 8px 24px rgba(124, 131, 253, 0.4)',
-                }}
-              >
-                {locale === 'hi' ? 'उपहार खोलें 🎁' : 'Open Gift 🎁'}
-              </button>
-            </div>
+          {scene === 'rakhi' && (
+            <Scene5_Rakhi
+              recipientName={experience.recipientName}
+              senderName={experience.senderName}
+              locale={locale}
+              onComplete={() => nextSkipping('rakhi')}
+            />
           )}
 
-          {/* Scene 6: Gift Reveal */}
           {scene === 'gift' && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: 24, textAlign: 'center' }}>
-              <p style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#a8aeff', marginBottom: 16 }}>
-                {locale === 'hi' ? 'आपका उपहार' : 'Your Gift'}
-              </p>
-              <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#FFF8F0', marginBottom: 8 }}>
-                {experience.giftTitle}
-              </h3>
-              <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.6)', marginBottom: 32 }}>
-                {experience.giftType === 'surprise_message' ? 'A secret note for you' : 'Reveal code or link below'}
-              </p>
-              <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1.5px solid rgba(168, 174, 255, 0.2)',
-                borderRadius: 16,
-                padding: '24px',
-                width: '100%',
-                maxWidth: 320,
-                marginBottom: 32,
-              }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 600, color: '#a8aeff', wordBreak: 'break-all' }}>
-                  {experience.giftValue}
-                </span>
-              </div>
-              <button
-                onClick={() => {
-                  vibrate();
-                  window.location.href = `/reply/${experience.id}`;
-                }}
-                style={{
-                  background: 'linear-gradient(135deg, #7c83fd, #b156ff)',
-                  border: 'none',
-                  color: '#fff',
-                  padding: '12px 32px',
-                  borderRadius: 100,
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  boxShadow: '0 8px 24px rgba(124, 131, 253, 0.4)',
-                }}
-              >
-                {locale === 'hi' ? 'उत्तर भेजें 🌸' : 'Send Reply 🌸'}
-              </button>
-            </div>
+            <Scene6_Gift
+              giftType={experience.giftType}
+              giftTitle={experience.giftTitle}
+              giftValue={experience.giftValue}
+              senderName={experience.senderName}
+              locale={locale}
+              onComplete={() => {
+                vibrate();
+                window.location.href = `/reply/${experience.id}`;
+              }}
+            />
           )}
         </motion.div>
       </AnimatePresence>
@@ -295,8 +149,8 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
             key={s}
             className={`dot-indicator ${i === currentDotIdx ? 'active' : ''}`}
             style={{
-              background: i === currentDotIdx ? '#a8aeff' : 'rgba(168, 174, 255, 0.3)',
-              boxShadow: i === currentDotIdx ? '0 0 8px #a8aeff' : 'none',
+              background: i === currentDotIdx ? '#c79774' : 'rgba(199, 151, 116, 0.3)',
+              boxShadow: i === currentDotIdx ? '0 0 8px #c79774' : 'none',
             }}
           />
         ))}
@@ -313,11 +167,11 @@ export function CosmicExperiencePlayer({ experience }: ExperiencePlayerProps) {
             style={{
               position: 'fixed', top: 32, left: 24, zIndex: 110,
               background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(168,174,255,0.2)',
+              border: '1px solid rgba(199,151,116,0.2)',
               borderRadius: '50%', width: 44, height: 44,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
-              cursor: 'pointer', color: '#a8aeff', fontSize: '1.2rem',
+              cursor: 'pointer', color: '#c79774', fontSize: '1.2rem',
               boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
             }}
           >
