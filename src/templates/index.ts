@@ -6,8 +6,13 @@ import type { TemplatePlugin } from './types';
 
 /** Map of templateId → dynamic importer */
 const registry: Record<string, () => Promise<{ default: TemplatePlugin }>> = {
+  // Template 01 — Raksha Bandhan 2025 (default)
   'rakhi-2025': () => import('./rakhi-2025/template.config'),
+
+  // Template 02 — add here:
+  // 'template-id': () => import('./template-id/template.config'),
 };
+
 
 /** Default template used for legacy records that have no templateId */
 export const DEFAULT_TEMPLATE_ID = 'rakhi-2025';

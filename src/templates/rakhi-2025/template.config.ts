@@ -1,14 +1,15 @@
 // src/templates/rakhi-2025/template.config.ts
-// Plugin manifest for the Rakhi 2025 template.
+// Plugin manifest for Template 01 — Raksha Bandhan 2025.
 
 import type { TemplatePlugin } from '../types';
 import { RakhiExperiencePlayer } from './ExperiencePlayer';
 
 const rakhiTemplate: TemplatePlugin = {
-  id: 'rakhi-2025',
-  name: 'Rakhi 2025',
+  id: 'rakhi-2025',           // Stable ID — never change, used in Firestore records
+  name: 'Template 01',        // Display name in the template registry
   occasion: 'Raksha Bandhan',
-  priceInPaise: 29900, // ₹299
+  priceInPaise: 29900,        // ₹299
+
 
   ExperiencePlayer: RakhiExperiencePlayer,
 
