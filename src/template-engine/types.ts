@@ -1,4 +1,4 @@
-// src/templates/types.ts
+// src/template-engine/types.ts
 // The contract every template plugin must satisfy.
 
 import type React from 'react';

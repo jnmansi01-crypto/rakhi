@@ -1,14 +1,14 @@
 'use client';
-// src/components/ExperienceEngine.tsx
+// src/template-engine/Engine.tsx
 // Thin router — loads the correct template plugin and delegates rendering.
 // Shared concerns (watermark, screen protection, markOpened) live here.
 // All scene logic lives inside the template's ExperiencePlayer.
 
 import { useState, useEffect } from 'react';
 import type { RakhiExperience } from '@/lib/types';
-import { markOpened } from '@/lib/storage';
-import { getTemplate, DEFAULT_TEMPLATE_ID } from '@/templates/index';
-import type { TemplatePlugin } from '@/templates/types';
+import { markOpened } from '@/core/database/storage';
+import { getTemplate, DEFAULT_TEMPLATE_ID } from './index';
+import type { TemplatePlugin } from './types';
 
 // ── Watermark (shared across all templates) ───────────────────────────────────
 function ExperienceWatermark({ senderName, recipientName }: { senderName: string; recipientName: string }) {

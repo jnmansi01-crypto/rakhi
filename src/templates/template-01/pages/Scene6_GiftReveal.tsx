@@ -1,9 +1,9 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { useHaptics } from '@/hooks/useHaptics';
-import { audioEngine } from '@/lib/audio';
-import { CelebrationOverlay } from '@/components/shared/CelebrationOverlay';
+import { useHaptics } from '@/shared/components/useHaptics';
+import { audioEngine } from '@/shared/audio/audio';
+import { CelebrationOverlay } from '@/shared/components/CelebrationOverlay';
 import type { Locale, GiftType } from '@/lib/types';
 import { t } from '@/lib/i18n';
 

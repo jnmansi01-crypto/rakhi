@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { RakhiHero } from '../components/RakhiHero';
+import { RakhiHero } from '@/templates/template-01/pages/RakhiHero';
 import { getDaysUntilRakhi } from '@/lib/dateUtils';
-import { useHaptics } from '@/hooks/useHaptics';
+import { useHaptics } from '@/shared/components/useHaptics';
 import type { Locale } from '@/lib/types';
 
 // Gold dust particle

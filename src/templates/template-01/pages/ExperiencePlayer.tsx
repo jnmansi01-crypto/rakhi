@@ -6,14 +6,14 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scene1_Arrival }    from './scenes/Scene1_Arrival';
-import { Scene2_Envelope }   from './scenes/Scene2_Envelope';
-import { Scene3_Photos }     from './scenes/Scene3_Photos';
-import { Scene4_Voice }      from './scenes/Scene4_Voice';
-import { Scene5_Rakhi }      from './scenes/Scene5_Rakhi';
-import { Scene6_GiftReveal } from './scenes/Scene6_GiftReveal';
-import { audioEngine } from '@/lib/audio';
-import type { ExperiencePlayerProps } from '../types';
+import { Scene1_Arrival }    from './Scene1_Arrival';
+import { Scene2_Envelope }   from './Scene2_Envelope';
+import { Scene3_Photos }     from './Scene3_Photos';
+import { Scene4_Voice }      from './Scene4_Voice';
+import { Scene5_Rakhi }      from './Scene5_Rakhi';
+import { Scene6_GiftReveal } from './Scene6_GiftReveal';
+import { audioEngine } from '@/shared/audio/audio';
+import type { ExperiencePlayerProps } from '@/template-engine/types';
 
 const SCENES = ['arrival', 'envelope', 'photos', 'voice', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];

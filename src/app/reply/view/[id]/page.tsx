@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { getExperience } from '@/lib/storage';
+import { getExperience } from '@/core/database/storage';
 import type { RakhiExperience } from '@/lib/types';
-import { CelebrationOverlay } from '@/components/shared/CelebrationOverlay';
-import { audioEngine } from '@/lib/audio';
+import { CelebrationOverlay } from '@/shared/components/CelebrationOverlay';
+import { audioEngine } from '@/shared/audio/audio';
 
 function GoldCoin() {
   const depth = 8;

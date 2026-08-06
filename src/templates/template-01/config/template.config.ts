@@ -1,8 +1,8 @@
 // src/templates/rakhi-2025/template.config.ts
 // Plugin manifest for Template 01 — Raksha Bandhan 2025.
 
-import type { TemplatePlugin } from '../types';
-import { RakhiExperiencePlayer } from './ExperiencePlayer';
+import type { TemplatePlugin } from '@/template-engine/types';
+import { RakhiExperiencePlayer } from '../pages/ExperiencePlayer';
 
 const rakhiTemplate: TemplatePlugin = {
   id: 'rakhi-2025',           // Stable ID — never change, used in Firestore records

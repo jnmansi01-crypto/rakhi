@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getExperience } from '@/lib/storage';
-import { ExperienceEngine } from '@/components/ExperienceEngine';
+import { getExperience } from '@/core/database/storage';
+import { ExperienceEngine } from '@/template-engine/Engine';
 import type { RakhiExperience } from '@/lib/types';
 
 export default function GiftPage({ params }: { params: { id: string } }) {

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useHaptics } from '@/hooks/useHaptics';
+import { useHaptics } from '@/shared/components/useHaptics';
 import type { Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 

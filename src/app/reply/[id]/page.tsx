@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { getExperience, saveReply } from '@/lib/storage';
+import { getExperience, saveReply } from '@/core/database/storage';
 import type { RakhiExperience } from '@/lib/types';
 
 const TEMPLATES = {

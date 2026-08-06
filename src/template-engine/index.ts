@@ -1,4 +1,4 @@
-// src/templates/index.ts
+// src/template-engine/index.ts
 // Central registry of all available templates.
 // Each template is lazy-loaded so only the relevant bundle is fetched.
 
@@ -7,10 +7,10 @@ import type { TemplatePlugin } from './types';
 /** Map of templateId → dynamic importer */
 const registry: Record<string, () => Promise<{ default: TemplatePlugin }>> = {
   // Template 01 — Raksha Bandhan 2025 (default)
-  'rakhi-2025': () => import('./rakhi-2025/template.config'),
+  'rakhi-2025': () => import('../templates/template-01/config/template.config'),
 
-  // Template 02 — add here:
-  // 'template-id': () => import('./template-id/template.config'),
+  // Template 02 — Cosmic/Starfield
+  'template-02': () => import('../templates/template-02/config/template.config'),
 };
 
 

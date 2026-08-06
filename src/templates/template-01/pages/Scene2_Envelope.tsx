@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
-import { useHaptics } from '@/hooks/useHaptics';
-import { audioEngine } from '@/lib/audio';
+import { useHaptics } from '@/shared/components/useHaptics';
+import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 

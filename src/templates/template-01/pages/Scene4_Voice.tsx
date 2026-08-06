@@ -2,8 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useHaptics } from '@/hooks/useHaptics';
-import { audioEngine } from '@/lib/audio';
+import { useHaptics } from '@/shared/components/useHaptics';
+import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 

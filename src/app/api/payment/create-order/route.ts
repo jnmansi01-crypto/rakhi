@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getRazorpay, SHARE_PRICE } from '@/lib/razorpay';
+import { getRazorpay, SHARE_PRICE } from '@/core/payments/razorpay';
 
 export async function POST(req: Request) {
   try {

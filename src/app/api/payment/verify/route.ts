@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { verifyPaymentSignature } from '@/lib/razorpay';
-import { getAdminDb } from '@/lib/firebaseAdmin';
+import { verifyPaymentSignature } from '@/core/payments/razorpay';
+import { getAdminDb } from '@/core/database/firebaseAdmin';
 
 export async function POST(req: Request) {
   try {

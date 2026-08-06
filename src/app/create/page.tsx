@@ -1,11 +1,11 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createExperience } from '@/lib/storage';
-import { compressImage } from '@/lib/imageUtils';
-import { uploadMedia } from '@/lib/cloudinary';
-import { useAudioRecorder } from '@/hooks/useAudioRecorder';
-import { usePayment } from '@/hooks/usePayment';
+import { createExperience } from '@/core/database/storage';
+import { compressImage } from '@/core/uploads/imageUtils';
+import { uploadMedia } from '@/core/uploads/cloudinary';
+import { useAudioRecorder } from '@/shared/uploader/useAudioRecorder';
+import { usePayment } from '@/core/payments/usePayment';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 
@@ -55,7 +55,8 @@ function ProgressBar({ step }: { step: Step }) {
   );
 }
 
-import { NavBtn, Row, labelStyle, inputStyle, btnStyle } from './shared';
+import { NavBtn } from '@/shared/buttons/NavBtn';
+import { Row, labelStyle, inputStyle, btnStyle } from '@/shared/inputs/inputs';
 
 // ─── Main CreatePage ──────────────────────────────────────────
 export default function CreatePage() {

@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import Image from 'next/image';
-import { useHaptics } from '@/hooks/useHaptics';
-import { audioEngine } from '@/lib/audio';
+import { useHaptics } from '@/shared/components/useHaptics';
+import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
 import confetti from 'canvas-confetti';
 

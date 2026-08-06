@@ -1,7 +1,7 @@
 // lib/storage.ts
 // localStorage-first storage with optional Firebase (lazy-loaded when configured)
 
-import type { RakhiExperience, ExperienceDraft } from './types';
+import type { RakhiExperience, ExperienceDraft } from '@/lib/types';
 
 export const isFirebaseConfigured = !!(
   process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
