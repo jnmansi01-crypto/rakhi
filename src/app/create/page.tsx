@@ -582,7 +582,12 @@ export default function CreatePage() {
             disabled={paymentLoading}
             style={{ ...btnStyle, flex: 1, background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff', opacity: paymentLoading ? 0.7 : 1 }}
           >
-            {paymentLoading ? (paymentStatusMessage || 'Processing...') : (isCardPaid ? `${t('share_now', locale)} ↗` : `${t('share_now', locale)} ↗`)}
+            {paymentLoading
+              ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
+              : isCardPaid
+                ? `${t('share_now', locale)} ↗`
+                : (locale === 'hi' ? '₹299 में भेजें 🌸' : 'Pay ₹299 & Send 🌸')
+            }
           </button>
         </div>
         
