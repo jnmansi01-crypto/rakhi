@@ -17,6 +17,12 @@ export interface RakhiExperience {
   createdAt: number;
   openedAt: number | null;
   replyMessage?: string;
+  /**
+   * Which template plugin rendered this experience.
+   * Optional for backwards compatibility — legacy records without this
+   * field default to 'rakhi-2025' at render time.
+   */
+  templateId?: string;
 }
 
 export type ExperienceDraft = Omit<RakhiExperience, 'id' | 'createdAt' | 'openedAt'>;
