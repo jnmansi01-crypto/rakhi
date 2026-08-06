@@ -1,6 +1,6 @@
 'use client';
 // Template 02 — Scene 5: Rakhi (Cotton Thread Rakhi Tying)
-// Simple, tactile drag-and-drop thread Rakhi tying with canvas-confetti reward.
+// Redesigned with premium textured craft paper board and layered luxury Rakhi bead thread.
 
 import { useState, useRef } from 'react';
 import { motion, useMotionValue, AnimatePresence } from 'framer-motion';
@@ -22,29 +22,26 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
   const { vibrate } = useHaptics();
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Drag coordinates track
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
 
   const checkTieThreshold = () => {
-    // If they drag close to center, snap and tie
     const currentX = dragX.get();
     const currentY = dragY.get();
 
-    // The target is roughly centered at (0, -60) relative to the initial Rakhi placement
-    const dist = Math.sqrt(Math.pow(currentX, 2) + Math.pow(currentY - (-70), 2));
+    // Distance to center target area
+    const dist = Math.sqrt(Math.pow(currentX, 2) + Math.pow(currentY - (-50), 2));
 
-    if (dist < 50) {
+    if (dist < 60) {
       vibrate();
-      audioEngine.playMagic(); // Play a nice Eb Major 9 success chord
+      audioEngine.playMagic();
       setIsTied(true);
       
-      // Fire confetti
       confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ['#c79774', '#a8aeff', '#fff8f0'],
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.65 },
+        colors: ['#b89053', '#d43f3f', '#ffffff', '#e6c89c'],
       });
     }
   };
@@ -63,144 +60,182 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         background: '#1d1412',
         backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
         display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'space-between',
-        padding: '40px 24px 28px 24px',
+        alignItems: 'center', justifyContent: 'center',
+        padding: 24,
         overflow: 'hidden',
       }}
     >
-      {/* Header */}
-      <div style={{ textAlign: 'center', zIndex: 10 }}>
-        <p style={{
-          fontFamily: 'monospace', fontSize: '0.75rem',
-          color: 'rgba(201,168,76,0.6)', letterSpacing: '0.15em',
-          textTransform: 'uppercase', margin: 0,
-        }}>
-          {locale === 'hi' ? 'राखी धागा' : 'THE SACRED THREAD'}
-        </p>
-      </div>
-
-      {/* Main Canvas / Tying Area */}
-      <div style={{
-        position: 'relative', width: '100%', flex: 1,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      }}>
-        {/* Swirled wrist sketch target */}
-        <div style={{
-          width: 140, height: 140,
-          border: '2.5px dashed rgba(168, 174, 255, 0.25)',
-          borderRadius: '50%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+      {/* Premium Scrapbook Craft Paper Page Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          width: '100%',
+          maxWidth: 380,
+          background: '#f6eedd', // Craft paper color
+          border: '1px solid #dfd3bb',
+          borderRadius: 4,
+          padding: '40px 24px 32px 24px',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
           position: 'relative',
-          marginBottom: 80,
-        }}>
-          <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', textAlign: 'center' }}>
-            {locale === 'hi' ? 'यहां लाएं' : 'Drag here'}
-          </span>
-          <div style={{ position: 'absolute', inset: -8, border: '1px solid rgba(255,255,255,0.05)', borderRadius: '50%' }} />
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center',
+          minHeight: '75vh',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Golden Photo Corners */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 16, height: 16, borderTop: '3px solid #c79774', borderLeft: '3px solid #c79774' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderTop: '3px solid #c79774', borderRight: '3px solid #c79774' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 16, height: 16, borderBottom: '3px solid #c79774', borderLeft: '3px solid #c79774' }} />
+        <div style={{ position: 'absolute', bottom: 0, right: 0, width: 16, height: 16, borderBottom: '3px solid #c79774', borderRight: '3px solid #c79774' }} />
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', zIndex: 10 }}>
+          <p style={{
+            fontFamily: 'monospace', fontSize: '0.72rem',
+            color: '#8c7662', letterSpacing: '0.15em',
+            textTransform: 'uppercase', margin: 0,
+          }}>
+            {locale === 'hi' ? 'राखी बंधन अनुष्ठान' : 'THE SACRED THREAD RITUAL'}
+          </p>
         </div>
 
-        {/* Handwoven Thread Rakhi */}
-        <AnimatePresence>
-          {!isTied ? (
-            <motion.div
-              drag
-              dragConstraints={containerRef}
-              dragElastic={0.2}
-              style={{
-                x: dragX,
-                y: dragY,
-                cursor: 'grab',
-                position: 'absolute',
-                zIndex: 50,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-              onDragEnd={checkTieThreshold}
-            >
-              {/* Cotton Threads extending sideways */}
-              <div style={{ width: 120, height: 3, background: 'linear-gradient(90deg, transparent, #c79774, #a8aeff, #c79774)' }} />
-              
-              {/* Colorful circular flower core */}
-              <div style={{
-                width: 54, height: 54, borderRadius: '50%',
-                background: '#a8aeff',
-                border: '4px double #fcf8ee',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: '1.2rem',
-                margin: '0 -27px',
-                zIndex: 2,
-              }}>
-                🌸
-              </div>
+        {/* Interactive Area */}
+        <div style={{
+          position: 'relative', width: '100%', flex: 1,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          minHeight: 280,
+        }}>
+          {/* Target Wrist Sketch */}
+          <div style={{
+            width: 130, height: 130,
+            border: '2px dashed rgba(199, 151, 116, 0.4)',
+            borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            position: 'relative',
+            marginBottom: 60,
+          }}>
+            <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#8c7662', textTransform: 'uppercase', textAlign: 'center', letterSpacing: '0.05em' }}>
+              {locale === 'hi' ? 'यहां लाएं' : 'DRAG TO TIE'}
+            </span>
+            <div style={{ position: 'absolute', inset: -8, border: '1px solid rgba(199, 151, 116, 0.1)', borderRadius: '50%' }} />
+          </div>
 
-              <div style={{ width: 120, height: 3, background: 'linear-gradient(90deg, #c79774, #a8aeff, #c79774, transparent)' }} />
-            </motion.div>
-          ) : (
-            // Tied / Constellation State
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+          {/* Premium Silk & Gold Thread Rakhi */}
+          <AnimatePresence>
+            {!isTied ? (
+              <motion.div
+                drag
+                dragConstraints={containerRef}
+                dragElastic={0.15}
+                style={{
+                  x: dragX,
+                  y: dragY,
+                  cursor: 'grab',
+                  position: 'absolute',
+                  zIndex: 50,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+                onDragEnd={checkTieThreshold}
+              >
+                {/* Braided Red & Gold side threads */}
+                <div style={{ width: 100, height: 4, background: 'linear-gradient(90deg, transparent, #c84040 30%, #e5c07b 70%, #c84040)' }} />
+                
+                {/* Detailed Beaded Centerpiece */}
+                <div style={{
+                  width: 58, height: 58, borderRadius: '50%',
+                  background: 'radial-gradient(circle, #e5c07b 0%, #b89053 50%, #7c5c2d 100%)', // Gold plate
+                  border: '1px solid #7c5c2d',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 -29px',
+                  zIndex: 2,
+                  position: 'relative',
+                }}>
+                  {/* Silk flower petals overlay */}
+                  <div style={{
+                    position: 'absolute', width: 44, height: 44, borderRadius: '50%',
+                    border: '3px dotted #d43f3f', background: 'transparent'
+                  }} />
+                  {/* Central Crimson Gemstone */}
+                  <div style={{
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: 'radial-gradient(circle, #ff5e5e 0%, #a11f1f 100%)',
+                    boxShadow: '0 0 6px rgba(161,31,31,0.5)',
+                  }} />
+                </div>
+
+                <div style={{ width: 100, height: 4, background: 'linear-gradient(90deg, #c84040, #e5c07b 30%, #c84040 70%, transparent)' }} />
+              </motion.div>
+            ) : (
+              // Tied state: Rakhi locked onto the wrist target
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', damping: 15 }}
+                style={{
+                  position: 'absolute',
+                  top: '32%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <div style={{ width: 220, height: 4, background: 'linear-gradient(90deg, transparent, #c84040, #e5c07b, #c84040, transparent)', zIndex: 1 }} />
+                <div style={{
+                  width: 66, height: 66, borderRadius: '50%',
+                  background: 'radial-gradient(circle, #e5c07b 0%, #b89053 60%, #7c5c2d 100%)',
+                  boxShadow: '0 0 30px rgba(184,144,83,0.5)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 -33px',
+                  zIndex: 2,
+                  position: 'relative',
+                }}>
+                  <div style={{ position: 'absolute', width: 50, height: 50, borderRadius: '50%', border: '3px dotted #d43f3f' }} />
+                  <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'radial-gradient(circle, #ff5e5e 0%, #a11f1f 100%)' }} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {isTied && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               style={{
-                position: 'absolute',
-                top: '32%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Georgia, serif',
+                fontSize: '1.15rem',
+                color: '#3d2b1f',
+                fontStyle: 'italic',
+                marginTop: 20,
+                textAlign: 'center',
               }}
             >
-              {/* Full wrist tie lines */}
-              <div style={{ width: 220, height: 4, background: 'linear-gradient(90deg, transparent, #a8aeff, transparent)', zIndex: 1 }} />
-              <div style={{
-                width: 72, height: 72, borderRadius: '50%',
-                background: 'rgba(168, 174, 255, 0.15)',
-                border: '2px solid #a8aeff',
-                boxShadow: '0 0 25px rgba(168, 174, 255, 0.6)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: '1.8rem',
-                margin: '0 -36px',
-                zIndex: 2,
-              }}>
-                🌸
-              </div>
-            </motion.div>
+              {locale === 'hi' ? `राखी बंधी, सदैव आपका स्नेह 🌸` : `Tied with endless love 🌸`}
+            </motion.p>
           )}
-        </AnimatePresence>
+        </div>
 
-        {isTied && (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+        {/* Footer Next Button */}
+        <div style={{ width: '100%', zIndex: 10 }}>
+          <button
+            onClick={handleNext}
+            disabled={!isTied}
             style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '1.2rem',
-              color: '#FFF8F0',
-              fontStyle: 'italic',
-              marginTop: -20,
-              textAlign: 'center',
+              ...btnStyle,
+              width: '100%',
+              background: isTied ? 'linear-gradient(135deg, #c79774, #a36f4d)' : 'rgba(0,0,0,0.05)',
+              border: isTied ? 'none' : '1px dashed rgba(140,118,98,0.3)',
+              color: isTied ? '#fff' : 'rgba(61,43,31,0.4)',
+              fontWeight: 600,
+              cursor: isTied ? 'pointer' : 'not-allowed',
+              boxShadow: isTied ? '0 6px 20px rgba(163,111,77,0.3)' : 'none',
             }}
           >
-            {locale === 'hi' ? `राखी बंधी, स्नेह अमर रहे 🌸` : `Tied with absolute love 🌸`}
-          </motion.p>
-        )}
-      </div>
-
-      {/* Next Button */}
-      <div style={{ width: '100%', maxWidth: 360, zIndex: 10 }}>
-        <button
-          onClick={handleNext}
-          disabled={!isTied}
-          style={{
-            ...btnStyle,
-            width: '100%',
-            background: isTied ? 'linear-gradient(135deg, #c79774, #a36f4d)' : 'rgba(255,255,255,0.05)',
-            border: 'none',
-            color: isTied ? '#fff' : 'rgba(255,255,255,0.3)',
-            fontWeight: 600,
-            cursor: isTied ? 'pointer' : 'not-allowed',
-            boxShadow: isTied ? '0 6px 20px rgba(163,111,77,0.3)' : 'none',
-          }}
-        >
-          {locale === 'hi' ? 'उपहार देखें →' : 'Unwrap Gift →'}
-        </button>
-      </div>
+            {locale === 'hi' ? 'उपहार खोलें →' : 'Unwrap Gift →'}
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
