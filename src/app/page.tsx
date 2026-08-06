@@ -541,7 +541,7 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           style={{ width: '100%', paddingBottom: 8 }}
         >
-          <Link href="/create" style={{ textDecoration: 'none', display: 'block' }}>
+          <Link href="/select" style={{ textDecoration: 'none', display: 'block' }}>
             <motion.div
               whileHover={{ scale: 1.025 }}
               whileTap={{ scale: 0.97 }}

@@ -1,5 +1,6 @@
 'use client';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createExperience } from '@/core/database/storage';
 import { compressImage } from '@/core/uploads/imageUtils';
@@ -8,6 +9,8 @@ import { useAudioRecorder } from '@/shared/uploader/useAudioRecorder';
 import { usePayment } from '@/core/payments/usePayment';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
+import { getTemplate } from '@/template-engine/index';
+import type { TemplatePlugin } from '@/template-engine/types';
 
 // ─── Step config ─────────────────────────────────────────────
 const STEPS = ['names','letter','photos','voice','gift','preview'] as const;
@@ -60,6 +63,28 @@ import { Row, labelStyle, inputStyle, btnStyle } from '@/shared/inputs/inputs';
 
 // ─── Main CreatePage ──────────────────────────────────────────
 export default function CreatePage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '100vh', background: '#080408', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF8F0', fontFamily: 'var(--font-sans)'
+      }}>
+        Loading...
+      </div>
+    }>
+      <CreatePageContent />
+    </Suspense>
+  );
+}
+
+function CreatePageContent() {
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get('template') || 'rakhi-2025';
+  const [templateConfig, setTemplateConfig] = useState<TemplatePlugin | null>(null);
+
+  useEffect(() => {
+    getTemplate(templateId).then(setTemplateConfig);
+  }, [templateId]);
+
   const [step, setStep]         = useState<Step>('names');
   const [form, setForm]         = useState<FormState>(INITIAL);
   const [submitting, setSub]    = useState(false);
@@ -143,6 +168,7 @@ export default function CreatePage() {
         photoUrls:     photoUrls,
         voiceUrl:      voiceUrl,
         locale:        form.locale,
+        templateId:    templateId,
       };
       
       const id = await createExperience(draft);
@@ -258,7 +284,13 @@ export default function CreatePage() {
     ),
 
     letter: (() => {
-      const TEMPLATES = locale === 'hi' ? [
+      const configTemplates = templateConfig?.createConfig?.letterTemplates;
+      const TEMPLATES = configTemplates ? configTemplates.map(tpl => ({
+        emoji: tpl.emoji,
+        title: locale === 'hi' ? tpl.titleHi : tpl.titleEn,
+        preview: locale === 'hi' ? tpl.previewHi : tpl.previewEn,
+        text: locale === 'hi' ? tpl.textHi : tpl.textEn,
+      })) : (locale === 'hi' ? [
         {
           emoji: '💛',
           title: 'दिल से',
@@ -296,7 +328,7 @@ export default function CreatePage() {
           preview: 'No matter the distance between us...',
           text: `My dearest brother/sister,\n\nOn this special day, I want you to know — no matter the miles between us, you are always close to my heart.\n\nYou've cheered on every dream I've chased, held me up through every storm, and made every ordinary day feel special. You are not just my sibling — you are my strength.\n\nThis Rakhi is a symbol of that unbreakable bond. 🌸\n\nForever yours ❤️`,
         },
-      ];
+      ]);
 
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
