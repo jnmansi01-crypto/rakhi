@@ -5,6 +5,8 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { RakhiHero } from '../components/RakhiHero';
 import { getDaysUntilRakhi } from '@/lib/dateUtils';
+import { useHaptics } from '@/hooks/useHaptics';
+import type { Locale } from '@/lib/types';
 
 // Gold dust particle
 interface GoldDust {
@@ -72,6 +74,30 @@ export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [daysInfo, setDaysInfo] = useState<{ days: number, date: Date | null }>({ days: 0, date: null });
   const [mounted, setMounted] = useState(false);
+  const [locale, setLocale] = useState<Locale>('en');
+  const { vibrate } = useHaptics();
+
+  const playHoverChime = () => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1); // A6
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+      // Ignore if audio fails
+    }
+  };
 
   useEffect(() => {
     document.body.classList.add('sender-flow');
@@ -241,16 +267,31 @@ export default function HomePage() {
             paddingTop: 20,
           }}
         >
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: '1.3rem' }}>🌸</span>
-            <span style={{
-              fontFamily: 'var(--font-serif)', fontStyle: 'italic',
-              fontSize: '1.1rem', color: '#FFF8F0',
-              letterSpacing: '0.02em',
-            }}>
-              Rakhi
-            </span>
+          {/* Logo & Lang Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: '1.3rem' }}>🌸</span>
+              <span style={{
+                fontFamily: 'var(--font-serif)', fontStyle: 'italic',
+                fontSize: '1.1rem', color: '#FFF8F0',
+                letterSpacing: '0.02em',
+              }}>
+                Rakhi
+              </span>
+            </div>
+            {/* Language toggle */}
+            <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 100, padding: 2 }}>
+              {(['en','hi'] as Locale[]).map(l => (
+                <button key={l} onClick={() => setLocale(l)} style={{
+                  padding: '4px 12px', borderRadius: 100, cursor: 'pointer', border: 'none',
+                  background: locale === l ? 'rgba(201,168,76,0.3)' : 'transparent',
+                  color: locale === l ? '#fff' : 'rgba(201,168,76,0.6)',
+                  fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.05em', transition: 'all 0.2s'
+                }}>
+                  {l === 'en' ? 'EN' : 'HI'}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Days counter */}
@@ -371,7 +412,7 @@ export default function HomePage() {
               letterSpacing: '0.04em',
             }}
           >
-            A gift from the heart
+            {locale === 'en' ? 'A gift from the heart' : 'दिल से दिया गया एक उपहार'}
           </motion.p>
 
           {/* Headline */}
@@ -384,17 +425,35 @@ export default function HomePage() {
             fontWeight: 400,
             letterSpacing: '-0.02em',
           }}>
-            Send a Rakhi<br />
-            <span style={{
-              background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
-              backgroundSize: '200% 100%',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              animation: 'shimmer 3s linear infinite',
-            }}>
-              they&apos;ll never forget.
-            </span>
+            {locale === 'en' ? (
+              <>
+                Send a Rakhi<br />
+                <span style={{
+                  background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
+                  backgroundSize: '200% 100%',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  animation: 'shimmer 3s linear infinite',
+                }}>
+                  they&apos;ll never forget.
+                </span>
+              </>
+            ) : (
+              <>
+                एक ऐसी राखी भेजें<br />
+                <span style={{
+                  background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
+                  backgroundSize: '200% 100%',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  animation: 'shimmer 3s linear infinite',
+                }}>
+                  जिसे वो कभी भूल न पाएं।
+                </span>
+              </>
+            )}
           </h1>
 
           {/* Sub */}
@@ -407,8 +466,11 @@ export default function HomePage() {
             marginBottom: 36,
             letterSpacing: '0.02em',
           }}>
-            An immersive digital ritual — letter, voice,<br />
-            memories, Rakhi-tying &amp; a gift, all in one link.
+            {locale === 'en' ? (
+              <>An immersive digital ritual — letter, voice,<br />memories, Rakhi-tying &amp; a gift, all in one link.</>
+            ) : (
+              <>एक डिजिटल अनुष्ठान — पत्र, आवाज़, यादें,<br />राखी और एक उपहार, सब कुछ एक लिंक में।</>
+            )}
           </p>
 
           {/* Journey preview dots */}
@@ -457,7 +519,7 @@ export default function HomePage() {
                     textTransform: 'uppercase',
                     fontWeight: 500,
                   }}>
-                    {step.label}
+                    {locale === 'hi' ? step.hi : step.label}
                   </span>
                 </motion.div>
                 {i < JOURNEY.length - 1 && (
@@ -483,6 +545,7 @@ export default function HomePage() {
             <motion.div
               whileHover={{ scale: 1.025 }}
               whileTap={{ scale: 0.97 }}
+              onHoverStart={() => { playHoverChime(); vibrate(); }}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -519,7 +582,7 @@ export default function HomePage() {
                 color: '#FFF8F0',
                 textTransform: 'uppercase',
               }}>
-                Craft Your Experience <span style={{ fontFamily: 'serif' }}>→</span>
+                {locale === 'en' ? 'Craft Your Experience' : 'अपना उपहार बनाएं'} <span style={{ fontFamily: 'serif' }}>→</span>
               </span>
             </motion.div>
           </Link>
@@ -543,6 +606,19 @@ export default function HomePage() {
           </motion.p>
         </motion.div>
       </div>
+      
+      {/* ── Initial Cinematic Reveal Overlay ─────────────────── */}
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 2.5, ease: 'easeInOut', delay: 0.2 }}
+        style={{
+          position: 'fixed', inset: 0,
+          background: '#080408',
+          zIndex: 9999,
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   );
 }
