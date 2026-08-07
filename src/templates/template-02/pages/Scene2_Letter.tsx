@@ -55,12 +55,10 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
 
   const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
 
-  // Automatically switch to the letter page (right) on mobile once typing starts
+  // No auto-switching to page 2 automatically on typing, keeping users on the cover intro page
   useEffect(() => {
-    if (displayedText.length > 3) {
-      setMobilePage('right');
-    }
-  }, [displayedText]);
+    // Left empty deliberately to disable the auto-turn behavior
+  }, []);
   return (
     <div 
       onClick={skipTypewriter}
@@ -286,6 +284,24 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             }}>
               {locale === 'hi' ? 'मीठी यादें, अटूट बंधन...' : 'Tied with sweetness...'}
             </p>
+            {/* Visual swipe prompt on mobile */}
+            <div className="mobile-only" style={{
+              marginTop: 10,
+              fontSize: '0.72rem',
+              color: '#C9A84C',
+              fontWeight: 500,
+              opacity: 0.8,
+              letterSpacing: '0.05em',
+              animation: 'pulse 2s infinite',
+            }}>
+              <style dangerouslySetInnerHTML={{ __html: `
+                @keyframes pulse {
+                  0%, 100% { opacity: 0.4; }
+                  50% { opacity: 1; }
+                }
+              ` }} />
+              {locale === 'hi' ? '← स्वाइप करके चिट्ठी पढ़ें' : '← Swipe left to read letter'}
+            </div>
           </div>
         </motion.div>
 
@@ -385,33 +401,13 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             }}>
               {locale === 'hi' ? `प्यारे ${recipientName},` : `Dearest ${recipientName},`}
             </h2>
-
-            {/* Split text into rows and render notebook lines dynamically underneath each row */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              {displayedText.split('\n').map((line, rIdx) => {
-                const isBlank = !line.trim();
-                return (
-                  <div 
-                    key={rIdx} 
-                    style={{ 
-                      minHeight: isBlank ? 16 : 28,
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingBottom: isBlank ? 0 : 2
-                    }}
-                  >
-                    <p className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} style={{
-                      fontSize: locale === 'hi' ? '1.15rem' : '1.25rem', color: '#2b4f74', margin: 0,
-                      lineHeight: 1.5, whiteSpace: 'pre-wrap', width: '100%'
-                    }}>
-                      {line || ' '}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {isDone && (
+            <p className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} style={{
+              fontSize: locale === 'hi' ? '1.15rem' : '1.3rem', color: '#2c3e50',
+              lineHeight: 1.85, whiteSpace: 'pre-wrap', margin: 0, paddingBottom: 12
+            }}>
+              {displayedText}
+            </p>
+            {displayedText.length >= letterText.length && (
               <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -426,29 +422,25 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             )}
           </div>
 
-          {/* Action button */}
+          {/* Swipe swipe guide prompting next page instead of button */}
           {isDone && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{ marginTop: 16, zIndex: 10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
+              style={{
+                marginTop: 14,
+                textAlign: 'center',
+                fontSize: '0.72rem',
+                color: '#8c7662',
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                alignSelf: 'center',
+                animation: 'pulse 2s infinite',
+                cursor: 'pointer',
+              }}
+              onClick={handleNext}
             >
-              <button
-                onClick={handleNext}
-                style={{
-                  ...btnStyle,
-                  width: '100%',
-                  background: 'linear-gradient(135deg, #c79774, #a36f4d)',
-                  border: 'none',
-                  color: '#fff',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  padding: '10px 16px',
-                  boxShadow: '0 4px 12px rgba(163,111,77,0.3)',
-                }}
-              >
-                {locale === 'hi' ? 'यादें देखें →' : 'View Memories →'}
-              </button>
+              {locale === 'hi' ? 'यादें देखने के लिए आगे स्वाइप करें →' : 'Swipe left to view memories →'}
             </motion.div>
           )}
         </motion.div>

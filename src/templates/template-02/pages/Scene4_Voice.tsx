@@ -226,6 +226,18 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             }}>
               {locale === 'hi' ? 'दिल की बात, मेरी आवाज़ में...' : 'Hear my voice...'}
             </p>
+            {/* Visual swipe prompt on mobile */}
+            <div className="mobile-only" style={{
+              marginTop: 10,
+              fontSize: '0.65rem',
+              color: '#c79774',
+              fontWeight: 600,
+              opacity: 0.8,
+              letterSpacing: '0.05em',
+              animation: 'pulse 2s infinite',
+            }}>
+              {locale === 'hi' ? '← स्वाइप करके प्लेयर खोलें' : '← Swipe left to open player'}
+            </div>
           </div>
         </motion.div>
 
@@ -396,23 +408,24 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             </button>
           </div>
 
-          {/* Action button */}
-          <div style={{ zIndex: 10 }}>
-            <button
-              onClick={handleNext}
+          {/* Swipe swipe guide prompting next page instead of button */}
+          <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
               style={{
-                ...btnStyle,
-                width: '100%',
-                background: 'linear-gradient(135deg, #c79774, #a36f4d)',
-                border: 'none',
-                color: '#fff',
+                fontSize: '0.72rem',
+                color: '#8c7662',
                 fontWeight: 600,
-                fontSize: '0.8rem',
-                padding: '10px 16px',
+                letterSpacing: '0.05em',
+                alignSelf: 'center',
+                animation: 'pulse 2s infinite',
+                cursor: 'pointer',
               }}
+              onClick={handleNext}
             >
-              {locale === 'hi' ? 'राखी बांधें →' : 'Tie Rakhi →'}
-            </button>
+              {locale === 'hi' ? 'राखी देखने के लिए आगे स्वाइप करें →' : 'Swipe left to tie Rakhi →'}
+            </motion.div>
           </div>
         </motion.div>
       </div>

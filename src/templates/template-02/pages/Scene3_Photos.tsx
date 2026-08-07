@@ -232,6 +232,18 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
                 {locale === 'hi' ? 'प्यार के कच्चे धागे, रिश्ते पक्के...' : 'Our thread of love...'}
               </div>
             )}
+            {/* Visual swipe prompt on mobile */}
+            <div className="mobile-only" style={{
+              position: 'absolute', bottom: 4, right: 16,
+              fontSize: '0.65rem',
+              color: '#c79774',
+              fontWeight: 600,
+              opacity: 0.8,
+              letterSpacing: '0.05em',
+              animation: 'pulse 2s infinite',
+            }}>
+              {locale === 'hi' ? '← स्वाइप करके और फोटो देखें' : '← Swipe left to see more photos'}
+            </div>
           </div>
         </motion.div>
 
@@ -357,24 +369,24 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             </div>
           </div>
 
-          {/* Action button */}
-          <div style={{ zIndex: 10 }}>
-            <button
-              onClick={handleNext}
+          {/* Swipe swipe guide prompting next page instead of button */}
+          <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
               style={{
-                ...btnStyle,
-                width: '100%',
-                background: 'linear-gradient(135deg, #c79774, #a36f4d)',
-                border: 'none',
-                color: '#fff',
+                fontSize: '0.72rem',
+                color: '#8c7662',
                 fontWeight: 600,
-                fontSize: '0.8rem',
-                padding: '10px 16px',
-                boxShadow: '0 4px 12px rgba(163,111,77,0.3)',
+                letterSpacing: '0.05em',
+                alignSelf: 'center',
+                animation: 'pulse 2s infinite',
+                cursor: 'pointer',
               }}
+              onClick={handleNext}
             >
-              {locale === 'hi' ? 'आवाज़ सुनें →' : 'Listen to Voice →'}
-            </button>
+              {locale === 'hi' ? 'आवाज़ सुनने के लिए आगे स्वाइप करें →' : 'Swipe left to listen to voice →'}
+            </motion.div>
           </div>
         </motion.div>
       </div>

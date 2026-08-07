@@ -200,19 +200,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         ` }} />
 
         {/* ── LEFT PAGE ── */}
-        <motion.div
+        <div
           className="scrapbook-page-left"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              setMobilePage('right');
-            }
-          }}
-          initial={{ rotateY: -30, opacity: 0.8 }}
-          animate={isTied ? { background: '#f7efe0', rotateY: 0, opacity: 1 } : { background: '#f2e6cf', rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: -90, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1, borderRadius: '8px 0 0 8px',
             padding: '24px 20px 20px',
@@ -220,8 +209,6 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             alignItems: 'center', justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset -18px 0 24px rgba(0,0,0,0.12)',
-            cursor: 'grab',
-            touchAction: 'none',
           }}
         >
           {/* Subtle grid lines background overlay */}
@@ -334,7 +321,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
 
           {/* Bottom gold ornament */}
           <div style={{ width: '50%', height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)', marginBottom: 4 }} />
-        </motion.div>
+        </div>
 
         {/* ── CENTRAL BINDER SPINE ── */}
         <div className="scrapbook-spine" style={{
@@ -355,19 +342,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         </div>
 
         {/* ── RIGHT PAGE ── */}
-        <motion.div
+        <div
           className="scrapbook-page-right"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x > 40) {
-              setMobilePage('left');
-            }
-          }}
-          initial={{ rotateY: 30, opacity: 0.8 }}
-          animate={isTied ? { background: '#fdfaf4', rotateY: 0, opacity: 1 } : { background: '#faf6ee', rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: 90, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1, borderRadius: '0 8px 8px 0',
             padding: '24px 20px 20px',
@@ -375,8 +351,6 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset 18px 0 24px rgba(0,0,0,0.1)',
-            cursor: 'grab',
-            touchAction: 'none',
           }}
         >
           {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
@@ -488,30 +462,32 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           {/* Bottom ornament */}
           <div style={{ width: '50%', height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)', marginBottom: 4, alignSelf: 'center' }} />
 
-          {/* Action button */}
-          <div style={{ zIndex: 10 }}>
-            <motion.button
-              onClick={handleNext}
-              disabled={!isTied}
-              animate={isTied ? { opacity: 1, y: 0 } : { opacity: 0.4, y: 4 }}
-              transition={{ duration: 0.5 }}
+          {/* Swipe swipe guide prompting next page instead of button */}
+          <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isTied ? { opacity: 0.9 } : { opacity: 0.3 }}
               style={{
-                ...btnStyle,
-                width: '100%',
-                background: isTied ? 'linear-gradient(135deg, #c79774 0%, #a36f4d 100%)' : 'rgba(0,0,0,0.05)',
-                border: isTied ? 'none' : '1px dashed rgba(140,118,98,0.3)',
-                color: isTied ? '#fff' : 'rgba(61,43,31,0.4)',
-                fontWeight: 600, fontSize: '0.8rem',
-                padding: '11px 16px',
+                fontSize: '0.72rem',
+                color: isTied ? '#8c7662' : '#c8b6a6',
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                alignSelf: 'center',
+                animation: isTied ? 'pulse 2s infinite' : 'none',
                 cursor: isTied ? 'pointer' : 'not-allowed',
-                boxShadow: isTied ? '0 6px 18px rgba(163,111,77,0.35)' : 'none',
-                letterSpacing: '0.04em',
+              }}
+              onClick={() => {
+                if (isTied) {
+                  handleNext();
+                }
               }}
             >
-              {locale === 'hi' ? 'उपहार खोलें →' : 'Unwrap Gift →'}
-            </motion.button>
+              {isTied 
+                ? (locale === 'hi' ? 'उपहार खोलने के लिए आगे स्वाइप करें →' : 'Swipe left to unwrap gift →')
+                : (locale === 'hi' ? 'आगे बढ़ने के लिए पहले राखी बांधें' : 'Complete the ritual to proceed')}
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── SVG THREAD across full spread (grows with progress) ── */}
         {!isTied && progress > 0.01 && (
