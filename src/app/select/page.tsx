@@ -11,23 +11,30 @@ export default function SelectTemplatePage() {
   const router = useRouter();
   const { vibrate } = useHaptics();
   const [locale, setLocale] = useState<'en' | 'hi'>('en');
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const templates = [
     {
       id: 'rakhi-2025',
-      name: locale === 'hi' ? 'टेम्पलेट ०१: शाही परंपरा' : 'Template 01: Royal Classic',
-      desc: locale === 'hi' ? 'शाही लाल सिल्क, सुनहरा काम, मधुर बांसुरी संगीत और पारंपरिक राखी बांधने का अनुभव।' : 'Royal crimson silk, gold embroidery, traditional santoor music, and sacred thread tying.',
-      visual: 'linear-gradient(135deg, #4a1525, #8a1c14)', // Crimson/Gold theme representation
+      name: locale === 'hi' ? 'शाही परंपरा' : 'Royal Classic',
+      desc: locale === 'hi' ? 'शाही लाल सिल्क, सुनहरा काम, मधुर संगीत और पारंपरिक राखी बांधने का अनुभव।' : 'Royal crimson silk, gold embroidery, traditional santoor music, and sacred thread tying.',
+      visual: 'linear-gradient(135deg, #4a1525 0%, #8a1c14 100%)',
+      glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
       emoji: '🌸',
+      price: '499',
+      features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
     },
     {
       id: 'template-02',
-      name: locale === 'hi' ? 'टेम्पलेट ०२: यादों का एल्बम' : 'Template 02: Nostalgia Scrapbook',
-      desc: locale === 'hi' ? 'लकड़ी की मेज, हाथ से लिखी चिट्ठी, पुराने कैसेट प्लेयर में आवाज और सुतली से बंधा गिफ्ट बॉक्स।' : 'Dark mahogany table, typewriter handwriting, Polaroid photos, retro cassette tape, and jute string parcel.',
-      visual: 'linear-gradient(135deg, #2b1f1d, #422f29)', // Warm wood theme representation
+      name: locale === 'hi' ? 'यादों का एल्बम' : 'Nostalgia Scrapbook',
+      desc: locale === 'hi' ? 'लकड़ी की मेज, हाथ से लिखी चिट्ठी, पुराने कैसेट प्लेयर में आवाज और सुतली से बंधा गिफ्ट पोटली।' : 'Dark mahogany table, typewriter handwriting, Polaroid photos, retro cassette tape, and jute string parcel.',
+      visual: 'linear-gradient(135deg, #2b1f1d 0%, #5c4033 100%)',
+      glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
       emoji: '📼',
+      price: '250',
+      features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
     }
   ];
 
@@ -58,20 +65,21 @@ export default function SelectTemplatePage() {
           borderRadius: 20, padding: '6px 14px',
           fontSize: '0.8rem', cursor: 'pointer',
           fontFamily: 'var(--font-sans)',
+          zIndex: 10,
         }}
       >
         {locale === 'en' ? 'हिन्दी' : 'English'}
       </button>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: 48, maxWidth: 420 }}>
+      <div style={{ textAlign: 'center', marginBottom: 40, maxWidth: 460 }}>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
             fontFamily: 'var(--font-sans)', fontSize: '0.78rem',
             color: '#C9A84C', letterSpacing: '0.15em',
-            textTransform: 'uppercase', marginBottom: 12,
+            textTransform: 'uppercase', marginBottom: 10,
           }}
         >
           {locale === 'hi' ? 'राखी अनुभव' : 'DIGITAL RITUAL'}
@@ -82,10 +90,10 @@ export default function SelectTemplatePage() {
           transition={{ delay: 0.1 }}
           style={{
             fontFamily: 'Georgia, serif',
-            fontSize: 'clamp(1.8rem, 6vw, 2.5rem)',
+            fontSize: 'clamp(2rem, 6vw, 2.6rem)',
             fontWeight: 400,
             lineHeight: 1.2,
-            marginBottom: 16,
+            marginBottom: 12,
           }}
         >
           {locale === 'hi' ? 'अनुभव का स्वरूप चुनें' : 'Choose Your Experience'}
@@ -95,7 +103,7 @@ export default function SelectTemplatePage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
           style={{
-            fontFamily: 'var(--font-sans)', fontSize: '0.9rem',
+            fontFamily: 'var(--font-sans)', fontSize: '0.88rem',
             color: 'rgba(255,248,240,0.6)', lineHeight: 1.6,
           }}
         >
@@ -105,83 +113,147 @@ export default function SelectTemplatePage() {
         </motion.p>
       </div>
 
-      {/* Grid of Templates */}
+      {/* Flex container showing square cards side-by-side on desktop, stacked on mobile */}
       <div style={{
-        display: 'flex', flexDirection: 'column', gap: 24,
-        width: '100%', maxWidth: 400,
+        display: 'flex', 
+        flexDirection: 'row', 
+        flexWrap: 'wrap',
+        gap: 32,
+        width: '100%', 
+        maxWidth: 760,
+        justifyContent: 'center',
+        alignItems: 'stretch',
       }}>
-        {templates.map((tpl, i) => (
-          <motion.div
-            key={tpl.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-            whileHover={{ y: -4, scale: 1.01 }}
-            onClick={() => handleSelect(tpl.id)}
-            style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1.5px solid rgba(201,168,76,0.15)',
-              borderRadius: 20,
-              padding: 24,
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-              display: 'flex', flexDirection: 'column',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-            }}
-          >
-            {/* Visual background gradient representation on hover */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: tpl.visual,
-              opacity: 0.05,
-              pointerEvents: 'none',
-              zIndex: 0,
-            }} />
+        {templates.map((tpl, i) => {
+          const isHovered = hoveredId === tpl.id;
+          return (
+            <motion.div
+              key={tpl.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              onMouseEnter={() => setHoveredId(tpl.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              onClick={() => handleSelect(tpl.id)}
+              style={{
+                flex: '1 1 300px',
+                maxWidth: 340,
+                aspectRatio: '1/1', // Force card to be a perfect square
+                background: 'rgba(255,255,255,0.02)',
+                border: isHovered 
+                  ? `1.5px solid ${tpl.glowColor}` 
+                  : '1.5px solid rgba(201,168,76,0.15)',
+                borderRadius: 24,
+                padding: 28,
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex', 
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                boxShadow: isHovered 
+                  ? `0 15px 40px rgba(0,0,0,0.5), 0 0 30px ${tpl.glowColor}` 
+                  : '0 10px 30px rgba(0,0,0,0.3)',
+                transition: 'border 0.3s ease, box-shadow 0.3s ease',
+              }}
+            >
+              {/* Dynamic theme preview background: slightly opaque on hover to show theme "vibe" */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: tpl.visual,
+                opacity: isHovered ? 0.22 : 0.05,
+                transition: 'opacity 0.4s ease',
+                pointerEvents: 'none',
+                zIndex: 0,
+              }} />
 
-            {/* Badge */}
-            <span style={{
-              alignSelf: 'flex-start',
-              background: 'rgba(201,168,76,0.1)',
-              border: '1px solid rgba(201,168,76,0.3)',
-              color: '#C9A84C',
-              borderRadius: 20,
-              padding: '4px 10px',
-              fontSize: '0.68rem',
-              fontWeight: 500,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              marginBottom: 16,
-              zIndex: 1,
-            }}>
-              {tpl.badge}
-            </span>
+              {/* Upper Header Row */}
+              <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <span style={{
+                  background: 'rgba(201,168,76,0.1)',
+                  border: '1px solid rgba(201,168,76,0.3)',
+                  color: '#C9A84C',
+                  borderRadius: 20,
+                  padding: '4px 10px',
+                  fontSize: '0.65rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
+                }}>
+                  {tpl.badge}
+                </span>
 
-            {/* Title */}
-            <h2 style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '1.3rem',
-              fontWeight: 400,
-              marginBottom: 8,
-              display: 'flex', alignItems: 'center', gap: 8,
-              zIndex: 1,
-            }}>
-              <span>{tpl.emoji}</span> {tpl.name}
-            </h2>
+                {/* Price display tag */}
+                <span style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: '#FFF8F0',
+                  background: 'rgba(255,255,255,0.06)',
+                  padding: '4px 12px',
+                  borderRadius: 12,
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}>
+                  ₹{tpl.price}/-
+                </span>
+              </div>
 
-            {/* Description */}
-            <p style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.85rem',
-              color: 'rgba(255,248,240,0.6)',
-              lineHeight: 1.5,
-              margin: 0,
-              zIndex: 1,
-            }}>
-              {tpl.desc}
-            </p>
-          </motion.div>
-        ))}
+              {/* Title & Description */}
+              <div style={{ zIndex: 2, margin: '16px 0' }}>
+                <h2 style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1.4rem',
+                  fontWeight: 400,
+                  marginBottom: 8,
+                  display: 'flex', alignItems: 'center', gap: 10,
+                }}>
+                  <span style={{ fontSize: '1.6rem' }}>{tpl.emoji}</span> {tpl.name}
+                </h2>
+                <p style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.82rem',
+                  color: 'rgba(255,248,240,0.65)',
+                  lineHeight: 1.45,
+                }}>
+                  {tpl.desc}
+                </p>
+              </div>
+
+              {/* Footer row with highlights / interactive select button */}
+              <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                {/* Feature tags */}
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {tpl.features.map((f, idx) => (
+                    <span key={idx} style={{ fontSize: '0.62rem', color: 'rgba(251, 230, 190, 0.45)', border: '1px solid rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}>
+                      {f}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Selective CTA Button */}
+                <motion.div
+                  animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: 100,
+                    background: isHovered ? '#C9A84C' : 'rgba(255,255,255,0.05)',
+                    color: isHovered ? '#080408' : '#FFF8F0',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    border: isHovered ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: isHovered ? `0 0 15px ${tpl.glowColor}` : 'none',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {locale === 'hi' ? 'चुनें' : 'Select'}
+                </motion.div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
