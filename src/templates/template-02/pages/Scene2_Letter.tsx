@@ -143,42 +143,18 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
           }
         ` }} />
 
-        {/* Mobile Page Toggle Tabs */}
-        <div className="mobile-only" style={{
-          display: 'none',
-          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 100, gap: 8,
-        }}>
-          <style dangerouslySetInnerHTML={{ __html: `
-            @media (max-width: 600px) {
-              .mobile-only { display: flex !important; }
-            }
-          ` }} />
-          <button
-            onClick={(e) => { e.stopPropagation(); setMobilePage('left'); }}
-            style={{
-              background: mobilePage === 'left' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
-              border: 'none', color: mobilePage === 'left' ? '#080408' : '#FFF8F0',
-              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
-            }}
-          >
-            {locale === 'hi' ? 'स्वागत' : 'Intro'}
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setMobilePage('right'); }}
-            style={{
-              background: mobilePage === 'right' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
-              border: 'none', color: mobilePage === 'right' ? '#080408' : '#FFF8F0',
-              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
-            }}
-          >
-            {locale === 'hi' ? 'चिट्ठी' : 'Letter'}
-          </button>
-        </div>
 
         {/* LEFT PAGE: Scrapbook Cardstock (Decorative / Photo frame) */}
         <motion.div 
           className="scrapbook-page-left"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(event, info) => {
+            // Swipe left on the Left page to flip to the Right page
+            if (window.innerWidth <= 600 && info.offset.x < -40) {
+              setMobilePage('right');
+            }
+          }}
           initial={{ rotateY: -30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
           exit={{ rotateY: -90, opacity: 0 }}
@@ -192,8 +168,10 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             alignItems: 'center', justifyContent: 'center',
             position: 'relative',
             boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
-          backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, transparent 80%)',
-        }}>
+            backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, transparent 80%)',
+            cursor: 'grab',
+            touchAction: 'none',
+          }}>
           {/* Faint gold frame */}
           <div style={{
             position: 'absolute', inset: 12,
@@ -340,6 +318,14 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         {/* RIGHT PAGE: Ruled notebook paper with letter text */}
         <motion.div 
           className="scrapbook-page-right"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(event, info) => {
+            // Swipe right on the Right page to flip back to the Left page
+            if (window.innerWidth <= 600 && info.offset.x > 40) {
+              setMobilePage('left');
+            }
+          }}
           initial={{ rotateY: 30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
           exit={{ rotateY: 90, opacity: 0 }}
@@ -353,6 +339,8 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             position: 'relative',
             boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
             overflow: 'hidden',
+            cursor: 'grab',
+            touchAction: 'none',
           }}>
           {/* Auto-aligning dynamic notebook lines relative to letter text line height */}
           <div style={{

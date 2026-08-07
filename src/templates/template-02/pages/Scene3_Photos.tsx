@@ -71,12 +71,15 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             flex-direction: row;
             aspect-ratio: 1.32;
             height: auto;
+            perspective: 1000px;
           }
           .scrapbook-page-left {
             display: flex !important;
+            transform-origin: right center;
           }
           .scrapbook-page-right {
             display: flex !important;
+            transform-origin: left center;
           }
           @media (max-width: 600px) {
             .scrapbook-container {
@@ -106,50 +109,32 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           }
         ` }} />
 
-        {/* Mobile Page Toggle Tabs */}
-        <div className="mobile-only" style={{
-          display: 'none',
-          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 100, gap: 8,
-        }}>
-          <style dangerouslySetInnerHTML={{ __html: `
-            @media (max-width: 600px) {
-              .mobile-only { display: flex !important; }
-            }
-          ` }} />
-          <button
-            onClick={(e) => { e.stopPropagation(); setMobilePage('left'); }}
-            style={{
-              background: mobilePage === 'left' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
-              border: 'none', color: mobilePage === 'left' ? '#080408' : '#FFF8F0',
-              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
-            }}
-          >
-            {locale === 'hi' ? 'यादें १' : 'Memories 1'}
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setMobilePage('right'); }}
-            style={{
-              background: mobilePage === 'right' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
-              border: 'none', color: mobilePage === 'right' ? '#080408' : '#FFF8F0',
-              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
-            }}
-          >
-            {locale === 'hi' ? 'यादें २' : 'Memories 2'}
-          </button>
-        </div>
-
         {/* LEFT PAGE: Scrapbook Cardstock (Photos 1 & 2) */}
-        <div className="scrapbook-page-left" style={{
-          flex: 1,
-          background: '#f2e6cf',
-          borderRadius: '8px 0 0 8px',
-          padding: '24px 16px',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'space-between',
-          position: 'relative',
-          boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-        }}>
+        <motion.div 
+          className="scrapbook-page-left"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(event, info) => {
+            if (window.innerWidth <= 600 && info.offset.x < -40) {
+              setMobilePage('right');
+            }
+          }}
+          initial={{ rotateY: -30, opacity: 0.8 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: -90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          style={{
+            flex: 1,
+            background: '#f2e6cf',
+            borderRadius: '8px 0 0 8px',
+            padding: '24px 16px',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'space-between',
+            position: 'relative',
+            boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
+            cursor: 'grab',
+            touchAction: 'none',
+          }}>
           {/* Subtle grid lines background */}
           <div style={{
             position: 'absolute', inset: 12,
@@ -248,7 +233,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* CENTRAL BINDER SPINE */}
         <div className="scrapbook-spine" style={{
@@ -273,16 +258,31 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         </div>
 
         {/* RIGHT PAGE: Scrapbook Cardstock (Photos 3, 4 & 5) */}
-        <div className="scrapbook-page-right" style={{
-          flex: 1,
-          background: '#f2e6cf',
-          borderRadius: '0 8px 8px 0',
-          padding: '24px 16px 20px 16px',
-          display: 'flex', flexDirection: 'column',
-          justifyContent: 'space-between',
-          position: 'relative',
-          boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-        }}>
+        <motion.div 
+          className="scrapbook-page-right"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(event, info) => {
+            if (window.innerWidth <= 600 && info.offset.x > 40) {
+              setMobilePage('left');
+            }
+          }}
+          initial={{ rotateY: 30, opacity: 0.8 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: 90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          style={{
+            flex: 1,
+            background: '#f2e6cf',
+            borderRadius: '0 8px 8px 0',
+            padding: '24px 16px 20px 16px',
+            display: 'flex', flexDirection: 'column',
+            justifyContent: 'space-between',
+            position: 'relative',
+            boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
+            cursor: 'grab',
+            touchAction: 'none',
+          }}>
           <div style={{
             position: 'absolute', inset: 12,
             border: '1px solid rgba(199,151,116,0.3)',
@@ -376,7 +376,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
               {locale === 'hi' ? 'आवाज़ सुनें →' : 'Listen to Voice →'}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Fullscreen zoom overlay */}
