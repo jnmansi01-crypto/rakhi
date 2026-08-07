@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 
 export default function SelectTemplatePage() {
@@ -12,6 +12,7 @@ export default function SelectTemplatePage() {
   const { vibrate } = useHaptics();
   const [locale, setLocale] = useState<'en' | 'hi'>('en');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(null);
 
   const templates = [
     {
@@ -24,6 +25,7 @@ export default function SelectTemplatePage() {
       emoji: '🌸',
       price: '499',
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
+      previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
     {
       id: 'template-02',
@@ -35,12 +37,19 @@ export default function SelectTemplatePage() {
       emoji: '📼',
       price: '250',
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
+      previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }
   ];
 
   const handleSelect = (id: string) => {
     vibrate();
     router.push(`/create?template=${id}`);
+  };
+
+  const openPreview = (e: React.MouseEvent, url: string) => {
+    e.stopPropagation();
+    vibrate();
+    setPreviewTemplateId(url);
   };
 
   return (
@@ -221,7 +230,7 @@ export default function SelectTemplatePage() {
               </div>
 
               {/* Footer row with highlights / interactive select button */}
-              <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 8 }}>
                 {/* Feature tags */}
                 <div style={{ display: 'flex', gap: 6 }}>
                   {tpl.features.map((f, idx) => (
@@ -231,30 +240,130 @@ export default function SelectTemplatePage() {
                   ))}
                 </div>
 
-                {/* Selective CTA Button */}
-                <motion.div
-                  animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 100,
-                    background: isHovered ? '#C9A84C' : 'rgba(255,255,255,0.05)',
-                    color: isHovered ? '#080408' : '#FFF8F0',
-                    fontSize: '0.72rem',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    border: isHovered ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: isHovered ? `0 0 15px ${tpl.glowColor}` : 'none',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  {locale === 'hi' ? 'चुनें' : 'Select'}
-                </motion.div>
+                {/* CTAs */}
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={(e) => openPreview(e, tpl.previewUrl)}
+                    style={{
+                      padding: '8px 14px',
+                      borderRadius: 100,
+                      background: 'transparent',
+                      color: 'rgba(255, 248, 240, 0.8)',
+                      fontSize: '0.72rem',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {locale === 'hi' ? 'डेमो' : 'Preview'}
+                  </button>
+
+                  <motion.div
+                    animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: 100,
+                      background: isHovered ? '#C9A84C' : 'rgba(255,255,255,0.05)',
+                      color: isHovered ? '#080408' : '#FFF8F0',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      border: isHovered ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.1)',
+                      boxShadow: isHovered ? `0 0 15px ${tpl.glowColor}` : 'none',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    {locale === 'hi' ? 'चुनें' : 'Select'}
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
           );
         })}
       </div>
+
+      {/* Interactive Modal showing template live demo preview */}
+      <AnimatePresence>
+        {previewTemplateId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(8, 4, 8, 0.88)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              zIndex: 999,
+              padding: 16
+            }}
+          >
+            {/* Modal Box */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              style={{
+                width: '100%',
+                maxWidth: 380,
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              {/* Close Button Header */}
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                <button
+                  onClick={() => setPreviewTemplateId(null)}
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: '#fff',
+                    borderRadius: '50%',
+                    width: 38, height: 38,
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Mobile device frame casing */}
+              <div style={{
+                width: '100%',
+                aspectRatio: '9/19',
+                maxHeight: '74vh',
+                border: '10px solid #1a1a1a',
+                borderRadius: 36,
+                boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 40px rgba(201,168,76,0.15)',
+                background: '#000',
+                overflow: 'hidden',
+                position: 'relative'
+              }}>
+                {/* Notch */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+                  width: 100, height: 18, background: '#1a1a1a', borderRadius: '0 0 12px 12px',
+                  zIndex: 1000
+                }} />
+                
+                <iframe
+                  src={previewTemplateId}
+                  style={{ width: '100%', height: '100%', border: 'none', background: '#000' }}
+                  title="Live Template Preview"
+                />
+              </div>
+              <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'rgba(201,168,76,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {locale === 'hi' ? 'लाइव प्रीव्यू · टैप करके अनुभव करें' : 'LIVE TRIAL · TAP TO INTERACT'}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
