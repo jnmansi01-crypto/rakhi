@@ -53,6 +53,14 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
     onComplete();
   };
 
+  const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
+
+  // Automatically switch to the letter page (right) on mobile once typing starts
+  useEffect(() => {
+    if (displayedText.length > 3) {
+      setMobilePage('right');
+    }
+  }, [displayedText]);
   return (
     <div 
       onClick={skipTypewriter}
@@ -98,22 +106,67 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             aspect-ratio: 1.32;
             height: auto;
           }
+          .scrapbook-page-left {
+            display: flex !important;
+          }
+          .scrapbook-page-right {
+            display: flex !important;
+          }
           @media (max-width: 600px) {
             .scrapbook-container {
               flex-direction: column !important;
-              aspect-ratio: auto !important;
-              height: 80vh !important;
-              max-height: 520px !important;
-              overflow-y: auto !important;
+              aspect-ratio: 0.72 !important;
+              height: auto !important;
             }
             .scrapbook-spine {
               display: none !important;
             }
+            .scrapbook-page-left {
+              display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
+              border-radius: 8px !important;
+            }
+            .scrapbook-page-right {
+              display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
+              border-radius: 8px !important;
+            }
           }
         ` }} />
 
+        {/* Mobile Page Toggle Tabs */}
+        <div className="mobile-only" style={{
+          display: 'none',
+          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 100, gap: 8,
+        }}>
+          <style dangerouslySetInnerHTML={{ __html: `
+            @media (max-width: 600px) {
+              .mobile-only { display: flex !important; }
+            }
+          ` }} />
+          <button
+            onClick={(e) => { e.stopPropagation(); setMobilePage('left'); }}
+            style={{
+              background: mobilePage === 'left' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
+              border: 'none', color: mobilePage === 'left' ? '#080408' : '#FFF8F0',
+              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
+            }}
+          >
+            {locale === 'hi' ? 'स्वागत' : 'Intro'}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setMobilePage('right'); }}
+            style={{
+              background: mobilePage === 'right' ? '#C9A84C' : 'rgba(255,255,255,0.08)',
+              border: 'none', color: mobilePage === 'right' ? '#080408' : '#FFF8F0',
+              padding: '4px 12px', borderRadius: 20, fontSize: '0.68rem', fontWeight: 600, cursor: 'pointer'
+            }}
+          >
+            {locale === 'hi' ? 'चिट्ठी' : 'Letter'}
+          </button>
+        </div>
+
         {/* LEFT PAGE: Scrapbook Cardstock (Decorative / Photo frame) */}
-        <div style={{
+        <div className="scrapbook-page-left" style={{
           flex: 1,
           background: '#f2e6cf',
           borderRadius: '8px 0 0 8px',
