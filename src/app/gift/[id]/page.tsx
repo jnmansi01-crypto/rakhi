@@ -11,6 +11,34 @@ export default function GiftPage({ params }: { params: { id: string } }) {
   const [missing, setMissing] = useState(false);
 
   useEffect(() => {
+    if (params.id === 'demo-royal' || params.id === 'demo-scrapbook') {
+      const isTemplate02 = params.id === 'demo-scrapbook';
+      const mockExp: RakhiExperience = {
+        id: params.id,
+        senderName: 'Mansi',
+        recipientName: 'Pagga',
+        letterText: isTemplate02
+          ? 'From childhood fights over the remote to growing up and sharing our biggest secrets, our bond has only grown stronger. Thank you for making my childhood magical and for always believing in me.\n\nHappy Raksha Bandhan to my partner in crime!'
+          : 'Dear sibling, through all of life\'s highs and lows, you have been my constant support. On this beautiful day of Rakhi, I wish you endless happiness, peace, and success. Thank you for just being you.',
+        giftType: 'voucher',
+        giftTitle: 'Baskin Robbins Ice Cream Voucher',
+        giftValue: '500',
+        photoUrls: [
+          '/images/siblings.png',
+          '/images/mithai.png',
+          '/images/wrist.png'
+        ],
+        voiceUrl: null,
+        locale: 'en',
+        templateId: isTemplate02 ? 'template-02' : 'rakhi-2025',
+        createdAt: Date.now(),
+        openedAt: null
+      };
+      setExperience(mockExp);
+      setLoading(false);
+      return;
+    }
+
     getExperience(params.id)
       .then(exp => {
         if (!exp) setMissing(true);

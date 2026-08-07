@@ -242,22 +242,24 @@ export default function SelectTemplatePage() {
 
                 {/* CTAs */}
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button
+                  <motion.button
                     onClick={(e) => openPreview(e, tpl.previewUrl)}
+                    whileHover={{ scale: 1.05 }}
                     style={{
                       padding: '8px 14px',
                       borderRadius: 100,
-                      background: 'transparent',
-                      color: 'rgba(255, 248, 240, 0.8)',
+                      background: isHovered ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                      color: isHovered ? '#C9A84C' : 'rgba(255, 248, 240, 0.8)',
                       fontSize: '0.72rem',
                       fontWeight: 500,
                       cursor: 'pointer',
-                      border: '1px solid rgba(255,255,255,0.15)',
+                      border: isHovered ? `1px solid ${tpl.glowColor}` : '1px solid rgba(255,255,255,0.15)',
+                      boxShadow: isHovered ? `0 0 10px ${tpl.glowColor}` : 'none',
                       transition: 'all 0.2s',
                     }}
                   >
                     {locale === 'hi' ? 'डेमो' : 'Preview'}
-                  </button>
+                  </motion.button>
 
                   <motion.div
                     animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
