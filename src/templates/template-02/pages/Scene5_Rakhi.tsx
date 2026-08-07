@@ -117,11 +117,13 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          width: '96%', maxWidth: 720,
-          height: '80vh', maxHeight: 520,
+          width: '95%',
+          maxWidth: 660,
+          aspectRatio: '1.32', // Perfect horizontal open notebook aspect ratio
+          maxHeight: '78vh', // Prevent running off mobile screens vertically
           display: 'flex',
           position: 'relative',
-          boxShadow: '0 35px 75px rgba(0,0,0,0.75), 0 0 0 1px rgba(212,175,55,0.08)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(212,175,55,0.08)',
           borderRadius: 12,
           overflow: 'visible',
           background: '#3d160e',

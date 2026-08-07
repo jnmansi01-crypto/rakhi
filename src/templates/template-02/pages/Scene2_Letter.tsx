@@ -82,13 +82,13 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         initial={{ opacity: 1, scale: 1 }}
         animate={{ opacity: 1, scale: 1 }}
         style={{
-          width: '96%',
-          maxWidth: 720,
-          height: '80vh',
-          maxHeight: 520,
+          width: '95%',
+          maxWidth: 660,
+          aspectRatio: '1.32', // Perfect horizontal open notebook aspect ratio
+          maxHeight: '78vh', // Prevent running off mobile screens vertically
           display: 'flex',
           position: 'relative',
-          boxShadow: '0 30px 70px rgba(0,0,0,0.7)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
           borderRadius: 12,
           overflow: 'hidden',
           background: '#3d160e', // Leather backing visible on edges
