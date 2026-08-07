@@ -122,22 +122,53 @@ export default function SelectTemplatePage() {
         </motion.p>
       </div>
 
-      {/* Flex container showing square cards side-by-side on desktop, stacked on mobile */}
+      {/* Flex container showing square cards side-by-side on desktop, scaled on mobile */}
       <div style={{
         display: 'flex', 
         flexDirection: 'row', 
-        flexWrap: 'wrap',
-        gap: 32,
+        flexWrap: 'nowrap', // Force side-by-side row display
+        gap: 16,
         width: '100%', 
-        maxWidth: 760,
+        maxWidth: 720,
         justifyContent: 'center',
         alignItems: 'stretch',
       }}>
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (max-width: 600px) {
+            .template-square-card {
+              aspect-ratio: 1/1.12 !important; /* Slightly taller for text */
+              padding: 16px !important;
+              max-width: 48% !important; /* Forces row side-by-side */
+            }
+            .template-title {
+              font-size: 1.05rem !important;
+            }
+            .template-desc {
+              font-size: 0.72rem !important;
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+            .template-badge {
+              font-size: 0.58rem !important;
+              padding: 2px 6px !important;
+            }
+            .template-price {
+              font-size: 0.8rem !important;
+              padding: 2px 8px !important;
+            }
+            .template-features {
+              display: none !important; /* Hide to save space on mobile */
+            }
+          }
+        ` }} />
         {templates.map((tpl, i) => {
           const isHovered = hoveredId === tpl.id;
           return (
             <motion.div
               key={tpl.id}
+              className="template-square-card"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
@@ -146,9 +177,9 @@ export default function SelectTemplatePage() {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => handleSelect(tpl.id)}
               style={{
-                flex: '1 1 300px',
+                flex: '1 1 0px',
                 maxWidth: 340,
-                aspectRatio: '1/1', // Force card to be a perfect square
+                aspectRatio: '1/1',
                 background: 'rgba(255,255,255,0.02)',
                 border: isHovered 
                   ? `1.5px solid ${tpl.glowColor}` 
@@ -167,7 +198,7 @@ export default function SelectTemplatePage() {
                 transition: 'border 0.3s ease, box-shadow 0.3s ease',
               }}
             >
-              {/* Dynamic theme preview background: slightly opaque on hover to show theme "vibe" */}
+              {/* Dynamic theme preview background */}
               <div style={{
                 position: 'absolute', inset: 0,
                 background: tpl.visual,
@@ -179,7 +210,7 @@ export default function SelectTemplatePage() {
 
               {/* Upper Header Row */}
               <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <span style={{
+                <span className="template-badge" style={{
                   background: 'rgba(201,168,76,0.1)',
                   border: '1px solid rgba(201,168,76,0.3)',
                   color: '#C9A84C',
@@ -194,7 +225,7 @@ export default function SelectTemplatePage() {
                 </span>
 
                 {/* Price display tag */}
-                <span style={{
+                <span className="template-price" style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '1rem',
                   fontWeight: 600,
@@ -210,7 +241,7 @@ export default function SelectTemplatePage() {
 
               {/* Title & Description */}
               <div style={{ zIndex: 2, margin: '16px 0' }}>
-                <h2 style={{
+                <h2 className="template-title" style={{
                   fontFamily: 'Georgia, serif',
                   fontSize: '1.4rem',
                   fontWeight: 400,
@@ -219,7 +250,7 @@ export default function SelectTemplatePage() {
                 }}>
                   <span style={{ fontSize: '1.6rem' }}>{tpl.emoji}</span> {tpl.name}
                 </h2>
-                <p style={{
+                <p className="template-desc" style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.82rem',
                   color: 'rgba(255,248,240,0.65)',
@@ -232,7 +263,7 @@ export default function SelectTemplatePage() {
               {/* Footer row with highlights / interactive select button */}
               <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 8 }}>
                 {/* Feature tags */}
-                <div style={{ display: 'flex', gap: 6 }}>
+                <div className="template-features" style={{ display: 'flex', gap: 6 }}>
                   {tpl.features.map((f, idx) => (
                     <span key={idx} style={{ fontSize: '0.62rem', color: 'rgba(251, 230, 190, 0.45)', border: '1px solid rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}>
                       {f}

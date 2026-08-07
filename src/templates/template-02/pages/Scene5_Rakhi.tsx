@@ -65,12 +65,29 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
   return (
     <div style={{
       position: 'absolute', inset: 0,
-      background: '#120e0d',
-      backgroundImage: 'radial-gradient(ellipse at 50% 50%, #1f1412 0%, #080606 100%)',
+      background: isTied ? '#1c0c09' : '#120e0d',
+      backgroundImage: isTied 
+        ? 'radial-gradient(circle at center, #361712 0%, #150604 100%)' 
+        : 'radial-gradient(ellipse at 50% 50%, #1f1412 0%, #080606 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
       overflowY: 'auto',
+      transition: 'all 1.2s ease-in-out',
     }}>
+      {/* Dynamic celebratory aura glow overlay when tied */}
+      {isTied && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: 'radial-gradient(circle at 50% 40%, rgba(212,175,55,0.18) 0%, transparent 70%)',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        />
+      )}
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Yatra+One&display=swap');
         .hw { font-family: 'Caveat', cursive; }

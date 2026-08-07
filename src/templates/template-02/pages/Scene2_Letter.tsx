@@ -321,7 +321,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         </div>
 
         {/* RIGHT PAGE: Ruled notebook paper with letter text */}
-        <div style={{
+        <div className="scrapbook-page-right" style={{
           flex: 1,
           background: '#faf6ee',
           borderRadius: '0 8px 8px 0',

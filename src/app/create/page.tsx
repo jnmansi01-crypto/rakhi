@@ -468,7 +468,7 @@ function CreatePageContent() {
           </span>
         </motion.button>
 
-        {form.voiceUrl && !recording && (
+        {form.voiceUrl && form.voiceUrl.startsWith('blob:') && !recording && (
           <audio controls src={form.voiceUrl}
             style={{ width: '100%', borderRadius: 8 }} />
         )}
