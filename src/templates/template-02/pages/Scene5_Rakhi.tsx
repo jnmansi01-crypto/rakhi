@@ -174,8 +174,11 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           @media (max-width: 600px) {
             .scrapbook-container {
               flex-direction: column !important;
-              aspect-ratio: 0.72 !important;
+              aspect-ratio: auto !important; /* Allow dynamic height content */
+              min-height: 480px !important;
+              width: 100% !important;
               height: auto !important;
+              padding: 6px !important;
             }
             .scrapbook-spine {
               display: none !important;
@@ -185,7 +188,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
               width: ${mobilePage === 'left' ? '100%' : '0'} !important;
               height: ${mobilePage === 'left' ? '100%' : '0'} !important;
               overflow: ${mobilePage === 'left' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'left' ? '24px 20px 20px' : '0'} !important;
+              padding: ${mobilePage === 'left' ? '28px 24px 24px !important' : '0'} !important;
               border-radius: 8px !important;
             }
             .scrapbook-page-right {
@@ -193,7 +196,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
               width: ${mobilePage === 'right' ? '100%' : '0'} !important;
               height: ${mobilePage === 'right' ? '100%' : '0'} !important;
               overflow: ${mobilePage === 'right' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'right' ? '24px 20px 20px' : '0'} !important;
+              padding: ${mobilePage === 'right' ? '32px 24px 28px !important' : '0'} !important;
               border-radius: 8px !important;
             }
           }
