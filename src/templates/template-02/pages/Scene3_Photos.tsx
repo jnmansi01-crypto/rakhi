@@ -34,13 +34,13 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
 
   return (
     <div style={{
-      position: 'fixed', inset: 0,
+      position: 'absolute', inset: 0,
       background: '#120e0d',
       backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
-      overflow: 'hidden',
+      overflowY: 'auto',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
@@ -50,24 +50,40 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
       ` }} />
 
       {/* 3D Open Book Spread Container */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
+      <div
+        className="scrapbook-container"
         style={{
           width: '95%',
-          maxWidth: 660,
-          aspectRatio: '1.32', // Perfect horizontal open notebook aspect ratio
-          maxHeight: '78vh', // Prevent running off mobile screens vertically
+          maxWidth: 680,
           display: 'flex',
           position: 'relative',
           boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
           borderRadius: 12,
           overflow: 'hidden',
           background: '#3d160e',
-          padding: '8px 4px 8px 8px',
+          padding: '8px',
         }}
       >
+        <style dangerouslySetInnerHTML={{ __html: `
+          .scrapbook-container {
+            flex-direction: row;
+            aspect-ratio: 1.32;
+            height: auto;
+          }
+          @media (max-width: 600px) {
+            .scrapbook-container {
+              flex-direction: column !important;
+              aspect-ratio: auto !important;
+              height: 80vh !important;
+              max-height: 520px !important;
+              overflow-y: auto !important;
+            }
+            .scrapbook-spine {
+              display: none !important;
+            }
+          }
+        ` }} />
+
         {/* LEFT PAGE: Scrapbook Cardstock (Photos 1 & 2) */}
         <div style={{
           flex: 1,
@@ -135,13 +151,15 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
                 <motion.div
                   key={i}
                   onClick={() => { vibrate(); setActiveIdx(i); }}
+                  whileHover={{ scale: 1.08, zIndex: 10, rotate: 0 }}
                   style={{
                     position: 'absolute',
+                    width: '78%',
+                    maxWidth: 160,
                     background: '#fff',
-                    padding: '8px 8px 24px 8px',
-                    width: 125,
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.25)',
-                    cursor: 'pointer',
+                    padding: '8px 8px 20px 8px',
+                    boxShadow: '0 8px 18px rgba(0,0,0,0.18)',
+                    border: '1px solid #e2ddd5',
                     transform: `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`,
                     zIndex: 5 + i,
                   }}
@@ -178,7 +196,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         </div>
 
         {/* CENTRAL BINDER SPINE */}
-        <div style={{
+        <div className="scrapbook-spine" style={{
           width: 24,
           background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
           position: 'relative', zIndex: 10,
@@ -304,7 +322,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Fullscreen zoom overlay */}
       <AnimatePresence>

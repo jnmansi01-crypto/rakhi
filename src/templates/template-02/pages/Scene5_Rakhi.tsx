@@ -52,11 +52,12 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
 
   return (
     <div style={{
-      position: 'fixed', inset: 0,
+      position: 'absolute', inset: 0,
       background: '#120e0d',
       backgroundImage: 'radial-gradient(ellipse at 50% 50%, #1f1412 0%, #080606 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
+      overflowY: 'auto',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Yatra+One&display=swap');
@@ -111,25 +112,40 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         }
       ` }} />
 
-      {/* Open Book Spread */}
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      <div
+        className="scrapbook-container"
         style={{
           width: '95%',
-          maxWidth: 660,
-          aspectRatio: '1.32', // Perfect horizontal open notebook aspect ratio
-          maxHeight: '78vh', // Prevent running off mobile screens vertically
+          maxWidth: 680,
           display: 'flex',
           position: 'relative',
           boxShadow: '0 25px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(212,175,55,0.08)',
           borderRadius: 12,
           overflow: 'visible',
           background: '#3d160e',
-          padding: '8px 4px 8px 8px',
+          padding: '8px',
         }}
       >
+        <style dangerouslySetInnerHTML={{ __html: `
+          .scrapbook-container {
+            flex-direction: row;
+            aspect-ratio: 1.32;
+            height: auto;
+          }
+          @media (max-width: 600px) {
+            .scrapbook-container {
+              flex-direction: column !important;
+              aspect-ratio: auto !important;
+              height: 80vh !important;
+              max-height: 520px !important;
+              overflow-y: auto !important;
+            }
+            .scrapbook-spine {
+              display: none !important;
+            }
+          }
+        ` }} />
+
         {/* ── LEFT PAGE ── */}
         <motion.div
           animate={isTied ? { background: '#f7efe0' } : { background: '#f2e6cf' }}
@@ -143,11 +159,11 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             boxShadow: 'inset -18px 0 24px rgba(0,0,0,0.12)',
           }}
         >
-          {/* Decorative border frame */}
-          <div style={{ position: 'absolute', inset: 14, border: '1px solid rgba(199,151,116,0.25)', borderRadius: 4, pointerEvents: 'none' }} />
+          {/* Subtle grid lines background overlay */}
+          <div style={{ position: 'absolute', inset: 12, border: '1px solid rgba(199,151,116,0.3)', borderRadius: 4, zIndex: 1 }} />
 
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+          {/* Aksht & Roli detailing splattered realistic vector overlay */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
             <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
               <defs>
                 {/* 3D Chawal (Rice) Gradient */}
@@ -163,50 +179,35 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
                   <stop offset="100%" stopColor="#690a03" />
                 </radialGradient>
               </defs>
-              {/* Rice shadows */}
+              {/* Top Left Cluster */}
               <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(35 40 40)"/>
-              <ellipse cx="65" cy="74" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-15 64 70)"/>
-              {/* Rice bodies */}
+              <ellipse cx="65" cy="38" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-15 64 36)"/>
               <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(35 40 40)"/>
-              <ellipse cx="64" cy="70" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-15 64 70)"/>
-              {/* Roli splatters */}
-              <circle cx="27" cy="81" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="26" cy="80" r="6" fill="url(#roli3d)"/>
+              <ellipse cx="64" cy="36" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-15 64 36)"/>
+              <circle cx="27" cy="71" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="26" cy="70" r="6" fill="url(#roli3d)"/>
+              <circle cx="34" cy="80" r="3.5" fill="url(#roli3d)"/>
 
               {/* Gold Dust Scatter */}
-              <circle cx="36" cy="136" r="2.2" fill="#d4af37" opacity="0.8"/>
-              <circle cx="90" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
-              <circle cx="70" cy="170" r="2.0" fill="#d4af37" opacity="0.8"/>
+              <circle cx="25" cy="120" r="2.2" fill="#d4af37" opacity="0.8"/>
+              <circle cx="80" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
+              <circle cx="95" cy="130" r="2.0" fill="#d4af37" opacity="0.8"/>
 
-              {/* Bottom Right Rice */}
-              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 380)"/>
-              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 380)"/>
+              {/* Bottom Right Cluster */}
+              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-30 250 380)"/>
+              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-30 250 380)"/>
             </svg>
           </div>
 
-          {/* Top gold ornament line */}
-          <div style={{ width: '70%', display: 'flex', alignItems: 'center', gap: 8, zIndex: 2, marginTop: 4 }}>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, #d4af37)' }} />
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#d4af37', opacity: 0.7 }} />
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, #d4af37, transparent)' }} />
-          </div>
-
-          {/* Page Header */}
-          <p className="serif" style={{
-            fontSize: '0.68rem', color: '#8c7662', letterSpacing: '0.18em',
-            textTransform: 'uppercase', fontWeight: 600, margin: 0, zIndex: 2,
+          {/* Sibling card container (Thali representation) */}
+          <div style={{
+            position: 'relative', width: '100%', flex: 1, zIndex: 3,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
           }}>
-            {locale === 'hi' ? 'रक्षा सूत्र' : 'The Sacred Thread'}
-          </p>
-
-          {/* CENTER: Either the slider (pre-tie) or clean tied state */}
-          <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', gap: 20 }}>
             <AnimatePresence mode="wait">
               {!isTied ? (
                 <motion.div
-                  key="slider-zone"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  key="untied-state"
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.4 }}
                   style={{ width: '88%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}
@@ -223,13 +224,11 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
 
                   {/* Slider track container */}
                   <div style={{ position: 'relative', width: '100%', height: 6 }}>
-                    {/* Track background */}
                     <div style={{
                       position: 'absolute', inset: 0, borderRadius: 3,
                       background: 'rgba(199,151,116,0.15)',
                       border: '1px solid rgba(199,151,116,0.2)',
                     }} />
-                    {/* Braided fill */}
                     <div style={{
                       position: 'absolute', top: 0, left: 0, height: '100%',
                       width: `${progress * 100}%`, borderRadius: 3,
@@ -253,15 +252,11 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
                   transition={{ duration: 0.7, delay: 0.3, ease: 'easeOut' }}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center' }}
                 >
-                  {/* Decorative mauli knot SVG */}
                   <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
-                    {/* Loose thread ends */}
                     <path d="M 0 20 Q 10 20 18 20" stroke="#c84040" strokeWidth="2.5" strokeLinecap="round"/>
                     <path d="M 46 20 Q 54 20 64 20" stroke="#c84040" strokeWidth="2.5" strokeLinecap="round"/>
-                    {/* Knot loops */}
                     <path d="M 18 20 C 18 8 32 8 32 20 C 32 32 46 32 46 20" stroke="#d4af37" strokeWidth="2" fill="none" strokeLinecap="round"/>
                     <path d="M 18 20 C 18 32 32 32 32 20 C 32 8 46 8 46 20" stroke="#c84040" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.7"/>
-                    {/* Center knot dot */}
                     <circle cx="32" cy="20" r="4" fill="#d4af37" stroke="#856414" strokeWidth="1"/>
                   </svg>
                   <p className="hw" style={{ fontSize: '1.4rem', color: '#7c6454', margin: 0, lineHeight: 1.2 }}>
@@ -277,7 +272,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         </motion.div>
 
         {/* ── CENTRAL BINDER SPINE ── */}
-        <div style={{
+        <div className="scrapbook-spine" style={{
           width: 24, flexShrink: 0,
           background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
           position: 'relative', zIndex: 10,
@@ -539,7 +534,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </div>
   );
 }

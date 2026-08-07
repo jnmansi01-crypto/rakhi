@@ -57,13 +57,13 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
     <div 
       onClick={skipTypewriter}
       style={{
-        position: 'fixed', inset: 0,
+        position: 'absolute', inset: 0,
         background: '#120e0d',
         backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         padding: '24px 12px',
-        overflow: 'hidden',
+        overflowY: 'auto',
       }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
@@ -78,23 +78,40 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
       ` }} />
 
       {/* 3D Open Book Wrapper */}
-      <motion.div
-        initial={{ opacity: 1, scale: 1 }}
-        animate={{ opacity: 1, scale: 1 }}
+      <div
+        className="scrapbook-container"
         style={{
           width: '95%',
-          maxWidth: 660,
-          aspectRatio: '1.32', // Perfect horizontal open notebook aspect ratio
-          maxHeight: '78vh', // Prevent running off mobile screens vertically
+          maxWidth: 680,
           display: 'flex',
           position: 'relative',
           boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
           borderRadius: 12,
           overflow: 'hidden',
           background: '#3d160e', // Leather backing visible on edges
-          padding: '8px 4px 8px 8px',
+          padding: '8px',
         }}
       >
+        <style dangerouslySetInnerHTML={{ __html: `
+          .scrapbook-container {
+            flex-direction: row;
+            aspect-ratio: 1.32;
+            height: auto;
+          }
+          @media (max-width: 600px) {
+            .scrapbook-container {
+              flex-direction: column !important;
+              aspect-ratio: auto !important;
+              height: 80vh !important;
+              max-height: 520px !important;
+              overflow-y: auto !important;
+            }
+            .scrapbook-spine {
+              display: none !important;
+            }
+          }
+        ` }} />
+
         {/* LEFT PAGE: Scrapbook Cardstock (Decorative / Photo frame) */}
         <div style={{
           flex: 1,
@@ -225,7 +242,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         </div>
 
         {/* CENTRAL BINDER SPINE (Realistic brass coil overlay) */}
-        <div style={{
+        <div className="scrapbook-spine" style={{
           width: 24,
           background: 'linear-gradient(to right, #290e09 0%, #150604 50%, #290e09 100%)',
           position: 'relative',
@@ -371,7 +388,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             </motion.div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

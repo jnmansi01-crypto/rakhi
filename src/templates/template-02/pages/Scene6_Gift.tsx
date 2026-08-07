@@ -61,13 +61,13 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
 
   return (
     <div style={{
-      position: 'fixed', inset: 0,
+      position: 'absolute', inset: 0,
       background: '#1d1412',
       backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'space-between',
       padding: '40px 24px 28px 24px',
-      overflow: 'hidden',
+      overflowY: 'auto',
     }}>
       {/* Header */}
       <div style={{ textAlign: 'center', zIndex: 10 }}>

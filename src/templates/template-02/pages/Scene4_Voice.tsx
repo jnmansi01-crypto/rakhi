@@ -56,13 +56,13 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
 
   return (
     <div style={{
-      position: 'fixed', inset: 0,
+      position: 'absolute', inset: 0,
       background: '#120e0d',
       backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
-      overflow: 'hidden',
+      overflowY: 'auto',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
@@ -136,14 +136,11 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
               <circle cx="27" cy="81" r="6" fill="rgba(0,0,0,0.15)"/>
               <circle cx="26" cy="80" r="6" fill="url(#roli3d)"/>
 
-              {/* Gold Dust Scatter */}
-              <circle cx="36" cy="136" r="2.2" fill="#d4af37" opacity="0.8"/>
-              <circle cx="90" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
-              <circle cx="70" cy="170" r="2.0" fill="#d4af37" opacity="0.8"/>
-
-              {/* Bottom Right Rice */}
-              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 380)"/>
-              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 380)"/>
+              <ellipse cx="251" cy="42" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 40)"/>
+              <ellipse cx="250" cy="40" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 40)"/>
+              <circle cx="263" cy="56" r="6" fill="rgba(0,0,0,0.15)"/>
+              <circle cx="262" cy="55" r="6" fill="url(#roli3d)"/>
+              <circle cx="270" cy="90" r="2.2" fill="#d4af37" opacity="0.8"/>
             </svg>
           </div>
 
@@ -177,7 +174,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
         </div>
 
         {/* CENTRAL BINDER SPINE */}
-        <div style={{
+        <div className="scrapbook-spine" style={{
           width: 24,
           background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
           position: 'relative', zIndex: 10,
