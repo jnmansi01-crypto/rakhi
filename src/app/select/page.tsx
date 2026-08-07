@@ -123,40 +123,48 @@ export default function SelectTemplatePage() {
       </div>
 
       {/* Flex container showing square cards side-by-side on desktop, scaled on mobile */}
-      <div style={{
-        display: 'flex', 
-        flexDirection: 'row', 
-        flexWrap: 'nowrap', // Force side-by-side row display
-        gap: 16,
-        width: '100%', 
-        maxWidth: 720,
-        justifyContent: 'center',
-        alignItems: 'stretch',
-      }}>
+      <div 
+        className="template-grid-wrapper"
+        style={{
+          display: 'flex', 
+          flexDirection: 'row', 
+          flexWrap: 'nowrap', // Force side-by-side row display
+          gap: 16,
+          width: '100%', 
+          maxWidth: 720,
+          justifyContent: 'center',
+          alignItems: 'stretch',
+        }}
+      >
         <style dangerouslySetInnerHTML={{ __html: `
           @media (max-width: 600px) {
+            .template-grid-wrapper {
+              flex-direction: column !important;
+              align-items: center !important;
+            }
             .template-square-card {
-              aspect-ratio: 1/1.12 !important; /* Slightly taller for text */
-              padding: 16px !important;
-              max-width: 48% !important; /* Forces row side-by-side */
+              aspect-ratio: 1.6/1 !important; /* Wider horizontal rectangle */
+              padding: 20px !important;
+              max-width: 100% !important; /* Full width stack */
+              width: 100% !important;
             }
             .template-title {
-              font-size: 1.05rem !important;
+              font-size: 1.15rem !important;
             }
             .template-desc {
-              font-size: 0.72rem !important;
+              font-size: 0.76rem !important;
               display: -webkit-box;
-              -webkit-line-clamp: 3;
+              -webkit-line-clamp: 2;
               -webkit-box-orient: vertical;
               overflow: hidden;
             }
             .template-badge {
-              font-size: 0.58rem !important;
-              padding: 2px 6px !important;
+              font-size: 0.65rem !important;
+              padding: 3px 8px !important;
             }
             .template-price {
-              font-size: 0.8rem !important;
-              padding: 2px 8px !important;
+              font-size: 0.85rem !important;
+              padding: 3px 10px !important;
             }
             .template-features {
               display: none !important; /* Hide to save space on mobile */
