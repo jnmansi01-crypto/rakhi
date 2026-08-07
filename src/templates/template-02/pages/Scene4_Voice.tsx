@@ -138,6 +138,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
           className="scrapbook-page-left"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0} // Keep container fixed horizontally
           onDragEnd={(event, info) => {
             if (window.innerWidth <= 600 && info.offset.x < -40) {
               setMobilePage('right');
@@ -157,7 +158,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             position: 'relative',
             boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
             cursor: 'grab',
-            touchAction: 'none',
+            touchAction: 'pan-y', // Enables native vertical scrolling
           }}>
           <div style={{
             position: 'absolute', inset: 12,
@@ -268,6 +269,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
           className="scrapbook-page-right"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0} // Keep container fixed horizontally
           onDragEnd={(event, info) => {
             if (window.innerWidth <= 600 && info.offset.x > 40) {
               setMobilePage('left');
@@ -287,7 +289,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             position: 'relative',
             boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
             cursor: 'grab',
-            touchAction: 'none',
+            touchAction: 'pan-y', // Enables native vertical scrolling
           }}>
           <div style={{
             position: 'absolute', inset: 12,

@@ -147,6 +147,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
           className="scrapbook-page-left"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0} // Fixed in place, won't slide off-screen
           onDragEnd={(event, info) => {
             // Swipe left on the Left page to flip to the Right page
             if (window.innerWidth <= 600 && info.offset.x < -40) {
@@ -168,7 +169,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
             backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, transparent 80%)',
             cursor: 'grab',
-            touchAction: 'none',
+            touchAction: 'pan-y', // Enables native vertical scrolling
           }}>
           {/* Faint gold frame */}
           <div style={{
@@ -336,6 +337,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
           className="scrapbook-page-right"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0} // Fixed in place, won't slide off-screen
           onDragEnd={(event, info) => {
             // Swipe right on the Right page to flip back to the Left page
             if (window.innerWidth <= 600 && info.offset.x > 40) {
@@ -356,7 +358,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
             overflow: 'hidden',
             cursor: 'grab',
-            touchAction: 'none',
+            touchAction: 'pan-y', // Enables native vertical scrolling
           }}>
           {/* Auto-aligning dynamic notebook lines relative to letter text line height */}
           <div style={{
