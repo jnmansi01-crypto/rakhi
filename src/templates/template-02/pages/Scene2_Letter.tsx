@@ -105,12 +105,15 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             flex-direction: row;
             aspect-ratio: 1.32;
             height: auto;
+            perspective: 1000px; /* Enable 3D transitions */
           }
           .scrapbook-page-left {
             display: flex !important;
+            transform-origin: right center;
           }
           .scrapbook-page-right {
             display: flex !important;
+            transform-origin: left center;
           }
           @media (max-width: 600px) {
             .scrapbook-container {
@@ -166,15 +169,21 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         </div>
 
         {/* LEFT PAGE: Scrapbook Cardstock (Decorative / Photo frame) */}
-        <div className="scrapbook-page-left" style={{
-          flex: 1,
-          background: '#f2e6cf',
-          borderRadius: '8px 0 0 8px',
-          padding: 24,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          position: 'relative',
-          boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
+        <motion.div 
+          className="scrapbook-page-left"
+          initial={{ rotateY: -30, opacity: 0.8 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: -90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          style={{
+            flex: 1,
+            background: '#f2e6cf',
+            borderRadius: '8px 0 0 8px',
+            padding: 24,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            position: 'relative',
+            boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
           backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, transparent 80%)',
         }}>
           {/* Faint gold frame */}
@@ -292,7 +301,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
               {locale === 'hi' ? 'मीठी यादें, अटूट बंधन...' : 'Tied with sweetness...'}
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* CENTRAL BINDER SPINE (Realistic brass coil overlay) */}
         <div className="scrapbook-spine" style={{
@@ -321,16 +330,22 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         </div>
 
         {/* RIGHT PAGE: Ruled notebook paper with letter text */}
-        <div className="scrapbook-page-right" style={{
-          flex: 1,
-          background: '#faf6ee',
-          borderRadius: '0 8px 8px 0',
-          padding: '24px 16px 20px 24px',
-          display: 'flex', flexDirection: 'column',
-          position: 'relative',
-          boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
-          overflow: 'hidden',
-        }}>
+        <motion.div 
+          className="scrapbook-page-right"
+          initial={{ rotateY: 30, opacity: 0.8 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: 90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          style={{
+            flex: 1,
+            background: '#faf6ee',
+            borderRadius: '0 8px 8px 0',
+            padding: '24px 16px 20px 24px',
+            display: 'flex', flexDirection: 'column',
+            position: 'relative',
+            boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
+            overflow: 'hidden',
+          }}>
           {/* Auto-aligning dynamic notebook lines relative to letter text line height */}
           <div style={{
             position: 'absolute', inset: 0,
@@ -440,7 +455,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
               </button>
             </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
