@@ -141,9 +141,11 @@ export default function SelectTemplatePage() {
             .template-grid-wrapper {
               flex-direction: column !important;
               align-items: center !important;
+              gap: 20px !important; /* Increase gap between vertical cards */
             }
             .template-square-card {
-              aspect-ratio: 1.6/1 !important; /* Wider horizontal rectangle */
+              aspect-ratio: auto !important; /* Remove fixed ratio constraints to prevent overlaps */
+              min-height: 180px !important;
               padding: 20px !important;
               max-width: 100% !important; /* Full width stack */
               width: 100% !important;
@@ -152,11 +154,10 @@ export default function SelectTemplatePage() {
               font-size: 1.15rem !important;
             }
             .template-desc {
-              font-size: 0.76rem !important;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
+              font-size: 0.78rem !important;
+              display: block !important; /* Let text wrap normally */
+              line-height: 1.4 !important;
+              margin: 12px 0 !important;
             }
             .template-badge {
               font-size: 0.65rem !important;
