@@ -44,6 +44,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window,document,'script','dataLayer','GTM-NVQCNBSJ');
           `}
         </Script>
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-T3GHS5D74R"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-T3GHS5D74R');
+          `}
+        </Script>
       </head>
       <body>
         {/* Google Tag Manager (noscript) - Body fallback */}
@@ -56,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         </noscript>
         {children}
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX'} />
+        <GoogleAnalytics gaId="G-T3GHS5D74R" />
       </body>
     </html>
   );
