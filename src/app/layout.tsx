@@ -4,8 +4,8 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from 'next/script';
 import './globals.css';
 
-const yatraOne = Yatra_One({ 
-  weight: '400', 
+const yatraOne = Yatra_One({
+  weight: '400',
   subsets: ['devanagari', 'latin'],
   variable: '--font-yatra',
   display: 'swap'
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${yatraOne.variable}`}>
       <head>
         {/* Google Tag Manager - Head Script */}
-        <Script id="google-tag-manager" strategy="afterInteractive">
+        <Script id="google-tag-manager" strategy="beforeInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -48,10 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* Google Tag Manager (noscript) - Body fallback */}
         <noscript>
-          <iframe 
+          <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-NVQCNDSJ"
-            height="0" 
-            width="0" 
+            height="0"
+            width="0"
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
