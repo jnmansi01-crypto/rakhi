@@ -113,10 +113,18 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
             }
             .scrapbook-page-left {
               display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
+              width: ${mobilePage === 'left' ? '100%' : '0'} !important;
+              height: ${mobilePage === 'left' ? '100%' : '0'} !important;
+              overflow: ${mobilePage === 'left' ? 'visible' : 'hidden'} !important;
+              padding: ${mobilePage === 'left' ? '24px' : '0'} !important;
               border-radius: 8px !important;
             }
             .scrapbook-page-right {
               display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
+              width: ${mobilePage === 'right' ? '100%' : '0'} !important;
+              height: ${mobilePage === 'right' ? '100%' : '0'} !important;
+              overflow: ${mobilePage === 'right' ? 'visible' : 'hidden'} !important;
+              padding: ${mobilePage === 'right' ? '24px 16px' : '0'} !important;
               border-radius: 8px !important;
             }
           }
