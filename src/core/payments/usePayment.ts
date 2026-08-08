@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { OrderResponse, VerifyResponse, CheckoutOptions, RazorpayPaymentResponse } from '@/types/payment';
-import { trackInitiateCheckout } from './analytics';
+import { trackInitiateCheckout, trackPurchase } from './analytics';
 
 // Add Razorpay to window interface
 declare global {
@@ -100,6 +100,11 @@ export function usePayment() {
             if (verifyData.success) {
               setSuccess(true);
               setPaymentStatusMessage('Payment verified successfully!');
+              
+              // ─── Analytics Tracking (GTM Data Layer) ───
+              // Trigger dynamic purchase tracking event on successful Razorpay verification
+              trackPurchase(orderData.amount, templateId, response.razorpay_payment_id);
+              
               onSuccess();
             } else {
               throw new Error(verifyData.message || 'Payment verification failed');
