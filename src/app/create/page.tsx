@@ -101,6 +101,8 @@ function CreatePageContent() {
   });
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
+  const [showFailureScreen, setShowFailureScreen] = useState(false);
 
   // Allow scrolling on create page
   useEffect(() => {
@@ -568,7 +570,81 @@ function CreatePageContent() {
       </div>
     ),
 
-    preview: shareUrl ? (
+    preview: showSuccessScreen ? (
+      /* ── PAYMENT SUCCESS SCREEN ─────────────────────── */
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center', textAlign: 'center' }}>
+        <motion.div
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ fontSize: '5rem' }}
+        >
+          🌸
+        </motion.div>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#FFF8F0', fontStyle: 'italic', margin: 0 }}>
+          {locale === 'hi' 
+            ? 'पैक किया गया राखी बॉक्स!' 
+            : 'Thank you for your purchase with a rakhi, roli and chawal packed in a transparent box'}
+        </h2>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'rgba(255,248,240,0.7)', margin: 0 }}>
+          {locale === 'hi' 
+            ? 'आपका गिफ्ट तैयार है, अब अपने भाई या बहन के साथ साझा करें।'
+            : 'Your gift is ready. You can now share the link with your sibling.'}
+        </p>
+
+        <button
+          onClick={share}
+          style={{ ...btnStyle, width: '100%', background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff' }}
+        >
+          {locale === 'hi' ? 'लिंक साझा करें ↗' : 'Share your link ↗'}
+        </button>
+      </div>
+    ) : showFailureScreen ? (
+      /* ── PAYMENT FAILURE SCREEN ─────────────────────── */
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center', textAlign: 'center' }}>
+        <motion.div
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ fontSize: '5rem' }}
+        >
+          ⚠️
+        </motion.div>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', color: '#ff4d4f', fontStyle: 'italic', margin: 0 }}>
+          {locale === 'hi' ? 'ओह! आपका भुगतान विफल रहा' : 'Oh! Your payment failed'}
+        </h2>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'rgba(255,248,240,0.7)', margin: 0 }}>
+          {locale === 'hi' 
+            ? 'कृपया दोबारा प्रयास करें। आपके विवरण सुरक्षित सहेज लिए गए हैं।'
+            : 'Please check your connection or payment method and try again. Your draft details are saved.'}
+        </p>
+
+        <button
+          onClick={() => {
+            if (cardId) {
+              setShowFailureScreen(false);
+              payAndShare(
+                cardId, 
+                false, 
+                () => {
+                  setIsCardPaid(true);
+                  setShowSuccessScreen(true);
+                },
+                () => {
+                  setShowFailureScreen(true);
+                }
+              );
+            }
+          }}
+          disabled={paymentLoading}
+          style={{ ...btnStyle, width: '100%', background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff', opacity: paymentLoading ? 0.7 : 1 }}
+        >
+          {paymentLoading
+            ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
+            : (locale === 'hi' ? 'पुनः प्रयास करें 🔄' : 'Try Again 🔄')}
+        </button>
+      </div>
+    ) : shareUrl ? (
       /* ── SHARE SCREEN ──────────────────────────────── */
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center', textAlign: 'center' }}>
         <motion.div
@@ -585,9 +661,8 @@ function CreatePageContent() {
           transition={{ delay: 0.4 }}
           style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: '#FFF8F0', fontStyle: 'italic' }}
         >
-          {t('gift_sent', locale)}
+          {locale === 'hi' ? 'आपका गिफ्ट ड्राफ्ट तैयार हो चुका है 🌸' : 'Your gift draft has been created 🌸'}
         </motion.p>
-        {/* Link is hidden per user request */}
 
         <div style={{ display: 'flex', gap: 12, width: '100%' }}>
           <button
@@ -601,15 +676,17 @@ function CreatePageContent() {
           <button
             onClick={() => {
               if (cardId) {
-                if (isCardPaid) {
-                  share();
-                } else {
-                  payAndShare(cardId, false, () => {
+                payAndShare(
+                  cardId, 
+                  false, 
+                  () => {
                     setIsCardPaid(true);
-                    // Do not call share() here because the browser blocks navigator.share() 
-                    // without an immediate, synchronous user click.
-                  });
-                }
+                    setShowSuccessScreen(true);
+                  },
+                  () => {
+                    setShowFailureScreen(true);
+                  }
+                );
               }
             }}
             disabled={paymentLoading}
@@ -617,9 +694,7 @@ function CreatePageContent() {
           >
             {paymentLoading
               ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
-              : isCardPaid
-                ? `${t('share_now', locale)} ↗`
-                : (locale === 'hi' ? '₹299 में भेजें 🌸' : 'Pay ₹299 & Send 🌸')
+              : (locale === 'hi' ? '₹299 का भुगतान करें 🌸' : 'Pay ₹299 & Send 🌸')
             }
           </button>
         </div>

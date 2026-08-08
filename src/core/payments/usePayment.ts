@@ -28,9 +28,15 @@ export function usePayment() {
     });
   };
 
-  const payAndShare = useCallback(async (cardId: string, isPaidLocally: boolean, onSuccess: () => void) => {
+  const payAndShare = useCallback(async (
+    cardId: string, 
+    isPaidLocally: boolean, 
+    onSuccess: () => void, 
+    onFailure?: (msg: string) => void
+  ) => {
     if (!cardId) {
       setError('Card ID is missing.');
+      if (onFailure) onFailure('Card ID is missing.');
       return;
     }
 
@@ -98,7 +104,9 @@ export function usePayment() {
             }
           } catch (err: any) {
             console.error('Verification error:', err);
-            setError(err.message || 'Payment verification failed');
+            const errMsg = err.message || 'Payment verification failed';
+            setError(errMsg);
+            if (onFailure) onFailure(errMsg);
           } finally {
             setLoading(false);
             setPaymentStatusMessage(null);
@@ -115,6 +123,7 @@ export function usePayment() {
             setLoading(false);
             setPaymentStatusMessage(null);
             setError('Payment cancelled.');
+            if (onFailure) onFailure('Payment cancelled.');
           }
         }
       };
@@ -124,14 +133,18 @@ export function usePayment() {
       paymentObject.on('payment.failed', function (response: any) {
         setLoading(false);
         setPaymentStatusMessage(null);
-        setError(response.error.description || 'Payment failed.');
+        const failMsg = response.error.description || 'Payment failed.';
+        setError(failMsg);
+        if (onFailure) onFailure(failMsg);
       });
 
       paymentObject.open();
 
     } catch (err: any) {
       console.error('Payment error:', err);
-      setError(err.message || 'An unexpected error occurred.');
+      const errMsg = err.message || 'An unexpected error occurred.';
+      setError(errMsg);
+      if (onFailure) onFailure(errMsg);
       setLoading(false);
       setPaymentStatusMessage(null);
     }
