@@ -70,78 +70,142 @@ function SuccessPageContent() {
         alignItems: 'center',
         gap: 28,
       }}>
-        {/* Transparent Gift Box Graphic containing Rakhi, Roli, Chawal details */}
+        {/* Ornate Open Premium Gift Box Illustration */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
           style={{
             position: 'relative',
-            width: 140,
-            height: 140,
-            border: '2px solid rgba(212,175,55,0.4)',
-            borderRadius: 16,
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02))',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.15)',
+            width: 180,
+            height: 180,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            overflow: 'hidden',
           }}
         >
-          {/* Light reflection sheen */}
-          <div style={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0, height: '40%',
-            background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)',
-            transform: 'skewY(-10deg)',
-          }} />
-
-          <svg width="100" height="100" viewBox="0 0 100 100" style={{ zIndex: 2 }}>
+          <svg width="180" height="180" viewBox="0 0 180 180">
             <defs>
-              <radialGradient id="goldSplat" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#fdfcf0" />
-                <stop offset="60%" stopColor="#d4af37" />
-                <stop offset="100%" stopColor="#856414" />
+              {/* Rich Gold Gradients for Box Accents */}
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFF2B2" />
+                <stop offset="30%" stopColor="#D4AF37" />
+                <stop offset="70%" stopColor="#AA7C11" />
+                <stop offset="100%" stopColor="#5A3F05" />
+              </linearGradient>
+
+              {/* Saffron Gradient for Box Exterior */}
+              <linearGradient id="boxExterior" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#D45B27" />
+                <stop offset="100%" stopColor="#8A2C0D" />
+              </linearGradient>
+
+              {/* Royal Saffron/Red interior base gradient */}
+              <radialGradient id="boxInterior" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#B31919" />
+                <stop offset="100%" stopColor="#5E0606" />
               </radialGradient>
-              <radialGradient id="rice" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#ffffff" />
-                <stop offset="100%" stopColor="#dcd9c0" />
+
+              {/* Glass Lid Transparent Gradient */}
+              <linearGradient id="glassLid" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(255, 255, 255, 0.25)" />
+                <stop offset="40%" stopColor="rgba(255, 255, 255, 0.05)" />
+                <stop offset="100%" stopColor="rgba(255, 255, 255, 0.15)" />
+              </linearGradient>
+
+              {/* Roli & Chawal Gradients */}
+              <radialGradient id="roliPowder" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#FF4136" />
+                <stop offset="70%" stopColor="#B30000" />
+                <stop offset="100%" stopColor="#5E0000" />
               </radialGradient>
-              <radialGradient id="roli" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#e84a4a" />
-                <stop offset="100%" stopColor="#880e0f" />
+              <radialGradient id="riceGrain" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="70%" stopColor="#F9F8F0" />
+                <stop offset="100%" stopColor="#DCD9C0" />
               </radialGradient>
+
+              <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.4" />
+              </filter>
             </defs>
 
-            {/* Decorative threads representing Rakhi string */}
-            <path d="M 10 50 Q 30 40, 50 50 T 90 50" fill="none" stroke="#e84a4a" strokeWidth="2" strokeDasharray="3 2" />
-            <path d="M 10 52 Q 30 46, 50 52 T 90 52" fill="none" stroke="#d4af37" strokeWidth="1.5" />
+            {/* 1. Ground Drop Shadow under the box base */}
+            <ellipse cx="90" cy="148" rx="60" ry="12" fill="rgba(0,0,0,0.5)" filter="url(#shadow)" />
 
-            {/* Central ornate Rakhi dial */}
-            <circle cx="50" cy="50" r="16" fill="url(#goldSplat)" stroke="#60460c" strokeWidth="1.5" />
-            <circle cx="50" cy="50" r="8" fill="#a11b1b" />
-            <circle cx="50" cy="50" r="3" fill="#d4af37" />
+            {/* 2. Open Box Base Container (Interior Bed) */}
+            {/* Box base structure */}
+            <path d="M 30 115 L 30 135 C 30 142, 150 142, 150 135 L 150 115 Z" fill="url(#boxExterior)" stroke="url(#goldGrad)" strokeWidth="1.5" />
+            
+            {/* Box Inner Bed (Royal Saffron Velvet Lining) */}
+            <ellipse cx="90" cy="115" rx="58" ry="18" fill="url(#boxInterior)" stroke="url(#goldGrad)" strokeWidth="1.5" />
 
-            {/* Roli & Chawal Bowls details on bottom sides inside the box */}
-            {/* Roli (red powder) */}
-            <path d="M 22 75 C 22 68, 38 68, 38 75 Z" fill="url(#roli)" />
-            <ellipse cx="30" cy="74" rx="8" ry="3.5" fill="#f07575" opacity="0.8" />
-            <circle cx="28" cy="74" r="1.5" fill="#880e0f" />
+            {/* 3. Items inside the box */}
+            
+            {/* Thread of the Rakhi laying inside the box */}
+            <path d="M 42 118 Q 70 128, 90 120 T 138 114" fill="none" stroke="#E84A4A" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M 42 120 Q 70 130, 90 122 T 138 116" fill="none" stroke="#FFF2B2" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 3" />
 
-            {/* Chawal (rice grains scatter) */}
-            <ellipse cx="68" cy="75" rx="9" ry="4" fill="rgba(255,255,255,0.15)" stroke="rgba(212,175,55,0.4)" strokeWidth="0.8" />
-            <ellipse cx="65" cy="75" rx="3.5" ry="1.4" fill="url(#rice)" transform="rotate(-15 65 75)" />
-            <ellipse cx="70" cy="74" rx="3.5" ry="1.4" fill="url(#rice)" transform="rotate(25 70 74)" />
-            <ellipse cx="68" cy="77" rx="3.0" ry="1.2" fill="url(#rice)" transform="rotate(-40 68 77)" />
+            {/* Central Ornate Gold Rakhi Dial lying in center */}
+            <g transform="translate(90, 118)">
+              {/* Outer Golden Petals */}
+              <circle cx="0" cy="0" r="16" fill="url(#goldGrad)" filter="url(#shadow)" />
+              {/* Inner details */}
+              <circle cx="0" cy="0" r="10" fill="#B31919" />
+              <circle cx="0" cy="0" r="6" fill="url(#goldGrad)" />
+              <circle cx="0" cy="0" r="3" fill="#D4AF37" />
+              {/* Tiny surrounding beads */}
+              {Array.from({ length: 8 }).map((_, i) => {
+                const angle = (i * Math.PI) / 4;
+                const x = 12 * Math.cos(angle);
+                const y = 12 * Math.sin(angle);
+                return <circle key={i} cx={x} cy={y} r="1.5" fill="#FFF" />;
+              })}
+            </g>
+
+            {/* Traditional Roli (Kumkum) and Chawal (Rice) bowls placed inside the box */}
+            {/* Roli Bowl */}
+            <g transform="translate(58, 106)" filter="url(#shadow)">
+              <ellipse cx="0" cy="10" rx="13" ry="7" fill="url(#goldGrad)" />
+              <ellipse cx="0" cy="8" rx="11" ry="5.5" fill="url(#roliPowder)" />
+              <ellipse cx="-1" cy="7" rx="6" ry="3" fill="#FF7272" opacity="0.6" />
+            </g>
+
+            {/* Chawal Bowl */}
+            <g transform="translate(122, 106)" filter="url(#shadow)">
+              <ellipse cx="0" cy="10" rx="13" ry="7" fill="url(#goldGrad)" />
+              <ellipse cx="0" cy="8" rx="11" ry="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255,255,255,0.2)" />
+              {/* Scattered rice grains */}
+              <ellipse cx="-4" cy="8" rx="3.5" ry="1.2" fill="url(#riceGrain)" transform="rotate(-15 -4 8)" />
+              <ellipse cx="2" cy="7" rx="3.5" ry="1.2" fill="url(#riceGrain)" transform="rotate(30 2 7)" />
+              <ellipse cx="-1" cy="9" rx="3.5" ry="1.2" fill="url(#riceGrain)" transform="rotate(75 -1 9)" />
+              <ellipse cx="4" cy="9" rx="3.0" ry="1.0" fill="url(#riceGrain)" transform="rotate(-40 4 9)" />
+            </g>
+
+            {/* 4. Open Glass Lid (Leaning behind/above the box base, showing transparency) */}
+            <g transform="translate(90, 70) rotate(-12)" filter="url(#shadow)">
+              {/* Transparent glass boundary */}
+              <rect x="-60" y="-30" width="120" height="60" rx="12" fill="url(#glassLid)" stroke="url(#goldGrad)" strokeWidth="1.5" />
+              {/* Gold ribbon tie on lid */}
+              <path d="M -60 0 L 60 0" stroke="url(#goldGrad)" strokeWidth="4" />
+              {/* Glass Reflection Highlight */}
+              <path d="M -48 -22 L 40 22" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="2" strokeLinecap="round" />
+            </g>
           </svg>
 
-          {/* Tiny label ribbon */}
+          {/* Tiny Ribbon Badge */}
           <div style={{
-            position: 'absolute', bottom: 6,
-            background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)',
-            borderRadius: 4, padding: '2px 8px', fontSize: '0.55rem', color: '#ffd700',
-            fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em'
+            position: 'absolute',
+            bottom: 22,
+            background: 'linear-gradient(135deg, #d4af37, #856414)',
+            borderRadius: '4px',
+            padding: '2px 8px',
+            fontSize: '0.6rem',
+            color: '#fff',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
           }}>
             Premium Box
           </div>
