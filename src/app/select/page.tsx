@@ -23,7 +23,7 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
       emoji: '🌸',
-      price: '499',
+      price: '299',
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },

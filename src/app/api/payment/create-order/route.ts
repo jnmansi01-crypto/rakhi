@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     let amountPaise = 29900; 
 
     // Retrieve template ID from Firestore to dynamically price the checkout order
-    // Template 1 ('rakhi-2025') = 499/- INR (49900 paise)
+    // Template 1 ('rakhi-2025') = 299/- INR (29900 paise)
     // Template 2 ('template-02') = 250/- INR (25000 paise)
     try {
       const db = getAdminDb();
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
           const data = docSnap.data();
           const templateId = data?.templateId;
           if (templateId === 'rakhi-2025') {
-            amountPaise = 49900;
+            amountPaise = 29900;
           } else if (templateId === 'template-02') {
             amountPaise = 25000;
           }
