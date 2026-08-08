@@ -155,7 +155,7 @@ export function usePayment() {
       setLoading(false);
       setPaymentStatusMessage(null);
     }
-  }, []);
+  }, [loadRazorpayScript]);
 
   return {
     loading,
