@@ -1,6 +1,6 @@
 'use client';
 import { useState, useCallback, useRef, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createExperience } from '@/core/database/storage';
 import { compressImage } from '@/core/uploads/imageUtils';
@@ -78,6 +78,7 @@ export default function CreatePage() {
 
 function CreatePageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const templateId = searchParams.get('template') || 'rakhi-2025';
   const [templateConfig, setTemplateConfig] = useState<TemplatePlugin | null>(null);
 
@@ -681,10 +682,10 @@ function CreatePageContent() {
                   false, 
                   () => {
                     setIsCardPaid(true);
-                    setShowSuccessScreen(true);
+                    router.push(`/payment-success?cardId=${cardId}&locale=${locale}`);
                   },
                   () => {
-                    setShowFailureScreen(true);
+                    router.push(`/payment-failed?cardId=${cardId}&locale=${locale}`);
                   }
                 );
               }
