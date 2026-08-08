@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { usePayment } from '@/core/payments/usePayment';
 
 export default function FailurePage() {
@@ -25,6 +25,19 @@ function FailurePageContent() {
   const locale = searchParams.get('locale') || 'en';
 
   const { loading: paymentLoading, error: paymentError, paymentStatusMessage, payAndShare } = usePayment();
+  const [templateId, setTemplateId] = useState<string>('rakhi-2025');
+
+  // Load experience data to determine templateId
+  useEffect(() => {
+    if (!cardId) return;
+    import('@/core/database/storage').then(({ getExperience }) => {
+      getExperience(cardId).then((exp) => {
+        if (exp?.templateId) {
+          setTemplateId(exp.templateId);
+        }
+      });
+    });
+  }, [cardId]);
 
   const handleRetry = () => {
     if (!cardId) return;
@@ -36,7 +49,8 @@ function FailurePageContent() {
       },
       () => {
         // Stay on failure page on repeat failures
-      }
+      },
+      templateId
     );
   };
 

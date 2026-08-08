@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { OrderResponse, VerifyResponse, CheckoutOptions, RazorpayPaymentResponse } from '@/types/payment';
+import { trackInitiateCheckout } from './analytics';
 
 // Add Razorpay to window interface
 declare global {
@@ -32,7 +33,8 @@ export function usePayment() {
     cardId: string, 
     isPaidLocally: boolean, 
     onSuccess: () => void, 
-    onFailure?: (msg: string) => void
+    onFailure?: (msg: string) => void,
+    templateId: string = 'rakhi-2025' // Default fallback template ID
   ) => {
     if (!cardId) {
       setError('Card ID is missing.');
@@ -137,6 +139,11 @@ export function usePayment() {
         setError(failMsg);
         if (onFailure) onFailure(failMsg);
       });
+
+      // ─── Analytics Tracking (GTM Data Layer) ───
+      // Immediately before opening the Razorpay payment modal, we push an 'initiate_checkout' 
+      // event to GTM with the dynamic order value in rupees and the corresponding product template name.
+      trackInitiateCheckout(orderData.amount, templateId);
 
       paymentObject.open();
 
