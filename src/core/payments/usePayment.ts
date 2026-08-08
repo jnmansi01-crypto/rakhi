@@ -63,7 +63,7 @@ export function usePayment() {
       const orderRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardId }),
+        body: JSON.stringify({ cardId, templateId }),
       });
 
       if (!orderRes.ok) {
