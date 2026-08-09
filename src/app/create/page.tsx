@@ -7,7 +7,7 @@ import { compressImage } from '@/core/uploads/imageUtils';
 import { uploadMedia } from '@/core/uploads/cloudinary';
 import { useAudioRecorder } from '@/shared/uploader/useAudioRecorder';
 import { usePayment } from '@/core/payments/usePayment';
-import { trackViewItem } from '@/core/payments/analytics';
+import { trackViewItem, trackCreateCard } from '@/core/payments/analytics';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 import { getTemplate } from '@/template-engine/index';
@@ -189,6 +189,10 @@ function CreatePageContent() {
       setCardId(id);
       setIsCardPaid(false); // Reset for new cards
       setShareUrl(`${base}/gift/${id}`);
+      
+      // GA4 Best Practice: Fire create_card event once the draft document is persisted
+      trackCreateCard(templateId, id);
+
       setStep('preview');
     } catch (err: any) {
       console.error('Failed to create:', err);

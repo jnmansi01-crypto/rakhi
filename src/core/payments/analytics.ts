@@ -169,14 +169,15 @@ export function trackViewItem(templateId: string) {
   }
 }
 
-// Tracks card creation completion right before proceeding to the payment step
-export function trackCreateCard(templateId: string) {
+// Tracks card creation completion right after the experience draft has been successfully saved
+export function trackCreateCard(templateId: string, cardId: string) {
   try {
     const templatePrice = getTemplatePrice(templateId);
     const { name: productName } = getProductDetails(templateId);
 
     const payload = {
       event: 'create_card',
+      card_id: cardId,
       currency: 'INR',
       value: templatePrice,
       items: [
