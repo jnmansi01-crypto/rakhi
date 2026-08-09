@@ -11,8 +11,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Card ID is required' }, { status: 400 });
     }
 
-    // Default price is 299/- INR (29900 paise)
-    let amountPaise = 29900; 
+    // Default price is 2/- INR (200 paise)
+    let amountPaise = 200; 
 
     // Retrieve template ID from body or fall back to Firestore if undefined
     let templateId = bodyTemplateId;
@@ -32,11 +32,11 @@ export async function POST(req: Request) {
       }
     }
 
-    // Assign template pricing (Template 1 = 299/- INR, Template 2 = 250/- INR)
+    // Assign template pricing (Template 1 = 2/- INR, Template 2 = 1/- INR)
     if (templateId === 'rakhi-2025') {
-      amountPaise = 29900;
+      amountPaise = 200;
     } else if (templateId === 'template-02') {
-      amountPaise = 25000;
+      amountPaise = 100;
     }
 
     // Create a Razorpay order
