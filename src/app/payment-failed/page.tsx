@@ -23,13 +23,14 @@ function FailurePageContent() {
   const router = useRouter();
   const cardId = searchParams.get('cardId') || '';
   const locale = searchParams.get('locale') || 'en';
+  const queryTemplateId = searchParams.get('template') || searchParams.get('templateId') || 'rakhi-2025';
 
   const { loading: paymentLoading, error: paymentError, paymentStatusMessage, payAndShare } = usePayment();
-  const [templateId, setTemplateId] = useState<string>('rakhi-2025');
+  const [templateId, setTemplateId] = useState<string>(queryTemplateId);
 
-  // Load experience data to determine templateId
+  // Load experience data to determine templateId if query parameter was missing
   useEffect(() => {
-    if (!cardId) return;
+    if (!cardId || queryTemplateId !== 'rakhi-2025') return;
     import('@/core/database/storage').then(({ getExperience }) => {
       getExperience(cardId).then((exp) => {
         if (exp?.templateId) {
@@ -37,7 +38,7 @@ function FailurePageContent() {
         }
       });
     });
-  }, [cardId]);
+  }, [cardId, queryTemplateId]);
 
   const handleRetry = () => {
     if (!cardId) return;
@@ -45,7 +46,7 @@ function FailurePageContent() {
       cardId,
       false,
       () => {
-        router.push(`/payment-success?cardId=${cardId}&locale=${locale}`);
+        router.push(`/payment-success?cardId=${cardId}&locale=${locale}&template=${templateId}`);
       },
       () => {
         // Stay on failure page on repeat failures

@@ -7,6 +7,7 @@ import { compressImage } from '@/core/uploads/imageUtils';
 import { uploadMedia } from '@/core/uploads/cloudinary';
 import { useAudioRecorder } from '@/shared/uploader/useAudioRecorder';
 import { usePayment } from '@/core/payments/usePayment';
+import { trackViewItem } from '@/core/payments/analytics';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 import { getTemplate } from '@/template-engine/index';
@@ -85,6 +86,14 @@ function CreatePageContent() {
   useEffect(() => {
     getTemplate(templateId).then(setTemplateConfig);
   }, [templateId]);
+
+  const viewItemTracked = useRef(false);
+  useEffect(() => {
+    if (templateConfig && !viewItemTracked.current) {
+      viewItemTracked.current = true;
+      trackViewItem(templateId);
+    }
+  }, [templateConfig, templateId]);
 
   const [step, setStep]         = useState<Step>('names');
   const [form, setForm]         = useState<FormState>(INITIAL);
@@ -682,10 +691,10 @@ function CreatePageContent() {
                   false, 
                   () => {
                     setIsCardPaid(true);
-                    router.push(`/payment-success?cardId=${cardId}&locale=${locale}`);
+                    router.push(`/payment-success?cardId=${cardId}&locale=${locale}&template=${templateId}`);
                   },
                   () => {
-                    router.push(`/payment-failed?cardId=${cardId}&locale=${locale}`);
+                    router.push(`/payment-failed?cardId=${cardId}&locale=${locale}&template=${templateId}`);
                   },
                   templateId
                 );

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { OrderResponse, VerifyResponse, CheckoutOptions, RazorpayPaymentResponse } from '@/types/payment';
-import { trackInitiateCheckout, trackPurchase } from './analytics';
+import { trackInitiateCheckout, trackPurchase, trackCreateCard } from './analytics';
 
 // Add Razorpay to window interface
 declare global {
@@ -146,6 +146,15 @@ export function usePayment() {
       });
 
       // ─── Analytics Tracking (GTM Data Layer) ───
+      // Trigger create_card event (only once per cardId) before initiate_checkout
+      if (typeof window !== 'undefined') {
+        const createCardKey = `loment_create_card_tracked_${cardId}`;
+        if (!sessionStorage.getItem(createCardKey)) {
+          sessionStorage.setItem(createCardKey, 'true');
+          trackCreateCard(templateId);
+        }
+      }
+
       // Immediately before opening the Razorpay payment modal, we push an 'initiate_checkout' 
       // event to GTM with the dynamic order value in rupees and the corresponding product template name.
       trackInitiateCheckout(orderData.amount, templateId);

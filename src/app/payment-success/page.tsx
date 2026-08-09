@@ -2,6 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Suspense } from 'react';
+import { trackShare } from '@/core/payments/analytics';
 
 export default function SuccessPage() {
   return (
@@ -21,6 +22,7 @@ function SuccessPageContent() {
   const searchParams = useSearchParams();
   const cardId = searchParams.get('cardId') || '';
   const locale = searchParams.get('locale') || 'en';
+  const templateId = searchParams.get('template') || 'rakhi-2025';
 
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/gift/${cardId}` : '';
 
@@ -37,11 +39,21 @@ function SuccessPageContent() {
         title: 'Your Digital Rakhi Gift 🌸', 
         text: shareText,
         url: shareUrl
-      }).catch(() => {});
-    } else if (isMobile) {
-      window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+      })
+      .then(() => {
+        trackShare(templateId);
+      })
+      .catch(() => {
+        // Did not share / cancelled
+      });
     } else {
-      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank');
+      // Direct WhatsApp share trigger
+      trackShare(templateId);
+      if (isMobile) {
+        window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+      } else {
+        window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank');
+      }
     }
   };
 

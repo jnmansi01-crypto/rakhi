@@ -47,6 +47,13 @@ export function getProductDetails(templateId: string): { name: string } {
   return { name: `Loment Premium Rakhi Card (${formattedId})` };
 }
 
+// Get price dynamically for a given template
+export function getTemplatePrice(templateId: string): number {
+  if (templateId === 'rakhi-2025') return 299;
+  if (templateId === 'template-02') return 250;
+  return 299; // Default fallback
+}
+
 // Tracks checkout initiation before opening Razorpay (GTM Data Layer + GA4 Ecommerce)
 export function trackInitiateCheckout(amountPaise: number, templateId: string) {
   try {
@@ -103,5 +110,107 @@ export function trackPurchase(amountPaise: number, templateId: string, razorpayP
     console.log('[Analytics] Pushed purchase to dataLayer:', payload);
   } catch (err) {
     console.error('[Analytics] Failed to push purchase to dataLayer:', err);
+  }
+}
+
+// Tracks template selection on the gallery page
+export function trackSelectItem(templateId: string) {
+  try {
+    const templatePrice = getTemplatePrice(templateId);
+    const { name: productName } = getProductDetails(templateId);
+
+    const payload = {
+      event: 'select_item',
+      currency: 'INR',
+      value: templatePrice,
+      items: [
+        {
+          item_id: templateId,
+          item_name: productName,
+          price: templatePrice,
+          quantity: 1,
+        }
+      ]
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed select_item to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push select_item to dataLayer:', err);
+  }
+}
+
+// Tracks viewing the Create Editor once loaded and template configuration exists
+export function trackViewItem(templateId: string) {
+  try {
+    const templatePrice = getTemplatePrice(templateId);
+    const { name: productName } = getProductDetails(templateId);
+
+    const payload = {
+      event: 'view_item',
+      currency: 'INR',
+      value: templatePrice,
+      items: [
+        {
+          item_id: templateId,
+          item_name: productName,
+          price: templatePrice,
+          quantity: 1,
+        }
+      ]
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed view_item to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push view_item to dataLayer:', err);
+  }
+}
+
+// Tracks card creation completion right before proceeding to the payment step
+export function trackCreateCard(templateId: string) {
+  try {
+    const templatePrice = getTemplatePrice(templateId);
+    const { name: productName } = getProductDetails(templateId);
+
+    const payload = {
+      event: 'create_card',
+      currency: 'INR',
+      value: templatePrice,
+      items: [
+        {
+          item_id: templateId,
+          item_name: productName,
+          price: templatePrice,
+          quantity: 1,
+        }
+      ]
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed create_card to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push create_card to dataLayer:', err);
+  }
+}
+
+// Tracks clicking WhatsApp sharing
+export function trackShare(templateId: string) {
+  try {
+    const payload = {
+      event: 'share',
+      method: 'whatsapp',
+      content_type: 'rakhi_card',
+      item_id: templateId,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed share to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push share to dataLayer:', err);
   }
 }

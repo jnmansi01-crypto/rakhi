@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
+import { trackSelectItem } from '@/core/payments/analytics';
 
 export default function SelectTemplatePage() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function SelectTemplatePage() {
 
   const handleSelect = (id: string) => {
     vibrate();
+    trackSelectItem(id);
     router.push(`/create?template=${id}`);
   };
 
