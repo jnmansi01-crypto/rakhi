@@ -24,7 +24,7 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
       emoji: '🌸',
-      price: '2',
+      price: '299',
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
@@ -36,7 +36,7 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
       emoji: '📼',
-      price: '1',
+      price: '250',
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }
