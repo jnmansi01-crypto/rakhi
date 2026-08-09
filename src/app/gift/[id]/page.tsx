@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { getExperience } from '@/core/database/storage';
 import { ExperienceEngine } from '@/template-engine/Engine';
 import type { RakhiExperience } from '@/lib/types';
+import { trackExperienceOpened } from '@/core/payments/analytics';
 
 export default function GiftPage({ params }: { params: { id: string } }) {
   const [experience, setExperience] = useState<RakhiExperience | null>(null);
@@ -47,6 +48,16 @@ export default function GiftPage({ params }: { params: { id: string } }) {
       .catch(() => setMissing(true))
       .finally(() => setLoading(false));
   }, [params.id]);
+
+  useEffect(() => {
+    if (experience && !loading && !missing) {
+      const openedKey = `loment_exp_opened_tracked_${experience.id}`;
+      if (typeof window !== 'undefined' && !sessionStorage.getItem(openedKey)) {
+        sessionStorage.setItem(openedKey, 'true');
+        trackExperienceOpened(experience.id, experience.templateId || 'rakhi-2025');
+      }
+    }
+  }, [experience, loading, missing]);
 
   // ── Loading ───────────────────────────────────────────────────
   if (loading) {

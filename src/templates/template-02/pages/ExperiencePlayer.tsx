@@ -2,7 +2,7 @@
 // src/templates/template-02/pages/ExperiencePlayer.tsx
 // Self-contained ExperiencePlayer for Template 02 (Nostalgia Scrapbook theme).
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Scene1_Welcome } from './Scene1_Welcome';
 import { Scene2_Letter }  from './Scene2_Letter';
@@ -12,6 +12,7 @@ import { Scene5_Rakhi }   from './Scene5_Rakhi';
 import { Scene6_Gift }    from './Scene6_Gift';
 import { audioEngine } from '@/shared/audio/audio';
 import { useHaptics } from '@/shared/components/useHaptics';
+import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
 const SCENES = ['welcome', 'letter', 'photos', 'voice', 'rakhi', 'gift'] as const;
@@ -21,6 +22,17 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
   const [scene, setScene] = useState<SceneName>('welcome');
   const { locale } = experience;
   const { vibrate } = useHaptics();
+
+  // Trigger experience_completed once when user reaches the final 'gift' scene
+  useEffect(() => {
+    if (scene === 'gift') {
+      const completedKey = `loment_exp_completed_tracked_${experience.id}`;
+      if (typeof window !== 'undefined' && !sessionStorage.getItem(completedKey)) {
+        sessionStorage.setItem(completedKey, 'true');
+        trackExperienceCompleted(experience.id, experience.templateId || 'template-02');
+      }
+    }
+  }, [scene, experience.id, experience.templateId]);
 
   const nextSkipping = (current: SceneName) => {
     if (current === 'welcome') {

@@ -4,7 +4,7 @@
 // Contains all scene orchestration logic for this template.
 // The shared ExperienceEngine wraps this with the watermark and screen protection.
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Scene1_Arrival }    from './Scene1_Arrival';
 import { Scene2_Envelope }   from './Scene2_Envelope';
@@ -13,6 +13,7 @@ import { Scene4_Voice }      from './Scene4_Voice';
 import { Scene5_Rakhi }      from './Scene5_Rakhi';
 import { Scene6_GiftReveal } from './Scene6_GiftReveal';
 import { audioEngine } from '@/shared/audio/audio';
+import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
 const SCENES = ['arrival', 'envelope', 'photos', 'voice', 'rakhi', 'gift'] as const;
@@ -27,6 +28,17 @@ const sceneVariants = {
 export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
   const [scene, setScene] = useState<SceneName>('arrival');
   const { locale } = experience;
+
+  // Trigger experience_completed once when user reaches the final 'gift' scene
+  useEffect(() => {
+    if (scene === 'gift') {
+      const completedKey = `loment_exp_completed_tracked_${experience.id}`;
+      if (typeof window !== 'undefined' && !sessionStorage.getItem(completedKey)) {
+        sessionStorage.setItem(completedKey, 'true');
+        trackExperienceCompleted(experience.id, experience.templateId || 'rakhi-2025');
+      }
+    }
+  }, [scene, experience.id, experience.templateId]);
 
   // Skip scenes that have no content
   const nextSkipping = (current: SceneName) => {

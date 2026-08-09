@@ -215,3 +215,43 @@ export function trackShare(templateId: string) {
     console.error('[Analytics] Failed to push share to dataLayer:', err);
   }
 }
+
+// Tracks when a recipient successfully opens a shared experience
+export function trackExperienceOpened(cardId: string, templateId: string) {
+  try {
+    const { name: productName } = getProductDetails(templateId);
+
+    const payload = {
+      event: 'experience_opened',
+      card_id: cardId,
+      template_id: templateId,
+      product_name: productName,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed experience_opened to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push experience_opened to dataLayer:', err);
+  }
+}
+
+// Tracks when a recipient reaches the final scene/completion page of the experience
+export function trackExperienceCompleted(cardId: string, templateId: string) {
+  try {
+    const { name: productName } = getProductDetails(templateId);
+
+    const payload = {
+      event: 'experience_completed',
+      card_id: cardId,
+      template_id: templateId,
+      product_name: productName,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed experience_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push experience_completed to dataLayer:', err);
+  }
+}
