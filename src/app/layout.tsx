@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: 'An immersive digital Raksha Bandhan experience.',
     type: 'website',
   },
+  other: {
+    'facebook-domain-verification': '6cwqc41mnwd2dk1pjrjtbv7lxxv9',
+  },
 };
 
 export const viewport: Viewport = {
