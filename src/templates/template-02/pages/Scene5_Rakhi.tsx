@@ -403,6 +403,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             flex: 1, display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
             textAlign: 'center', padding: '12px 8px',
+            width: '100%', alignSelf: 'stretch',
           }}>
             <AnimatePresence mode="wait">
               {!isTied ? (
@@ -431,32 +432,50 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flex: 1,
+                    width: '100%',
+                    padding: '16px 0',
+                    boxSizing: 'border-box',
+                  }}
                 >
-                  <h1 className={locale === 'hi' ? 'hindi-calli' : 'calli'} style={{
-                    fontSize: locale === 'hi' ? 'clamp(1.8rem, 4.5vw, 2.5rem)' : 'clamp(2.2rem, 5vw, 3.2rem)',
-                    margin: 0, lineHeight: 1.1,
-                    background: 'linear-gradient(100deg, #8a1c14 0%, #d4af37 45%, #a36f4d 100%)',
-                    backgroundSize: '200% auto',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    animation: 'goldShimmer 4s ease-in-out infinite',
-                  }}>
-                    {locale === 'hi' ? 'शुभ रक्षाबंधन' : 'Happy Rakshabandhan'}
-                  </h1>
-
-                  {/* Gold rule */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '80%' }}>
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, #d4af37)' }} />
-                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#d4af37' }} />
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, #d4af37, transparent)' }} />
+                  {/* Top: Calligraphy Title */}
+                  <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+                    <h1 className={locale === 'hi' ? 'hindi-calli' : 'calli'} style={{
+                      fontSize: locale === 'hi' ? 'clamp(1.8rem, 4.5vw, 2.5rem)' : 'clamp(2.2rem, 5vw, 3.2rem)',
+                      margin: 0, lineHeight: 1.1,
+                      background: 'linear-gradient(100deg, #8a1c14 0%, #d4af37 45%, #a36f4d 100%)',
+                      backgroundSize: '200% auto',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      animation: 'goldShimmer 4s ease-in-out infinite',
+                    }}>
+                      {locale === 'hi' ? 'शुभ रक्षाबंधन' : 'Happy Rakshabandhan'}
+                    </h1>
                   </div>
 
-                  <p className="hw" style={{ fontSize: '1.15rem', color: '#7c6454', margin: 0, lineHeight: 1.4 }}>
-                    {locale === 'hi'
-                      ? `सदा मुस्कुराते रहो, ${recipientName}`
-                      : `With endless love for ${recipientName}`}
-                  </p>
+                  {/* Center placeholder spacer to keep room for the Rakhi thread/medallion (approx 72px) in the center */}
+                  <div style={{ height: 60, minHeight: 60, pointerEvents: 'none' }} />
+
+                  {/* Bottom: Signature text */}
+                  <div style={{ marginTop: 'auto', marginBottom: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
+                    {/* Gold rule */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '80%' }}>
+                      <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, #d4af37)' }} />
+                      <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#d4af37' }} />
+                      <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, #d4af37, transparent)' }} />
+                    </div>
+
+                    <p className="hw" style={{ fontSize: '1.15rem', color: '#7c6454', margin: 0, lineHeight: 1.4 }}>
+                      {locale === 'hi'
+                        ? `सदा मुस्कुराते रहो, ${recipientName}`
+                        : `With endless love for ${recipientName}`}
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
