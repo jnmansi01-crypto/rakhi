@@ -9,14 +9,43 @@ export function useAudioRecorder(onRecordingComplete: (blob: Blob, url: string) 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       chunks.current = [];
-      const mr = new MediaRecorder(stream);
-      mr.ondataavailable = e => chunks.current.push(e.data);
+
+      // Determine supported mimeTypes for cross-browser compatibility (especially iOS Safari)
+      let options = {};
+      const preferredTypes = [
+        'audio/mp4',              // Preferred for iOS Safari (which doesn't support webm natively)
+        'audio/webm;codecs=opus', // Preferred for Chrome/Firefox
+        'audio/webm',
+        'audio/ogg',
+        'audio/wav'
+      ];
+
+      for (const type of preferredTypes) {
+        if (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported(type)) {
+          options = { mimeType: type };
+          break;
+        }
+      }
+
+      const mr = new MediaRecorder(stream, options);
+
+      mr.ondataavailable = e => {
+        if (e.data && e.data.size > 0) {
+          chunks.current.push(e.data);
+        }
+      };
+
       mr.onstop = () => {
-        const blob = new Blob(chunks.current, { type: 'audio/webm' });
+        // Read the actual mimeType used during recording (fallback to browser standard)
+        const mimeType = mr.mimeType || 'audio/webm';
+        const blob = new Blob(chunks.current, { type: mimeType });
         const url  = URL.createObjectURL(blob);
         onRecordingComplete(blob, url);
+        
+        // Stop all media tracks to release microphone hardware lock
         stream.getTracks().forEach(t => t.stop());
       };
+
       mr.start();
       mediaRecorder.current = mr;
       setRec(true);
