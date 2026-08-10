@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   other: {
-    'facebook-domain-verification': '6cwqc41mnwd2dk1pjrjtbv7lxxv9',
+    'facebook-domain-verification': '6cwqc41mnwd2dk1pijrvtbbv7lxxv9',
   },
 };
 
