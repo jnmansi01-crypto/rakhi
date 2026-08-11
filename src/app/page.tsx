@@ -434,7 +434,7 @@ export default function HomePage() {
           }}>
             {locale === 'en' ? (
               <>
-                Send a Rakhi<br />
+                Send a moment<br />
                 <span style={{
                   background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
                   backgroundSize: '200% 100%',
@@ -448,7 +448,7 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                एक ऐसी राखी भेजें<br />
+                एक ऐसा पल भेजें<br />
                 <span style={{
                   background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
                   backgroundSize: '200% 100%',
