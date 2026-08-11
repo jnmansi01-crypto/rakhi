@@ -343,6 +343,12 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             if (window.innerWidth <= 600 && info.offset.x > 40) {
               setMobilePage('left');
             }
+            // Swipe left on the Right page to proceed to the next scene (if typewriter done)
+            if (window.innerWidth <= 600 && info.offset.x < -40) {
+              if (isDone) {
+                handleNext();
+              }
+            }
           }}
           initial={{ rotateY: 30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}

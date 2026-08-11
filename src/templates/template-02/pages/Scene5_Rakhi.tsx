@@ -345,8 +345,25 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         </div>
 
         {/* ── RIGHT PAGE ── */}
-        <div
+        <motion.div
           className="scrapbook-page-right"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0}
+          onDragEnd={(event, info) => {
+            if (window.innerWidth <= 600 && info.offset.x > 40) {
+              setMobilePage('left');
+            }
+            if (window.innerWidth <= 600 && info.offset.x < -40) {
+              if (isTied) {
+                handleNext();
+              }
+            }
+          }}
+          initial={{ rotateY: 30, opacity: 0.8 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: 90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1, borderRadius: '0 8px 8px 0',
             padding: '24px 20px 20px',
@@ -354,6 +371,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset 18px 0 24px rgba(0,0,0,0.1)',
+            cursor: 'grab',
+            touchAction: 'pan-y',
           }}
         >
           {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
@@ -509,7 +528,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
                 : (locale === 'hi' ? 'आगे बढ़ने के लिए पहले राखी बांधें' : 'Complete the ritual to proceed')}
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* ── SVG THREAD across full spread (grows with progress) ── */}
         {!isTied && progress > 0.01 && (

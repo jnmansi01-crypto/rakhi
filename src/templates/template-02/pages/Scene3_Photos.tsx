@@ -280,6 +280,9 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             if (window.innerWidth <= 600 && info.offset.x > 40) {
               setMobilePage('left');
             }
+            if (window.innerWidth <= 600 && info.offset.x < -40) {
+              handleNext();
+            }
           }}
           initial={{ rotateY: 30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
