@@ -2,7 +2,7 @@
 // src/app/select/page.tsx
 // Premium Template Selector page prompting the sender to select Template 1 or 2.
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
@@ -15,11 +15,18 @@ export default function SelectTemplatePage() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(null);
 
+  useEffect(() => {
+    document.body.classList.add('sender-flow');
+    return () => {
+      document.body.classList.remove('sender-flow');
+    };
+  }, []);
+
   const templates = [
     {
       id: 'rakhi-2025',
       name: locale === 'hi' ? 'शाही परंपरा' : 'Royal Classic',
-      desc: locale === 'hi' ? 'शाही लाल सिल्क, सुनहरा काम, मधुर संगीत और पारंपरिक राखी बांधने का अनुभव।' : 'Royal crimson silk, gold embroidery, traditional santoor music, and sacred thread tying.',
+      desc: locale === 'hi' ? 'पारंपरिक सिल्क राखी, शुभ रोली-अक्षत और मधुर संगीत का अनुभव।' : 'Sacred thread tying, royal crimson silk, and traditional Santoor BGM.',
       visual: 'linear-gradient(135deg, #4a1525 0%, #8a1c14 100%)',
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
@@ -30,7 +37,7 @@ export default function SelectTemplatePage() {
     {
       id: 'template-02',
       name: locale === 'hi' ? 'यादों का एल्बम' : 'Nostalgia Scrapbook',
-      desc: locale === 'hi' ? 'लकड़ी की मेज, हाथ से लिखी चिट्ठी, पुराने कैसेट प्लेयर में आवाज और सुतली से बंधा गिफ्ट पोटली।' : 'Dark mahogany table, typewriter handwriting, Polaroid photos, retro cassette tape, and jute string parcel.',
+      desc: locale === 'hi' ? 'सुतली से बंधा पार्सल, पुरानी कैसेट धुन और यादों का पर्सनल स्क्रैपबुक।' : 'Handwritten letter, retro music tape, polaroids, and surprise gift parcel.',
       visual: 'linear-gradient(135deg, #2b1f1d 0%, #5c4033 100%)',
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
