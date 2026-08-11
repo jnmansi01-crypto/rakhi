@@ -579,14 +579,14 @@ export function Scene2_Envelope({
               transition={{duration:0.8,delay:0.25,ease:[0.16,1,0.3,1]}}
               style={{
                 flex:1,
-                maxHeight:'72vh',
-                overflowY:'auto',
-                touchAction:'pan-y',
+                maxHeight: isMobile ? 280 : '72vh',
+                height: isMobile ? 280 : 'auto',
+                overflow: 'hidden',
                 
                 // Luxury Suede Display Board
                 background: 'linear-gradient(135deg, #FFE2D1 0%, #FFB799 50%, #FF9973 100%)',
                 borderRadius: 16,
-                padding: '28px',
+                padding: isMobile ? '16px' : '28px',
                 position: 'relative',
                 boxShadow: '0 24px 60px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.7)',
                 border: '1px solid rgba(255,255,255,0.4)',
@@ -601,7 +601,7 @@ export function Scene2_Envelope({
               
               {/* Metallic Gold Foil Border */}
               <div style={{
-                position:'absolute', inset: 8, borderRadius: 10,
+                position:'absolute', inset: isMobile ? 5 : 8, borderRadius: 10,
                 border: '2px solid rgba(201,168,76,0.8)',
                 boxShadow: 'inset 0 0 10px rgba(201,168,76,0.3), 0 0 10px rgba(201,168,76,0.3)',
                 pointerEvents: 'none',
@@ -670,10 +670,14 @@ export function Scene2_Envelope({
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
                 borderRadius: 8,
-                padding: '40px 16px 16px', // Extra top padding to clear Rakhi
+                padding: isMobile ? '36px 12px 12px' : '40px 16px 16px', // Extra top padding to clear Rakhi
                 marginTop: '10px',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 border: '1px solid rgba(255,255,255,0.5)',
+                // Scroll settings for mobile viewport clearance
+                maxHeight: isMobile ? 210 : 'none',
+                overflowY: isMobile ? 'auto' : 'visible',
+                touchAction: isMobile ? 'pan-y' : 'auto',
               }}>
 
                   {/* Shubh badge */}

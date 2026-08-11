@@ -169,10 +169,24 @@ export function ExperienceEngine({ experience }: Props) {
       <ExperiencePlayer experience={experience} isPreview={isPreview} />
 
       {/* Shared concerns — applied on top of every template */}
-      <ExperienceWatermark
-        senderName={experience.senderName}
-        recipientName={experience.recipientName}
-      />
+      {isPreview ? (
+        <ExperienceWatermark
+          senderName={experience.senderName}
+          recipientName={experience.recipientName}
+        />
+      ) : (
+        /* Brand watermark for receiver: subtle Loment Logo at the top-left */
+        <div style={{
+          position: 'absolute', top: 20, left: 20,
+          display: 'flex', alignItems: 'center', gap: 6,
+          zIndex: 9999, pointerEvents: 'none', opacity: 0.6
+        }}>
+          <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 20, height: 20, objectFit: 'contain' }} />
+          <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.85rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            Loment
+          </span>
+        </div>
+      )}
       {isCapturing && !captureWarningDismissed && (
         <ScreenCaptureWarning onDismiss={() => setCaptureWarningDismissed(true)} />
       )}
