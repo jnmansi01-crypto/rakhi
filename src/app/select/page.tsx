@@ -53,7 +53,7 @@ export default function SelectTemplatePage() {
   };
 
   return (
-    <div style={{
+    <div className="select-page-container" style={{
       minHeight: '100vh',
       background: '#080408',
       backgroundImage: 'radial-gradient(circle at center, #160a16 0%, #070307 100%)',
@@ -150,37 +150,68 @@ export default function SelectTemplatePage() {
       >
         <style dangerouslySetInnerHTML={{ __html: `
           @media (max-width: 600px) {
+            .select-page-container {
+              justify-content: flex-start !important;
+              padding-top: 110px !important;
+              padding-bottom: 60px !important;
+              overflow-y: auto !important;
+              height: auto !important;
+              min-height: 100dvh !important;
+            }
+            /* Make header elements sticky or appropriately padded on mobile */
+            .select-page-container > div:first-of-type {
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              background: rgba(8,4,8,0.92) !important;
+              backdrop-filter: blur(12px) !important;
+              WebkitBackdropFilter: blur(12px) !important;
+              padding: 20px 24px !important;
+              border-bottom: 1px solid rgba(251, 230, 190, 0.08) !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+              z-index: 100 !important;
+            }
+            .select-page-container > button {
+              position: fixed !important;
+              top: 18px !important;
+              right: 24px !important;
+              margin: 0 !important;
+              z-index: 110 !important;
+            }
             .template-grid-wrapper {
               flex-direction: column !important;
               align-items: center !important;
-              gap: 20px !important; /* Increase gap between vertical cards */
+              gap: 24px !important;
+              margin-top: 10px !important;
             }
             .template-square-card {
-              aspect-ratio: auto !important; /* Remove fixed ratio constraints to prevent overlaps */
-              min-height: 180px !important;
-              padding: 20px !important;
-              max-width: 100% !important; /* Full width stack */
+              aspect-ratio: auto !important;
+              min-height: 160px !important;
+              padding: 24px 20px !important;
+              max-width: 100% !important;
               width: 100% !important;
             }
             .template-title {
-              font-size: 1.15rem !important;
+              font-size: 1.25rem !important;
             }
             .template-desc {
-              font-size: 0.78rem !important;
-              display: block !important; /* Let text wrap normally */
-              line-height: 1.4 !important;
-              margin: 12px 0 !important;
+              font-size: 0.82rem !important;
+              display: block !important;
+              line-height: 1.5 !important;
+              margin: 12px 0 20px !important;
             }
             .template-badge {
               font-size: 0.65rem !important;
-              padding: 3px 8px !important;
+              padding: 4px 10px !important;
             }
             .template-price {
               font-size: 0.85rem !important;
-              padding: 3px 10px !important;
+              padding: 4px 12px !important;
             }
             .template-features {
-              display: none !important; /* Hide to save space on mobile */
+              display: none !important;
             }
           }
         ` }} />
