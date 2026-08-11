@@ -23,7 +23,6 @@ export default function SelectTemplatePage() {
       visual: 'linear-gradient(135deg, #4a1525 0%, #8a1c14 100%)',
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
-      emoji: '🌸',
       price: '299',
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
@@ -35,7 +34,6 @@ export default function SelectTemplatePage() {
       visual: 'linear-gradient(135deg, #2b1f1d 0%, #5c4033 100%)',
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
-      emoji: '📼',
       price: '250',
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
@@ -271,7 +269,7 @@ export default function SelectTemplatePage() {
                   marginBottom: 8,
                   display: 'flex', alignItems: 'center', gap: 10,
                 }}>
-                  <span style={{ fontSize: '1.6rem' }}>{tpl.emoji}</span> {tpl.name}
+                  {getSelectPageIcon(tpl.id)} {tpl.name}
                 </h2>
                 <p className="template-desc" style={{
                   fontFamily: 'var(--font-sans)',
@@ -422,4 +420,28 @@ export default function SelectTemplatePage() {
       </AnimatePresence>
     </div>
   );
+}
+
+function getSelectPageIcon(tplId: string) {
+  if (tplId === 'rakhi-2025') {
+    return (
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="2" y1="16" x2="30" y2="16" stroke="#c84040" strokeWidth="2.5" strokeDasharray="3 3" />
+        <line x1="2" y1="16" x2="30" y2="16" stroke="#d4af37" strokeWidth="1.2" strokeDasharray="1.5 4.5" />
+        <circle cx="16" cy="16" r="7" fill="#d4af37" stroke="#a37c1e" strokeWidth="1.2" />
+        <circle cx="16" cy="16" r="4" fill="#a12c2c" />
+        <circle cx="16" cy="16" r="1.8" fill="#fdf0a0" />
+      </svg>
+    );
+  } else if (tplId === 'template-02') {
+    return (
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="5" width="20" height="22" rx="2" fill="#faf8f5" stroke="#d1c4b2" strokeWidth="1.5" />
+        <rect x="9" y="8" width="14" height="13" fill="#3a312d" />
+        <path d="M 11 20 A 3 3 0 0 1 17 20" fill="#c79774" opacity="0.8" />
+        <circle cx="14" cy="14" r="2" fill="#c79774" />
+      </svg>
+    );
+  }
+  return null;
 }

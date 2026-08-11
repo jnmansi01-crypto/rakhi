@@ -597,9 +597,12 @@ function CreatePageContent() {
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{ fontSize: '5rem' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 100 }}
         >
-          🌸
+          <svg width="80" height="80" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="14" fill="rgba(201,168,76,0.12)" stroke="#C9A84C" strokeWidth="1.5" />
+            <path d="M10 16.5 L14 20.5 L22 11.5" stroke="#C9A84C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </motion.div>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#FFF8F0', fontStyle: 'italic', margin: 0 }}>
           {locale === 'hi' 
@@ -681,7 +684,7 @@ function CreatePageContent() {
           transition={{ delay: 0.4 }}
           style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: '#FFF8F0', fontStyle: 'italic' }}
         >
-          {locale === 'hi' ? 'आपका गिफ्ट ड्राफ्ट तैयार हो चुका है 🌸' : 'Your gift draft has been created 🌸'}
+          {locale === 'hi' ? 'आपका गिफ्ट ड्राफ्ट तैयार हो चुका है' : 'Your gift draft has been created'}
         </motion.p>
 
         <div style={{ display: 'flex', gap: 12, width: '100%' }}>
@@ -716,10 +719,10 @@ function CreatePageContent() {
             {paymentLoading
               ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
               : templateId === 'rakhi-2025'
-                ? (locale === 'hi' ? '₹299 का भुगतान करें 🌸' : 'Pay ₹299 & Send 🌸')
+                ? (locale === 'hi' ? '₹299 का भुगतान करें' : 'Pay ₹299 & Send')
                 : templateId === 'template-02'
-                  ? (locale === 'hi' ? '₹250 का भुगतान करें 🌸' : 'Pay ₹250 & Send 🌸')
-                  : (locale === 'hi' ? '₹299 का भुगतान करें 🌸' : 'Pay ₹299 & Send 🌸')
+                  ? (locale === 'hi' ? '₹250 का भुगतान करें' : 'Pay ₹250 & Send')
+                  : (locale === 'hi' ? '₹299 का भुगतान करें' : 'Pay ₹299 & Send')
             }
           </button>
         </div>
