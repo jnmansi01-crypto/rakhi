@@ -308,19 +308,19 @@ function CreatePageContent() {
         text: locale === 'hi' ? tpl.textHi : tpl.textEn,
       })) : (locale === 'hi' ? [
         {
-          emoji: '💛',
+          emoji: 'rakhi',
           title: 'दिल से',
           preview: 'हमेशा मेरा साथ देने के लिए...',
           text: `रक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸\n\nहमेशा मेरा साथ देने के लिए, हर मुश्किल में खड़े रहने के लिए, और मुझे हमेशा हँसाने के लिए — शुक्रिया। हम भले ही छोटी-छोटी बातों पर झगड़ते हों, लेकिन मैं जानता/जानती हूँ कि तुम हमेशा मेरे साथ हो।\n\nतुम्हारे होने से मेरी ज़िंदगी बहुत खूबसूरत है। यह राखी उस प्यार का एक छोटा सा इज़हार है।\n\nहमेशा तुम्हारा/तुम्हारी ❤️`,
         },
         {
-          emoji: '😄',
+          emoji: 'laddoo',
           title: 'मज़ेदार',
           preview: 'याद है जब हमने मम्मी का...',
           text: `रक्षाबंधन मुबारक! 🎉\n\nयाद है जब हमने मम्मी का खाना चुराया था और एक-दूसरे पर इल्ज़ाम लगाया था? या जब हम TV रिमोट के लिए घंटों लड़ते थे?\n\nसच में, तुम मेरे सबसे पहले दोस्त हो — और सबसे पक्के भी। इस साल की राखी पर, मैं promise करता/करती हूँ कि... थोड़ा कम झगड़ूँगा/झगड़ूँगी। थोड़ा ही! 😄\n\nतुम्हारा/तुम्हारी, हमेशा ❤️`,
         },
         {
-          emoji: '🌟',
+          emoji: 'diya',
           title: 'भावुक',
           preview: 'दूरी कितनी भी हो...',
           text: `आज इस खास दिन पर, मैं चाहता/चाहती हूँ कि तुम जानो — चाहे दूरी कितनी भी हो, तुम हमेशा मेरे दिल के करीब हो।\n\nहर सपने में तुमने साथ दिया, हर तकलीफ में हिम्मत बँधाई। तुम सिर्फ मेरे भाई/बहन नहीं, मेरी ताकत हो।\n\nयह राखी उस अटूट रिश्ते की निशानी है। 🌸\n\nतुम्हारा/तुम्हारी, सदा ❤️`,
@@ -372,7 +372,13 @@ function CreatePageContent() {
                       textAlign: 'center', transition: 'all 0.2s',
                     }}
                   >
-                    <span style={{ fontSize: '1.4rem' }}>{tpl.emoji}</span>
+                    <div style={{ height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 2 }}>
+                      {['rakhi', 'laddoo', 'diya'].includes(tpl.emoji) ? (
+                        getTemplateIcon(tpl.emoji)
+                      ) : (
+                        <span style={{ fontSize: '1.4rem' }}>{tpl.emoji}</span>
+                      )}
+                    </div>
                     <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 600, color: isSelected ? 'var(--gold)' : '#FFF8F0', letterSpacing: '0.04em' }}>
                       {tpl.title}
                     </span>
@@ -791,9 +797,12 @@ function CreatePageContent() {
         borderBottom: '1px solid rgba(201,168,76,0.15)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-          <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.15rem', color: '#FFF8F0' }}>
-            🌸 Rakhi
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.95rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              Loment
+            </span>
+          </div>
           <div style={{ flex: 1 }} />
           <span className="hint-text">{stepLabels[step]}</span>
         </div>
@@ -929,4 +938,39 @@ function CreatePageContent() {
 }
 
 // ─── Helper components ────────────────────────────────────────
+function getTemplateIcon(iconName: string) {
+  switch (iconName) {
+    case 'rakhi':
+      return (
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="2" y1="16" x2="30" y2="16" stroke="#c84040" strokeWidth="2" strokeDasharray="2 2" />
+          <line x1="2" y1="16" x2="30" y2="16" stroke="#d4af37" strokeWidth="1" strokeDasharray="1 3" />
+          <circle cx="16" cy="16" r="6" fill="#d4af37" stroke="#856414" strokeWidth="1" />
+          <circle cx="16" cy="16" r="3.5" fill="#c84040" />
+          <circle cx="16" cy="16" r="1.5" fill="#fdf0a0" />
+        </svg>
+      );
+    case 'laddoo':
+      return (
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="16" cy="22" rx="10" ry="3" fill="rgba(0,0,0,0.15)" />
+          <circle cx="16" cy="15" r="8" fill="#f5ba42" stroke="#d18315" strokeWidth="1" />
+          <circle cx="14" cy="13" r="1" fill="#fff" opacity="0.6" />
+          <circle cx="18" cy="17" r="0.8" fill="#fff" opacity="0.5" />
+          <path d="M15 10 Q16 7 17 10 Q16 12 15 10 Z" fill="#6b8040" />
+        </svg>
+      );
+    case 'diya':
+      return (
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 16 C 6 22 26 22 26 16 C 26 16 22 17 16 17 C 10 17 6 16 6 16 Z" fill="#8b5a2b" stroke="#5c3a1a" strokeWidth="1" />
+          <path d="M 6 16 C 10 12 22 12 26 16" fill="none" stroke="#5c3a1a" strokeWidth="1" />
+          <path d="M 16 15 C 14 12 15 7 16 4 C 17 7 18 12 16 15 Z" fill="#ff9900" />
+          <path d="M 16 15 C 15 13 15.5 10 16 8 C 16.5 10 17 13 16 15 Z" fill="#ffcc00" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 

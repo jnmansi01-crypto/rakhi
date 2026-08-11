@@ -22,7 +22,7 @@ const cosmicTemplate: TemplatePlugin = {
   createConfig: {
     letterTemplates: [
       {
-        emoji: '📜',
+        emoji: 'rakhi',
         titleEn: 'Threads of Love',
         titleHi: 'स्नेह का धागा',
         previewEn: 'Every year this day reminds me...',
@@ -31,7 +31,7 @@ const cosmicTemplate: TemplatePlugin = {
         textHi: `हर साल यह दिन मुझे याद दिलाता है कि मैं कितना भाग्यशाली हूँ कि तुम मेरे भाई-बहन हो। तुमने हर मोड़ पर मेरा साथ दिया है।\n\nइस रक्षाबंधन पर मैं बस इतना कहना चाहता हूँ — कोई दूरी, कोई वक्त, कोई बदलाव हमारे रिश्ते के धागे को कमज़ोर नहीं कर सकता।\n\nसस्नेह,`,
       },
       {
-        emoji: '💫',
+        emoji: 'laddoo',
         titleEn: 'Sweet Nostalgia',
         titleHi: 'खट्टी-मीठी यादें',
         previewEn: 'From childhood fights to growing up...',
@@ -40,7 +40,7 @@ const cosmicTemplate: TemplatePlugin = {
         textHi: `बचपन में रिमोट के लिए लड़ने से लेकर बड़े होने पर अपने सबसे बड़े राज साझा करने तक, हमारा बंधन केवल मजबूत ही हुआ है। मेरे बचपन को जादुई बनाने और हमेशा मुझ पर विश्वास करने के लिए धन्यवाद।\n\nमेरे सबसे प्यारे भाई-बहन को रक्षाबंधन की शुभकामनाएं!`,
       },
       {
-        emoji: '🌿',
+        emoji: 'diya',
         titleEn: 'My Constant Support',
         titleHi: 'मेरा संबल',
         previewEn: 'Through all of lifes highs and lows...',

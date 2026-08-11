@@ -23,7 +23,7 @@ const rakhiTemplate: TemplatePlugin = {
   createConfig: {
     letterTemplates: [
       {
-        emoji: '💛',
+        emoji: 'rakhi',
         titleEn: 'Heartfelt',
         titleHi: 'दिल से',
         previewEn: 'Thank you for always being there...',
@@ -32,7 +32,7 @@ const rakhiTemplate: TemplatePlugin = {
         textHi: `रक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸\n\nहमेशा मेरा साथ देने के लिए, हर मुश्किल में खड़े रहने के लिए, और मुझे हमेशा हँसाने के लिए — शुक्रिया।\n\nतुम्हारे होने से मेरी ज़िंदगी बहुत खूबसूरत है।\n\nहमेशा तुम्हारा/तुम्हारी ❤️`,
       },
       {
-        emoji: '😄',
+        emoji: 'laddoo',
         titleEn: 'Funny',
         titleHi: 'मज़ेदार',
         previewEn: 'Remember when we blamed each other...',
@@ -41,7 +41,7 @@ const rakhiTemplate: TemplatePlugin = {
         textHi: `रक्षाबंधन मुबारक! 🎉\n\nयाद है जब हमने मम्मी का खाना चुराया था और एक-दूसरे पर इल्ज़ाम लगाया था?\n\nसच में, तुम मेरे सबसे पहले दोस्त हो — और सबसे पक्के भी। इस साल थोड़ा कम झगड़ूँगा/झगड़ूँगी। थोड़ा ही! 😄\n\nतुम्हारा/तुम्हारी, हमेशा ❤️`,
       },
       {
-        emoji: '🌟',
+        emoji: 'diya',
         titleEn: 'Emotional',
         titleHi: 'भावुक',
         previewEn: 'No matter the distance between us...',

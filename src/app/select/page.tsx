@@ -65,6 +65,18 @@ export default function SelectTemplatePage() {
       padding: '40px 24px',
       overflowX: 'hidden',
     }}>
+      {/* Brand Header */}
+      <div style={{
+        position: 'absolute', top: 24, left: 24,
+        display: 'flex', alignItems: 'center', gap: 8,
+        zIndex: 10,
+      }}>
+        <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+        <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.95rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Loment
+        </span>
+      </div>
+
       {/* Locale Toggle */}
       <button
         onClick={() => { vibrate(); setLocale(l => l === 'en' ? 'hi' : 'en'); }}
@@ -119,8 +131,8 @@ export default function SelectTemplatePage() {
           }}
         >
           {locale === 'hi'
-            ? 'अपने भाई या बहन के लिए सबसे सुंदर और आकर्षक थीम चुनें।'
-            : 'Select the visual storytelling canvas that matches your sibling\'s personality.'}
+            ? 'चुनें कि इस राखी आप अपने भाई या बहन को कैसे सरप्राइज देना चाहते हैं।'
+            : 'Choose how you want to surprise your sibling this Rakhi.'}
         </motion.p>
       </div>
 
