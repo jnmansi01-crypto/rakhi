@@ -311,38 +311,38 @@ function CreatePageContent() {
           emoji: '💛',
           title: 'दिल से',
           preview: 'हमेशा मेरा साथ देने के लिए...',
-          text: `प्रिय भाई/बहन,\n\nरक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸\n\nहमेशा मेरा साथ देने के लिए, हर मुश्किल में खड़े रहने के लिए, और मुझे हमेशा हँसाने के लिए — शुक्रिया। हम भले ही छोटी-छोटी बातों पर झगड़ते हों, लेकिन मैं जानता/जानती हूँ कि तुम हमेशा मेरे साथ हो।\n\nतुम्हारे होने से मेरी ज़िंदगी बहुत खूबसूरत है। यह राखी उस प्यार का एक छोटा सा इज़हार है।\n\nहमेशा तुम्हारा/तुम्हारी ❤️`,
+          text: `रक्षाबंधन की बहुत-बहुत शुभकामनाएँ! 🌸\n\nहमेशा मेरा साथ देने के लिए, हर मुश्किल में खड़े रहने के लिए, और मुझे हमेशा हँसाने के लिए — शुक्रिया। हम भले ही छोटी-छोटी बातों पर झगड़ते हों, लेकिन मैं जानता/जानती हूँ कि तुम हमेशा मेरे साथ हो।\n\nतुम्हारे होने से मेरी ज़िंदगी बहुत खूबसूरत है। यह राखी उस प्यार का एक छोटा सा इज़हार है।\n\nहमेशा तुम्हारा/तुम्हारी ❤️`,
         },
         {
           emoji: '😄',
           title: 'मज़ेदार',
           preview: 'याद है जब हमने मम्मी का...',
-          text: `हे भाई/बहन,\n\nरक्षाबंधन मुबारक! 🎉\n\nयाद है जब हमने मम्मी का खाना चुराया था और एक-दूसरे पर इल्ज़ाम लगाया था? या जब हम TV रिमोट के लिए घंटों लड़ते थे?\n\nसच में, तुम मेरे सबसे पहले दोस्त हो — और सबसे पक्के भी। इस साल की राखी पर, मैं promise करता/करती हूँ कि... थोड़ा कम झगड़ूँगा/झगड़ूँगी। थोड़ा ही! 😄\n\nतुम्हारा/तुम्हारी, हमेशा ❤️`,
+          text: `रक्षाबंधन मुबारक! 🎉\n\nयाद है जब हमने मम्मी का खाना चुराया था और एक-दूसरे पर इल्ज़ाम लगाया था? या जब हम TV रिमोट के लिए घंटों लड़ते थे?\n\nसच में, तुम मेरे सबसे पहले दोस्त हो — और सबसे पक्के भी। इस साल की राखी पर, मैं promise करता/करती हूँ कि... थोड़ा कम झगड़ूँगा/झगड़ूँगी। थोड़ा ही! 😄\n\nतुम्हारा/तुम्हारी, हमेशा ❤️`,
         },
         {
           emoji: '🌟',
           title: 'भावुक',
           preview: 'दूरी कितनी भी हो...',
-          text: `मेरे प्यारे भाई/बहन,\n\nआज इस खास दिन पर, मैं चाहता/चाहती हूँ कि तुम जानो — चाहे दूरी कितनी भी हो, तुम हमेशा मेरे दिल के करीब हो।\n\nहर सपने में तुमने साथ दिया, हर तकलीफ में हिम्मत बँधाई। तुम सिर्फ मेरे भाई/बहन नहीं, मेरी ताकत हो।\n\nयह राखी उस अटूट रिश्ते की निशानी है। 🌸\n\nतुम्हारा/तुम्हारी, सदा ❤️`,
+          text: `आज इस खास दिन पर, मैं चाहता/चाहती हूँ कि तुम जानो — चाहे दूरी कितनी भी हो, तुम हमेशा मेरे दिल के करीब हो।\n\nहर सपने में तुमने साथ दिया, हर तकलीफ में हिम्मत बँधाई। तुम सिर्फ मेरे भाई/बहन नहीं, मेरी ताकत हो।\n\nयह राखी उस अटूट रिश्ते की निशानी है। 🌸\n\nतुम्हारा/तुम्हारी, सदा ❤️`,
         },
       ] : [
         {
           emoji: '💛',
           title: 'Heartfelt',
           preview: 'Thank you for always being there...',
-          text: `Dear brother/sister,\n\nHappy Raksha Bandhan! 🌸\n\nThank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. This Rakhi is a small token of the huge love I carry for you.\n\nAlways yours ❤️`,
+          text: `Happy Raksha Bandhan! 🌸\n\nThank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. This Rakhi is a small token of the huge love I carry for you.\n\nAlways yours ❤️`,
         },
         {
           emoji: '😄',
           title: 'Funny',
           preview: 'Remember when we blamed each other...',
-          text: `Hey bro/sis,\n\nHappy Raksha Bandhan! 🎉\n\nRemember when we used to blame each other for eating the last biscuit? Or when we'd fight over the TV remote for hours on end?\n\nYou were my first best friend — and honestly, my most permanent one. This year, I promise to fight with you a little less. Just a little. 😄\n\nYours forever ❤️`,
+          text: `Happy Raksha Bandhan! 🎉\n\nRemember when we used to blame each other for eating the last biscuit? Or when we'd fight over the TV remote for hours on end?\n\nYou were my first best friend — and honestly, my most permanent one. This year, I promise to fight with you a little less. Just a little. 😄\n\nYours forever ❤️`,
         },
         {
           emoji: '🌟',
           title: 'Emotional',
           preview: 'No matter the distance between us...',
-          text: `My dearest brother/sister,\n\nOn this special day, I want you to know — no matter the miles between us, you are always close to my heart.\n\nYou've cheered on every dream I've chased, held me up through every storm, and made every ordinary day feel special. You are not just my sibling — you are my strength.\n\nThis Rakhi is a symbol of that unbreakable bond. 🌸\n\nForever yours ❤️`,
+          text: `On this special day, I want you to know — no matter the miles between us, you are always close to my heart.\n\nYou've cheered on every dream I've chased, held me up through every storm, and made every ordinary day feel special. You are not just my sibling — you are my strength.\n\nThis Rakhi is a symbol of that unbreakable bond. 🌸\n\nForever yours ❤️`,
         },
       ]);
 
@@ -390,8 +390,8 @@ function CreatePageContent() {
             value={form.letterText}
             onChange={e => update('letterText', e.target.value)}
             placeholder={locale === 'hi'
-              ? 'प्रिय भाई/बहन, याद है जब हम टीवी के रिमोट के लिए लड़ते थे? हमेशा मेरा साथ देने के लिए शुक्रिया...'
-              : 'Dear brother/sister, remember when we used to fight over the TV remote? Thank you for always protecting me...'}
+              ? 'याद है जब हम टीवी के रिमोट के लिए लड़ते थे? हमेशा मेरा साथ देने के लिए शुक्रिया...'
+              : 'Remember when we used to fight over the TV remote? Thank you for always protecting me...'}
           />
           <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
             {form.letterText.length} characters
