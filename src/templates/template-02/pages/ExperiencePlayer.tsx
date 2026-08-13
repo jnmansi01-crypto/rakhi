@@ -164,6 +164,10 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               giftTitle={experience.giftTitle}
               giftValue={experience.giftValue}
               senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              letterText={experience.letterText}
+              photoUrls={experience.photoUrls}
+              experienceId={experience.id}
               locale={locale}
               isPreview={isPreview}
               onComplete={() => {

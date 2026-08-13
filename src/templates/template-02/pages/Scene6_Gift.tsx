@@ -14,15 +14,46 @@ interface Props {
   giftTitle: string;
   giftValue: string;
   senderName: string;
+  recipientName: string;
+  letterText: string;
+  photoUrls: string[];
+  experienceId: string;
   locale: Locale;
   isPreview?: boolean;
   onComplete: () => void;
 }
 
-export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale, isPreview, onComplete }: Props) {
+export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, recipientName, letterText, photoUrls, experienceId, locale, isPreview, onComplete }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const { vibrate } = useHaptics();
+
+  const handleDownloadPDF = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const { downloadExperiencePDF } = await import('@/shared/utils/downloadExperiencePDF');
+      await downloadExperiencePDF({
+        id: experienceId,
+        senderName,
+        recipientName,
+        letterText,
+        giftType,
+        giftTitle,
+        giftValue,
+        photoUrls,
+        voiceUrl: null,
+        locale,
+        createdAt: Date.now(),
+        openedAt: null,
+      });
+    } catch (e) {
+      console.error('PDF generation failed:', e);
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   const handleOpen = () => {
     if (!isOpen) {
@@ -223,7 +254,7 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
       </div>
 
       {!isPreview && (
-        <div style={{ width: '100%', maxWidth: 360, zIndex: 10 }}>
+        <div style={{ width: '100%', maxWidth: 360, zIndex: 10, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button
             onClick={() => { vibrate(); onComplete(); }}
             disabled={!isOpen}
@@ -240,6 +271,30 @@ export function Scene6_Gift({ giftType, giftTitle, giftValue, senderName, locale
           >
             {locale === 'hi' ? 'धन्यवाद कहें' : 'Send a Thank You'}
           </button>
+
+          {isOpen && (
+            <button
+              onClick={handleDownloadPDF}
+              disabled={pdfLoading}
+              style={{
+                ...btnStyle,
+                width: '100%',
+                background: pdfLoading
+                  ? 'rgba(201,168,76,0.1)'
+                  : 'linear-gradient(135deg, #C9A84C 0%, #E5C97A 50%, #C9A84C 100%)',
+                border: 'none',
+                color: pdfLoading ? 'rgba(201,168,76,0.5)' : '#3D1A00',
+                fontWeight: 700,
+                cursor: pdfLoading ? 'wait' : 'pointer',
+                boxShadow: pdfLoading ? 'none' : '0 6px 20px rgba(201,168,76,0.35)',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              {pdfLoading
+                ? (locale === 'hi' ? 'तैयार हो रहा है…' : 'Preparing keepsake…')
+                : (locale === 'hi' ? '⬇ PDF सेव करें' : '⬇ Save as PDF Keepsake')}
+            </button>
+          )}
         </div>
       )}
     </div>

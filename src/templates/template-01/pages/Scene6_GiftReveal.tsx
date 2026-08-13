@@ -6,12 +6,17 @@ import { audioEngine } from '@/shared/audio/audio';
 import { CelebrationOverlay } from '@/shared/components/CelebrationOverlay';
 import type { Locale, GiftType } from '@/lib/types';
 import { t } from '@/lib/i18n';
+import type { RakhiExperience } from '@/lib/types';
 
 interface Props {
   giftType: GiftType;
   giftTitle: string;
   giftValue: string;
   senderName: string;
+  recipientName: string;
+  letterText: string;
+  photoUrls: string[];
+  experienceId: string;
   locale: Locale;
   onComplete: () => void;
 }
@@ -66,11 +71,38 @@ function PremiumSeal() {
   );
 }
 
-export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, locale, onComplete }: Props) {
+export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, recipientName, letterText, photoUrls, experienceId, locale, onComplete }: Props) {
   const [phase, setPhase] = useState<'idle' | 'opening' | 'revealed'>('idle');
+  const [pdfLoading, setPdfLoading] = useState(false);
   const { vibrate } = useHaptics();
   const y = useMotionValue(0);
   const isPreview = typeof window !== 'undefined' && window.location.search.includes('preview=true');
+
+  const handleDownloadPDF = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const { downloadExperiencePDF } = await import('@/shared/utils/downloadExperiencePDF');
+      await downloadExperiencePDF({
+        id: experienceId,
+        senderName,
+        recipientName,
+        letterText,
+        giftType,
+        giftTitle,
+        giftValue,
+        photoUrls,
+        voiceUrl: null,
+        locale,
+        createdAt: Date.now(),
+        openedAt: null,
+      });
+    } catch (e) {
+      console.error('PDF generation failed:', e);
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   const action = giftType === 'voucher'
     ? { label: locale === 'hi' ? 'पाएं →' : 'Claim Gift →', href: giftValue }
@@ -387,7 +419,7 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
               width: '100%', justifyContent: 'center'
             }}
           >
-            {!isPreview && (
+          {!isPreview && (
               <>
                 <button
                   onClick={onComplete}
@@ -402,9 +434,33 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
                     boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                   }}
                 >
-                  {locale === 'hi' ? 'धन्यवाद 🌸' : 'Thank You 🌸'}
+                  {locale === 'hi' ? 'धन्यवाद' : 'Thank You'}
                 </button>
                 
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={pdfLoading}
+                  style={{
+                    background: pdfLoading
+                      ? 'rgba(201,168,76,0.1)'
+                      : 'linear-gradient(135deg, #C9A84C 0%, #E5C97A 50%, #C9A84C 100%)',
+                    border: '1px solid rgba(201,168,76,0.6)',
+                    borderRadius: 100, padding: '12px 20px',
+                    fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: pdfLoading ? 'rgba(201,168,76,0.5)' : '#3D1A00',
+                    cursor: pdfLoading ? 'wait' : 'pointer',
+                    fontWeight: 700,
+                    boxShadow: pdfLoading ? 'none' : '0 6px 20px rgba(201,168,76,0.4)',
+                    transition: 'all 0.3s ease',
+                    minWidth: 130,
+                  }}
+                >
+                  {pdfLoading
+                    ? (locale === 'hi' ? 'तैयार हो रहा है…' : 'Preparing…')
+                    : (locale === 'hi' ? '⬇ PDF सेव करें' : '⬇ Save as PDF')}
+                </button>
+
                 <a
                   href="/create"
                   style={{
@@ -418,7 +474,7 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
                     boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                   }}
                 >
-                  {locale === 'hi' ? 'गिफ्ट भेजें 🎁' : 'Send a Gift 🎁'}
+                  {locale === 'hi' ? 'गिफ्ट भेजें' : 'Send a Gift'}
                 </a>
               </>
             )}

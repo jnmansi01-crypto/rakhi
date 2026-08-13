@@ -138,6 +138,10 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
               giftTitle={experience.giftTitle}
               giftValue={experience.giftValue}
               senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              letterText={experience.letterText}
+              photoUrls={experience.photoUrls}
+              experienceId={experience.id}
               locale={locale}
               onComplete={() => { window.location.href = `/reply/${experience.id}`; }}
             />
