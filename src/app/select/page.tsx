@@ -529,151 +529,158 @@ export default function SelectTemplatePage() {
                 </button>
               </div>
 
-              {/* Mobile device frame casing */}
-              <div style={{
-                width: '100%',
-                aspectRatio: '9/19',
-                maxHeight: '72vh',
-                border: '10px solid #1a1a1a',
-                borderRadius: 36,
-                boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 40px rgba(201,168,76,0.15)',
-                background: '#080408',
-                overflow: 'hidden',
-                position: 'relative'
-              }}>
-                {/* Notch */}
+              {previewTab === 'sibling' ? (
+                /* Mobile device frame casing for Sibling Demo Iframe */
                 <div style={{
-                  position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-                  width: 100, height: 18, background: '#1a1a1a', borderRadius: '0 0 12px 12px',
-                  zIndex: 1000
-                }} />
-
-                {previewTab === 'sibling' ? (
+                  width: '100%',
+                  aspectRatio: '9/19',
+                  maxHeight: '72vh',
+                  border: '10px solid #1a1a1a',
+                  borderRadius: 36,
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 40px rgba(201,168,76,0.15)',
+                  background: '#080408',
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}>
+                  {/* Notch */}
+                  <div style={{
+                    position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+                    width: 100, height: 18, background: '#1a1a1a', borderRadius: '0 0 12px 12px',
+                    zIndex: 1000
+                  }} />
                   <iframe
                     src={previewTemplateId}
                     style={{ width: '100%', height: '100%', border: 'none', background: '#000' }}
                     title="Live Template Preview"
                   />
-                ) : (
-                  /* Creation Flow Steps Walkthrough */
-                  <div style={{
-                    width: '100%', height: '100%',
-                    padding: '36px 18px 20px',
-                    overflowY: 'auto',
-                    WebkitOverflowScrolling: 'touch',
-                    touchAction: 'pan-y',
-                    display: 'flex', flexDirection: 'column', gap: 14,
-                    color: '#FFF8F0',
-                    fontFamily: 'var(--font-sans)',
-                    boxSizing: 'border-box',
-                  }}>
-                    <div style={{ textAlign: 'center', marginBottom: 2 }}>
-                      <span style={{ fontSize: '0.68rem', color: '#C9A84C', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
-                        {locale === 'hi' ? '6 आसान चरण' : '6 SIMPLE CREATION STEPS'}
-                      </span>
-                      <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', margin: '4px 0 2px', fontWeight: 400 }}>
-                        {locale === 'hi' ? 'अपना गिफ्ट कैसे बनाएं' : 'How You Create This Gift'}
-                      </h3>
-                      <p style={{ fontSize: '0.75rem', color: 'rgba(255,248,240,0.6)', margin: 0 }}>
-                        {locale === 'hi' ? 'केवल 2 मिनट में पूरा करें' : 'Takes less than 2 minutes'}
-                      </p>
-                    </div>
-
-                    {/* Step Cards List */}
-                    {[
-                      {
-                        num: '1',
-                        icon: '🏷️',
-                        title: locale === 'hi' ? 'नाम दर्ज करें' : 'Names & Language',
-                        desc: locale === 'hi' ? 'अपना और अपने भाई/बहन का नाम लिखें (अंग्रेजी या हिन्दी)।' : 'Add your name & sibling’s name in English or Devanagari.',
-                      },
-                      {
-                        num: '2',
-                        icon: '💌',
-                        title: locale === 'hi' ? 'प्यार भरा पत्र' : 'Personal Letter',
-                        desc: locale === 'hi' ? '3 भावुक टेम्पलेट्स में से चुनें या अपना संदेश लिखें।' : 'Pick from 3 pre-written emotional templates or write custom.',
-                      },
-                      {
-                        num: '3',
-                        icon: '📷',
-                        title: locale === 'hi' ? 'यादों की फ़ोटो' : 'Memories & Photos',
-                        desc: locale === 'hi' ? '5 फ़ोटो तक अपलोड करें जो 3D पोलरॉइड एल्बम बनती हैं।' : 'Upload up to 5 photos transformed into 3D scrapbook polaroids.',
-                      },
-                      {
-                        num: '4',
-                        icon: '🎙️',
-                        title: locale === 'hi' ? 'आवाज़ रिकॉर्ड करें' : 'Voice Message',
-                        desc: locale === 'hi' ? 'अपनी आवाज में बधाई संदेश रिकॉर्ड करें (वैकल्पिक)।' : 'Record a personal audio note in your voice (optional).',
-                      },
-                      {
-                        num: '5',
-                        icon: '🎁',
-                        title: locale === 'hi' ? 'डिजिटल शगुन' : 'Digital Shagun / Gift',
-                        desc: locale === 'hi' ? 'अमेज़न वाउचर, पैसे, कूपन या सीक्रेट मैसेज जोड़ें।' : 'Attach Amazon Vouchers, UPI money, Coupons, or Secret Messages.',
-                      },
-                      {
-                        num: '6',
-                        icon: '🚀',
-                        title: locale === 'hi' ? 'पूर्वावलोकन और साझा करें' : 'Instant Link & Share',
-                        desc: locale === 'hi' ? 'व्हाट्सएप पर तुरंत एक क्लिक में लिंक भेजें।' : 'Generate an interactive keepsake link & share on WhatsApp.',
-                      },
-                    ].map((st) => (
-                      <div key={st.num} style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(201,168,76,0.18)',
-                        borderRadius: 14,
-                        padding: '12px 14px',
-                        display: 'flex',
-                        gap: 12,
-                        alignItems: 'flex-start',
-                      }}>
-                        <div style={{
-                          width: 32, height: 32, borderRadius: 10,
-                          background: 'rgba(201,168,76,0.12)',
-                          border: '1px solid rgba(201,168,76,0.3)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '1rem', flexShrink: 0,
-                        }}>
-                          {st.icon}
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: '0.82rem', margin: 0, color: '#FFF8F0', fontWeight: 600 }}>
-                            {st.num}. {st.title}
-                          </h4>
-                          <p style={{ fontSize: '0.72rem', margin: '4px 0 0', color: 'rgba(255,248,240,0.65)', lineHeight: 1.4 }}>
-                            {st.desc}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Action Button inside modal */}
-                    <button
-                      onClick={() => {
-                        const targetId = previewTemplateId.includes('template-02') ? 'template-02' : 'rakhi-2025';
-                        setPreviewTemplateId(null);
-                        handleSelect(targetId);
-                      }}
-                      style={{
-                        marginTop: 6,
-                        marginBottom: 10,
-                        padding: '14px',
-                        borderRadius: 12,
-                        background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
-                        color: '#080408',
-                        fontWeight: 700,
-                        fontSize: '0.85rem',
-                        border: 'none',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {locale === 'hi' ? 'यह उपहार बनाना शुरू करें →' : 'Start Creating This Card →'}
-                    </button>
+                </div>
+              ) : (
+                /* Creation Flow Steps Walkthrough - Dedicated Smooth Scroll Container */
+                <div style={{
+                  width: '100%',
+                  height: '72vh',
+                  maxHeight: '72vh',
+                  overflowY: 'auto',
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-y',
+                  overscrollBehaviorY: 'contain',
+                  background: 'rgba(12, 6, 12, 0.95)',
+                  border: '1.5px solid rgba(201,168,76,0.3)',
+                  borderRadius: 24,
+                  padding: '24px 18px 24px',
+                  display: 'flex', flexDirection: 'column', gap: 14,
+                  color: '#FFF8F0',
+                  fontFamily: 'var(--font-sans)',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(201,168,76,0.12)',
+                }}>
+                  <div style={{ textAlign: 'center', marginBottom: 4 }}>
+                    <span style={{ fontSize: '0.68rem', color: '#C9A84C', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
+                      {locale === 'hi' ? '6 आसान चरण' : '6 SIMPLE CREATION STEPS'}
+                    </span>
+                    <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.25rem', margin: '4px 0 2px', fontWeight: 400 }}>
+                      {locale === 'hi' ? 'अपना गिफ्ट कैसे बनाएं' : 'How You Create This Gift'}
+                    </h3>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,248,240,0.6)', margin: 0 }}>
+                      {locale === 'hi' ? 'केवल 2 मिनट में पूरा करें' : 'Takes less than 2 minutes'}
+                    </p>
                   </div>
-                )}
-              </div>
+
+                  {/* Step Cards List */}
+                  {[
+                    {
+                      num: '1',
+                      icon: '🏷️',
+                      title: locale === 'hi' ? 'नाम दर्ज करें' : 'Names & Language',
+                      desc: locale === 'hi' ? 'अपना और अपने भाई/बहन का नाम लिखें (अंग्रेजी या हिन्दी)।' : 'Add your name & sibling’s name in English or Devanagari.',
+                    },
+                    {
+                      num: '2',
+                      icon: '💌',
+                      title: locale === 'hi' ? 'प्यार भरा पत्र' : 'Personal Letter',
+                      desc: locale === 'hi' ? '3 भावुक टेम्पलेट्स में से चुनें या अपना संदेश लिखें।' : 'Pick from 3 pre-written emotional templates or write custom.',
+                    },
+                    {
+                      num: '3',
+                      icon: '📷',
+                      title: locale === 'hi' ? 'यादों की फ़ोटो' : 'Memories & Photos',
+                      desc: locale === 'hi' ? '5 फ़ोटो तक अपलोड करें जो 3D पोलरॉइड एल्बम बनती हैं।' : 'Upload up to 5 photos transformed into 3D scrapbook polaroids.',
+                    },
+                    {
+                      num: '4',
+                      icon: '🎙️',
+                      title: locale === 'hi' ? 'आवाज़ रिकॉर्ड करें' : 'Voice Message',
+                      desc: locale === 'hi' ? 'अपनी आवाज में बधाई संदेश रिकॉर्ड करें (वैकल्पिक)।' : 'Record a personal audio note in your voice (optional).',
+                    },
+                    {
+                      num: '5',
+                      icon: '🎁',
+                      title: locale === 'hi' ? 'डिजिटल शगुन' : 'Digital Shagun / Gift',
+                      desc: locale === 'hi' ? 'अमेज़न वाउचर, पैसे, कूपन या सीक्रेट मैसेज जोड़ें।' : 'Attach Amazon Vouchers, UPI money, Coupons, or Secret Messages.',
+                    },
+                    {
+                      num: '6',
+                      icon: '🚀',
+                      title: locale === 'hi' ? 'पूर्वावलोकन और साझा करें' : 'Instant Link & Share',
+                      desc: locale === 'hi' ? 'व्हाट्सएप पर तुरंत एक क्लिक में लिंक भेजें।' : 'Generate an interactive keepsake link & share on WhatsApp.',
+                    },
+                  ].map((st) => (
+                    <div key={st.num} style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(201,168,76,0.18)',
+                      borderRadius: 14,
+                      padding: '12px 14px',
+                      display: 'flex',
+                      gap: 12,
+                      alignItems: 'flex-start',
+                    }}>
+                      <div style={{
+                        width: 32, height: 32, borderRadius: 10,
+                        background: 'rgba(201,168,76,0.12)',
+                        border: '1px solid rgba(201,168,76,0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '1rem', flexShrink: 0,
+                      }}>
+                        {st.icon}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{ fontSize: '0.82rem', margin: 0, color: '#FFF8F0', fontWeight: 600 }}>
+                          {st.num}. {st.title}
+                        </h4>
+                        <p style={{ fontSize: '0.72rem', margin: '4px 0 0', color: 'rgba(255,248,240,0.65)', lineHeight: 1.4 }}>
+                          {st.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Action Button inside modal */}
+                  <button
+                    onClick={() => {
+                      const targetId = previewTemplateId.includes('template-02') ? 'template-02' : 'rakhi-2025';
+                      setPreviewTemplateId(null);
+                      handleSelect(targetId);
+                    }}
+                    style={{
+                      marginTop: 8,
+                      marginBottom: 14,
+                      padding: '14px',
+                      borderRadius: 12,
+                      background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
+                      color: '#080408',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
+                      textAlign: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {locale === 'hi' ? 'यह उपहार बनाना शुरू करें →' : 'Start Creating This Card →'}
+                  </button>
+                </div>
+              )}
 
               <p style={{ marginTop: 10, fontSize: '0.75rem', color: 'rgba(201,168,76,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 {previewTab === 'sibling'
