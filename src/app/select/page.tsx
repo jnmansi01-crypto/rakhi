@@ -546,9 +546,12 @@ export default function SelectTemplatePage() {
                     width: '100%', height: '100%',
                     padding: '36px 18px 20px',
                     overflowY: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-y',
                     display: 'flex', flexDirection: 'column', gap: 14,
                     color: '#FFF8F0',
                     fontFamily: 'var(--font-sans)',
+                    boxSizing: 'border-box',
                   }}>
                     <div style={{ textAlign: 'center', marginBottom: 2 }}>
                       <span style={{ fontSize: '0.68rem', color: '#C9A84C', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
