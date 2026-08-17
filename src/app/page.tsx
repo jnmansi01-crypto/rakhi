@@ -75,6 +75,7 @@ export default function HomePage() {
   const [daysInfo, setDaysInfo] = useState<{ days: number, date: Date | null }>({ days: 0, date: null });
   const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState<Locale>('en');
+  const [showStepsModal, setShowStepsModal] = useState(false);
   const { vibrate } = useHaptics();
 
   const playHoverChime = () => {
