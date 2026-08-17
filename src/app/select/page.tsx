@@ -200,10 +200,13 @@ export default function SelectTemplatePage() {
               aspect-ratio: auto !important;
               height: auto !important;
               min-height: auto !important;
-              padding: 24px 20px !important;
+              padding: 20px 18px !important;
               max-width: 100% !important;
               width: 100% !important;
               overflow: visible !important;
+              display: flex !important;
+              flex-direction: column !important;
+              justify-content: flex-start !important;
             }
             .template-title {
               font-size: 1.25rem !important;
@@ -212,7 +215,7 @@ export default function SelectTemplatePage() {
               font-size: 0.82rem !important;
               display: block !important;
               line-height: 1.5 !important;
-              margin: 10px 0 16px !important;
+              margin: 8px 0 12px !important;
             }
             .template-badge {
               font-size: 0.65rem !important;
@@ -225,30 +228,42 @@ export default function SelectTemplatePage() {
             .template-features {
               display: none !important;
             }
+            .template-footer-row {
+              display: flex !important;
+              width: 100% !important;
+              margin-top: 14px !important;
+              z-index: 10 !important;
+            }
             .template-cta-group {
               width: 100% !important;
               display: flex !important;
               gap: 10px !important;
-              margin-top: 8px !important;
+              z-index: 10 !important;
+            }
+            .template-cta-btn-preview, .template-cta-btn-select {
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              text-align: center !important;
+              visibility: visible !important;
+              opacity: 1 !important;
             }
             .template-cta-btn-preview {
               flex: 1 !important;
               padding: 12px 14px !important;
               font-size: 0.85rem !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              text-align: center !important;
+              background: rgba(201,168,76,0.15) !important;
+              color: #C9A84C !important;
+              border: 1px solid rgba(201,168,76,0.5) !important;
               border-radius: 12px !important;
             }
             .template-cta-btn-select {
               flex: 1.2 !important;
               padding: 12px 16px !important;
               font-size: 0.85rem !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
-              text-align: center !important;
+              background: linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%) !important;
+              color: #080408 !important;
+              border: 1px solid #E5C97A !important;
               border-radius: 12px !important;
             }
           }
@@ -275,10 +290,9 @@ export default function SelectTemplatePage() {
                   ? `1.5px solid ${tpl.glowColor}` 
                   : '1.5px solid rgba(201,168,76,0.25)',
                 borderRadius: 24,
-                padding: 28,
+                padding: 24,
                 cursor: 'pointer',
                 position: 'relative',
-                overflow: 'hidden',
                 display: 'flex', 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
