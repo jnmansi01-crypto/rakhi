@@ -198,10 +198,12 @@ export default function SelectTemplatePage() {
             }
             .template-square-card {
               aspect-ratio: auto !important;
-              min-height: 160px !important;
+              height: auto !important;
+              min-height: auto !important;
               padding: 24px 20px !important;
               max-width: 100% !important;
               width: 100% !important;
+              overflow: visible !important;
             }
             .template-title {
               font-size: 1.25rem !important;
@@ -210,7 +212,7 @@ export default function SelectTemplatePage() {
               font-size: 0.82rem !important;
               display: block !important;
               line-height: 1.5 !important;
-              margin: 12px 0 20px !important;
+              margin: 10px 0 16px !important;
             }
             .template-badge {
               font-size: 0.65rem !important;
@@ -222,6 +224,32 @@ export default function SelectTemplatePage() {
             }
             .template-features {
               display: none !important;
+            }
+            .template-cta-group {
+              width: 100% !important;
+              display: flex !important;
+              gap: 10px !important;
+              margin-top: 8px !important;
+            }
+            .template-cta-btn-preview {
+              flex: 1 !important;
+              padding: 12px 14px !important;
+              font-size: 0.85rem !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              text-align: center !important;
+              border-radius: 12px !important;
+            }
+            .template-cta-btn-select {
+              flex: 1.2 !important;
+              padding: 12px 16px !important;
+              font-size: 0.85rem !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              text-align: center !important;
+              border-radius: 12px !important;
             }
           }
         ` }} />
@@ -323,7 +351,7 @@ export default function SelectTemplatePage() {
               </div>
 
               {/* Footer row with highlights / interactive select button */}
-              <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 8 }}>
+              <div className="template-footer-row" style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 8 }}>
                 {/* Feature tags */}
                 <div className="template-features" style={{ display: 'flex', gap: 6 }}>
                   {tpl.features.map((f, idx) => (
@@ -334,8 +362,9 @@ export default function SelectTemplatePage() {
                 </div>
 
                 {/* CTAs - Prominent & Touch-Friendly for Mobile */}
-                <div style={{ display: 'flex', gap: 8, zIndex: 3 }}>
+                <div className="template-cta-group" style={{ display: 'flex', gap: 8, zIndex: 3 }}>
                   <motion.button
+                    className="template-cta-btn-preview"
                     onClick={(e) => openPreview(e, tpl.previewUrl)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -356,6 +385,7 @@ export default function SelectTemplatePage() {
                   </motion.button>
 
                   <motion.button
+                    className="template-cta-btn-select"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleSelect(tpl.id);
