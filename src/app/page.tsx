@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { RakhiHero } from '@/templates/template-01/pages/RakhiHero';
 import { getDaysUntilRakhi } from '@/lib/dateUtils';
@@ -467,78 +467,19 @@ export default function HomePage() {
           <p style={{
             fontFamily: 'var(--font-sans)',
             fontWeight: 300,
-            fontSize: '1rem',
-            color: 'rgba(255,255,255,0.6)',
+            fontSize: '0.96rem',
+            color: 'rgba(255,255,255,0.75)',
             lineHeight: 1.6,
-            marginBottom: 36,
-            letterSpacing: '0.02em',
+            marginBottom: 32,
+            letterSpacing: '0.01em',
+            maxWidth: 480,
           }}>
             {locale === 'en' ? (
-              <>An immersive digital ritual — letter, voice,<br />memories, Rakhi-tying &amp; a gift, all in one link.</>
+              <>A personalised Rakhi experience made from your memories, voice and words — delivered as one magical link.</>
             ) : (
-              <>एक डिजिटल अनुष्ठान — पत्र, आवाज़, यादें,<br />राखी और एक उपहार, सब कुछ एक लिंक में।</>
+              <>यादों, आवाज़ और शब्दों से बना एक व्यक्तिगत राखी अनुभव — एक जादुई लिंक में।</>
             )}
           </p>
-
-          {/* Journey preview dots */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 0,
-              marginBottom: 32,
-            }}
-          >
-            {JOURNEY.map((step, i) => (
-              <div key={step.label} style={{ display: 'flex', alignItems: 'center' }}>
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 1 + i * 0.1, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-                  style={{
-                    display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: 6,
-                  }}
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.08, boxShadow: '0 0 20px rgba(201,168,76,0.45)' }}
-                    style={{
-                      width: 50, height: 50, borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(201,168,76,0.4)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-                    }}
-                  >
-                    {step.icon}
-                  </motion.div>
-                  <span style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.58rem',
-                    letterSpacing: '0.1em',
-                    color: 'rgba(201,168,76,0.6)',
-                    textTransform: 'uppercase',
-                    fontWeight: 500,
-                  }}>
-                    {locale === 'hi' ? step.hi : step.label}
-                  </span>
-                </motion.div>
-                {i < JOURNEY.length - 1 && (
-                  <div style={{
-                    width: 20, height: 1, margin: '0 2px',
-                    background: 'linear-gradient(90deg, rgba(201,168,76,0.4), rgba(201,168,76,0.1))',
-                    marginBottom: 18,
-                  }}/>
-                )}
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* ── CTA ──────────────────────────────────────────── */}
@@ -594,6 +535,30 @@ export default function HomePage() {
             </motion.div>
           </Link>
 
+          {/* Link to show Creation Steps */}
+          <button
+            onClick={() => setShowStepsModal(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#C9A84C',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              fontWeight: 500,
+              textDecoration: 'underline',
+              textUnderlineOffset: '4px',
+              cursor: 'pointer',
+              marginTop: 18,
+              display: 'block',
+              width: '100%',
+              textAlign: 'center',
+              transition: 'all 0.2s ease',
+              opacity: 0.9,
+            }}
+          >
+            {locale === 'en' ? 'how to craft your experience?' : 'अनुभव कैसे बनाएं?'}
+          </button>
+
           {/* Hindi tagline */}
           <motion.p
             initial={{ opacity: 0 }}
@@ -613,7 +578,176 @@ export default function HomePage() {
           </motion.p>
         </motion.div>
       </div>
-      
+
+      {/* Creation Steps Modal */}
+      <AnimatePresence>
+        {showStepsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(8, 4, 8, 0.92)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              zIndex: 999,
+              padding: 16
+            }}
+            onClick={() => setShowStepsModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: '100%',
+                maxWidth: 400,
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 12,
+              }}>
+                <span style={{ fontSize: '0.72rem', color: '#C9A84C', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
+                  {locale === 'hi' ? '6 आसान चरण' : '6 SIMPLE CREATION STEPS'}
+                </span>
+                <button
+                  onClick={() => setShowStepsModal(false)}
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: '#fff',
+                    borderRadius: '50%',
+                    width: 34, height: 34,
+                    fontSize: '1.1rem',
+                    cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div style={{
+                width: '100%',
+                maxHeight: '74vh',
+                overflowY: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                touchAction: 'pan-y',
+                overscrollBehaviorY: 'contain',
+                background: 'rgba(12, 6, 12, 0.95)',
+                border: '1.5px solid rgba(201,168,76,0.3)',
+                borderRadius: 24,
+                padding: '24px 18px 24px',
+                display: 'flex', flexDirection: 'column', gap: 14,
+                color: '#FFF8F0',
+                fontFamily: 'var(--font-sans)',
+                boxSizing: 'border-box',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(201,168,76,0.12)',
+              }}>
+                <div style={{ textAlign: 'center', marginBottom: 4 }}>
+                  <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.25rem', margin: '2px 0 4px', fontWeight: 400 }}>
+                    {locale === 'hi' ? 'अपना अनुभव कैसे बनाएं' : 'How You Craft Your Experience'}
+                  </h3>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255,248,240,0.6)', margin: 0 }}>
+                    {locale === 'hi' ? 'केवल 2 मिनट में पूरा करें' : 'Takes less than 2 minutes'}
+                  </p>
+                </div>
+
+                {[
+                  {
+                    num: '1', icon: '🏷️',
+                    title: locale === 'hi' ? 'नाम दर्ज करें' : 'Names & Language',
+                    desc: locale === 'hi' ? 'अपना और अपने भाई/बहन का नाम लिखें (अंग्रेजी या हिन्दी)।' : 'Add your name & sibling’s name in English or Devanagari.',
+                  },
+                  {
+                    num: '2', icon: '💌',
+                    title: locale === 'hi' ? 'प्यार भरा पत्र' : 'Personal Letter',
+                    desc: locale === 'hi' ? '3 भावुक टेम्पलेट्स में से चुनें या अपना संदेश लिखें।' : 'Pick from 3 pre-written emotional templates or write custom.',
+                  },
+                  {
+                    num: '3', icon: '📷',
+                    title: locale === 'hi' ? 'यादों की फ़ोटो' : 'Memories & Photos',
+                    desc: locale === 'hi' ? '5 फ़ोटो तक अपलोड करें जो 3D पोलरॉइड एल्बम बनती हैं।' : 'Upload up to 5 photos transformed into 3D scrapbook polaroids.',
+                  },
+                  {
+                    num: '4', icon: '🎙️',
+                    title: locale === 'hi' ? 'आवाज़ रिकॉर्ड करें' : 'Voice Message',
+                    desc: locale === 'hi' ? 'अपनी आवाज में बधाई संदेश रिकॉर्ड करें (वैकल्पिक)।' : 'Record a personal audio note in your voice (optional).',
+                  },
+                  {
+                    num: '5', icon: '🎁',
+                    title: locale === 'hi' ? 'डिजिटल शगुन' : 'Digital Shagun / Gift',
+                    desc: locale === 'hi' ? 'अमेज़न वाउचर, पैसे, कूपन या सीक्रेट मैसेज जोड़ें।' : 'Attach Amazon Vouchers, UPI money, Coupons, or Secret Messages.',
+                  },
+                  {
+                    num: '6', icon: '🚀',
+                    title: locale === 'hi' ? 'पूर्वावलोकन और साझा करें' : 'Instant Link & Share',
+                    desc: locale === 'hi' ? 'व्हाट्सएप पर तुरंत एक क्लिक में लिंक भेजें।' : 'Generate an interactive keepsake link & share on WhatsApp.',
+                  },
+                ].map((st) => (
+                  <div key={st.num} style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(201,168,76,0.18)',
+                    borderRadius: 14,
+                    padding: '12px 14px',
+                    display: 'flex', gap: 12, alignItems: 'flex-start',
+                  }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: 10,
+                      background: 'rgba(201,168,76,0.12)',
+                      border: '1px solid rgba(201,168,76,0.3)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '1rem', flexShrink: 0,
+                    }}>
+                      {st.icon}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ fontSize: '0.82rem', margin: 0, color: '#FFF8F0', fontWeight: 600 }}>
+                        {st.num}. {st.title}
+                      </h4>
+                      <p style={{ fontSize: '0.72rem', margin: '4px 0 0', color: 'rgba(255,248,240,0.65)', lineHeight: 1.4 }}>
+                        {st.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
+                <Link href="/select" style={{ textDecoration: 'none', width: '100%', marginTop: 8 }}>
+                  <button
+                    onClick={() => setShowStepsModal(false)}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      borderRadius: 12,
+                      background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
+                      color: '#080408',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {locale === 'hi' ? 'अनुभव बनाना शुरू करें →' : 'Create Your Experience →'}
+                  </button>
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── Initial Cinematic Reveal Overlay ─────────────────── */}
       <motion.div
         initial={{ opacity: 1 }}
