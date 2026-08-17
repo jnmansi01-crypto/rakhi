@@ -434,7 +434,7 @@ export default function HomePage() {
           }}>
             {locale === 'en' ? (
               <>
-                Send a moment<br />
+                Send a Rakhi experience<br />
                 <span style={{
                   background: 'linear-gradient(90deg, #E5C97A 0%, #C9A84C 30%, #fff9e0 50%, #C9A84C 70%, #E5C97A 100%)',
                   backgroundSize: '200% 100%',
@@ -589,7 +589,7 @@ export default function HomePage() {
                 color: '#FFF8F0',
                 textTransform: 'uppercase',
               }}>
-                {locale === 'en' ? 'Craft Your Experience' : 'अपना उपहार बनाएं'} <span style={{ fontFamily: 'serif' }}>→</span>
+                {locale === 'en' ? 'Create Your Experience' : 'अपना उपहार बनाएं'} <span style={{ fontFamily: 'serif' }}>→</span>
               </span>
             </motion.div>
           </Link>

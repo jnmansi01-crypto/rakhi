@@ -13,6 +13,12 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
   }
 
   const formData = new FormData();
+
+  // Guard: Cloudinary rejects empty files with a cryptic error — catch this early
+  if (file.size === 0) {
+    throw new Error('The selected file appears to be empty or could not be read. Please try a different photo.');
+  }
+
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
 

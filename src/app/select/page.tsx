@@ -15,6 +15,8 @@ export default function SelectTemplatePage() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(null);
 
+  const [previewTab, setPreviewTab] = useState<'sibling' | 'creation'>('sibling');
+
   useEffect(() => {
     document.body.classList.add('sender-flow');
     return () => {
@@ -56,6 +58,7 @@ export default function SelectTemplatePage() {
   const openPreview = (e: React.MouseEvent, url: string) => {
     e.stopPropagation();
     vibrate();
+    setPreviewTab('sibling');
     setPreviewTemplateId(url);
   };
 
@@ -242,7 +245,7 @@ export default function SelectTemplatePage() {
                 background: 'rgba(255,255,255,0.02)',
                 border: isHovered 
                   ? `1.5px solid ${tpl.glowColor}` 
-                  : '1.5px solid rgba(201,168,76,0.15)',
+                  : '1.5px solid rgba(201,168,76,0.25)',
                 borderRadius: 24,
                 padding: 28,
                 cursor: 'pointer',
@@ -261,7 +264,7 @@ export default function SelectTemplatePage() {
               <div style={{
                 position: 'absolute', inset: 0,
                 background: tpl.visual,
-                opacity: isHovered ? 0.22 : 0.05,
+                opacity: isHovered ? 0.22 : 0.08,
                 transition: 'opacity 0.4s ease',
                 pointerEvents: 'none',
                 zIndex: 0,
@@ -270,13 +273,13 @@ export default function SelectTemplatePage() {
               {/* Upper Header Row */}
               <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <span className="template-badge" style={{
-                  background: 'rgba(201,168,76,0.1)',
-                  border: '1px solid rgba(201,168,76,0.3)',
+                  background: 'rgba(201,168,76,0.12)',
+                  border: '1px solid rgba(201,168,76,0.35)',
                   color: '#C9A84C',
                   borderRadius: 20,
                   padding: '4px 10px',
                   fontSize: '0.65rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: '0.05em',
                   textTransform: 'uppercase',
                 }}>
@@ -312,7 +315,7 @@ export default function SelectTemplatePage() {
                 <p className="template-desc" style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.82rem',
-                  color: 'rgba(255,248,240,0.65)',
+                  color: 'rgba(255,248,240,0.7)',
                   lineHeight: 1.45,
                 }}>
                   {tpl.desc}
@@ -324,51 +327,58 @@ export default function SelectTemplatePage() {
                 {/* Feature tags */}
                 <div className="template-features" style={{ display: 'flex', gap: 6 }}>
                   {tpl.features.map((f, idx) => (
-                    <span key={idx} style={{ fontSize: '0.62rem', color: 'rgba(251, 230, 190, 0.45)', border: '1px solid rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}>
+                    <span key={idx} style={{ fontSize: '0.62rem', color: 'rgba(251, 230, 190, 0.55)', border: '1px solid rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4 }}>
                       {f}
                     </span>
                   ))}
                 </div>
 
-                {/* CTAs */}
-                <div style={{ display: 'flex', gap: 8 }}>
+                {/* CTAs - Prominent & Touch-Friendly for Mobile */}
+                <div style={{ display: 'flex', gap: 8, zIndex: 3 }}>
                   <motion.button
                     onClick={(e) => openPreview(e, tpl.previewUrl)}
                     whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     style={{
-                      padding: '8px 14px',
+                      padding: '8px 16px',
                       borderRadius: 100,
-                      background: isHovered ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                      color: isHovered ? '#C9A84C' : 'rgba(255, 248, 240, 0.8)',
-                      fontSize: '0.72rem',
-                      fontWeight: 500,
+                      background: 'rgba(201,168,76,0.12)',
+                      color: '#C9A84C',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
                       cursor: 'pointer',
-                      border: isHovered ? `1px solid ${tpl.glowColor}` : '1px solid rgba(255,255,255,0.15)',
-                      boxShadow: isHovered ? `0 0 10px ${tpl.glowColor}` : 'none',
+                      border: '1px solid rgba(201,168,76,0.4)',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
                       transition: 'all 0.2s',
                     }}
                   >
                     {locale === 'hi' ? 'डेमो' : 'Preview'}
                   </motion.button>
 
-                  <motion.div
-                    animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelect(tpl.id);
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     style={{
-                      padding: '8px 16px',
+                      padding: '8px 18px',
                       borderRadius: 100,
-                      background: isHovered ? '#C9A84C' : 'rgba(255,255,255,0.05)',
-                      color: isHovered ? '#080408' : '#FFF8F0',
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
+                      background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
+                      color: '#080408',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      border: isHovered ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.1)',
-                      boxShadow: isHovered ? `0 0 15px ${tpl.glowColor}` : 'none',
-                      transition: 'all 0.3s ease',
+                      border: '1px solid #E5C97A',
+                      boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
                     }}
                   >
                     {locale === 'hi' ? 'चुनें' : 'Select'}
-                  </motion.div>
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
@@ -385,7 +395,7 @@ export default function SelectTemplatePage() {
             exit={{ opacity: 0 }}
             style={{
               position: 'fixed', inset: 0,
-              background: 'rgba(8, 4, 8, 0.88)',
+              background: 'rgba(8, 4, 8, 0.92)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -400,13 +410,63 @@ export default function SelectTemplatePage() {
               exit={{ scale: 0.9, y: 20 }}
               style={{
                 width: '100%',
-                maxWidth: 380,
+                maxWidth: 390,
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center',
               }}
             >
-              {/* Close Button Header */}
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+              {/* Header with Segmented Tabs & Close button */}
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 12,
+                gap: 8,
+              }}>
+                {/* Segmented Tab Bar */}
+                <div style={{
+                  display: 'flex',
+                  background: 'rgba(255,255,255,0.06)',
+                  borderRadius: 100,
+                  padding: 3,
+                  border: '1px solid rgba(201,168,76,0.3)',
+                }}>
+                  <button
+                    onClick={() => setPreviewTab('sibling')}
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: 100,
+                      border: 'none',
+                      background: previewTab === 'sibling' ? 'linear-gradient(135deg, #C9A84C, #A37C1E)' : 'transparent',
+                      color: previewTab === 'sibling' ? '#080408' : 'rgba(255,248,240,0.85)',
+                      fontWeight: 600,
+                      fontSize: '0.74rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {locale === 'hi' ? 'भाई/बहन दृश्य 🌸' : 'Sibling View 🌸'}
+                  </button>
+                  <button
+                    onClick={() => setPreviewTab('creation')}
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: 100,
+                      border: 'none',
+                      background: previewTab === 'creation' ? 'linear-gradient(135deg, #C9A84C, #A37C1E)' : 'transparent',
+                      color: previewTab === 'creation' ? '#080408' : 'rgba(255,248,240,0.85)',
+                      fontWeight: 600,
+                      fontSize: '0.74rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {locale === 'hi' ? 'बनाने के चरण ✏️' : 'Creation Steps ✏️'}
+                  </button>
+                </div>
+
+                {/* Close Button */}
                 <button
                   onClick={() => setPreviewTemplateId(null)}
                   style={{
@@ -414,10 +474,11 @@ export default function SelectTemplatePage() {
                     border: '1px solid rgba(255,255,255,0.15)',
                     color: '#fff',
                     borderRadius: '50%',
-                    width: 38, height: 38,
-                    fontSize: '1.2rem',
+                    width: 36, height: 36,
+                    fontSize: '1.1rem',
                     cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
                   }}
                 >
                   ✕
@@ -428,11 +489,11 @@ export default function SelectTemplatePage() {
               <div style={{
                 width: '100%',
                 aspectRatio: '9/19',
-                maxHeight: '74vh',
+                maxHeight: '72vh',
                 border: '10px solid #1a1a1a',
                 borderRadius: 36,
                 boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 40px rgba(201,168,76,0.15)',
-                background: '#000',
+                background: '#080408',
                 overflow: 'hidden',
                 position: 'relative'
               }}>
@@ -442,15 +503,135 @@ export default function SelectTemplatePage() {
                   width: 100, height: 18, background: '#1a1a1a', borderRadius: '0 0 12px 12px',
                   zIndex: 1000
                 }} />
-                
-                <iframe
-                  src={previewTemplateId}
-                  style={{ width: '100%', height: '100%', border: 'none', background: '#000' }}
-                  title="Live Template Preview"
-                />
+
+                {previewTab === 'sibling' ? (
+                  <iframe
+                    src={previewTemplateId}
+                    style={{ width: '100%', height: '100%', border: 'none', background: '#000' }}
+                    title="Live Template Preview"
+                  />
+                ) : (
+                  /* Creation Flow Steps Walkthrough */
+                  <div style={{
+                    width: '100%', height: '100%',
+                    padding: '36px 18px 20px',
+                    overflowY: 'auto',
+                    display: 'flex', flexDirection: 'column', gap: 14,
+                    color: '#FFF8F0',
+                    fontFamily: 'var(--font-sans)',
+                  }}>
+                    <div style={{ textAlign: 'center', marginBottom: 2 }}>
+                      <span style={{ fontSize: '0.68rem', color: '#C9A84C', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
+                        {locale === 'hi' ? '6 आसान चरण' : '6 SIMPLE CREATION STEPS'}
+                      </span>
+                      <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', margin: '4px 0 2px', fontWeight: 400 }}>
+                        {locale === 'hi' ? 'अपना गिफ्ट कैसे बनाएं' : 'How You Create This Gift'}
+                      </h3>
+                      <p style={{ fontSize: '0.75rem', color: 'rgba(255,248,240,0.6)', margin: 0 }}>
+                        {locale === 'hi' ? 'केवल 2 मिनट में पूरा करें' : 'Takes less than 2 minutes'}
+                      </p>
+                    </div>
+
+                    {/* Step Cards List */}
+                    {[
+                      {
+                        num: '1',
+                        icon: '🏷️',
+                        title: locale === 'hi' ? 'नाम दर्ज करें' : 'Names & Language',
+                        desc: locale === 'hi' ? 'अपना और अपने भाई/बहन का नाम लिखें (अंग्रेजी या हिन्दी)।' : 'Add your name & sibling’s name in English or Devanagari.',
+                      },
+                      {
+                        num: '2',
+                        icon: '💌',
+                        title: locale === 'hi' ? 'प्यार भरा पत्र' : 'Personal Letter',
+                        desc: locale === 'hi' ? '3 भावुक टेम्पलेट्स में से चुनें या अपना संदेश लिखें।' : 'Pick from 3 pre-written emotional templates or write custom.',
+                      },
+                      {
+                        num: '3',
+                        icon: '📷',
+                        title: locale === 'hi' ? 'यादों की फ़ोटो' : 'Memories & Photos',
+                        desc: locale === 'hi' ? '5 फ़ोटो तक अपलोड करें जो 3D पोलरॉइड एल्बम बनती हैं।' : 'Upload up to 5 photos transformed into 3D scrapbook polaroids.',
+                      },
+                      {
+                        num: '4',
+                        icon: '🎙️',
+                        title: locale === 'hi' ? 'आवाज़ रिकॉर्ड करें' : 'Voice Message',
+                        desc: locale === 'hi' ? 'अपनी आवाज में बधाई संदेश रिकॉर्ड करें (वैकल्पिक)।' : 'Record a personal audio note in your voice (optional).',
+                      },
+                      {
+                        num: '5',
+                        icon: '🎁',
+                        title: locale === 'hi' ? 'डिजिटल शगुन' : 'Digital Shagun / Gift',
+                        desc: locale === 'hi' ? 'अमेज़न वाउचर, पैसे, कूपन या सीक्रेट मैसेज जोड़ें।' : 'Attach Amazon Vouchers, UPI money, Coupons, or Secret Messages.',
+                      },
+                      {
+                        num: '6',
+                        icon: '🚀',
+                        title: locale === 'hi' ? 'पूर्वावलोकन और साझा करें' : 'Instant Link & Share',
+                        desc: locale === 'hi' ? 'व्हाट्सएप पर तुरंत एक क्लिक में लिंक भेजें।' : 'Generate an interactive keepsake link & share on WhatsApp.',
+                      },
+                    ].map((st) => (
+                      <div key={st.num} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(201,168,76,0.18)',
+                        borderRadius: 14,
+                        padding: '12px 14px',
+                        display: 'flex',
+                        gap: 12,
+                        alignItems: 'flex-start',
+                      }}>
+                        <div style={{
+                          width: 32, height: 32, borderRadius: 10,
+                          background: 'rgba(201,168,76,0.12)',
+                          border: '1px solid rgba(201,168,76,0.3)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '1rem', flexShrink: 0,
+                        }}>
+                          {st.icon}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ fontSize: '0.82rem', margin: 0, color: '#FFF8F0', fontWeight: 600 }}>
+                            {st.num}. {st.title}
+                          </h4>
+                          <p style={{ fontSize: '0.72rem', margin: '4px 0 0', color: 'rgba(255,248,240,0.65)', lineHeight: 1.4 }}>
+                            {st.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Action Button inside modal */}
+                    <button
+                      onClick={() => {
+                        const targetId = previewTemplateId.includes('template-02') ? 'template-02' : 'rakhi-2025';
+                        setPreviewTemplateId(null);
+                        handleSelect(targetId);
+                      }}
+                      style={{
+                        marginTop: 6,
+                        marginBottom: 10,
+                        padding: '14px',
+                        borderRadius: 12,
+                        background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
+                        color: '#080408',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {locale === 'hi' ? 'यह उपहार बनाना शुरू करें →' : 'Start Creating This Card →'}
+                    </button>
+                  </div>
+                )}
               </div>
-              <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'rgba(201,168,76,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                {locale === 'hi' ? 'लाइव प्रीव्यू · टैप करके अनुभव करें' : 'LIVE TRIAL · TAP TO INTERACT'}
+
+              <p style={{ marginTop: 10, fontSize: '0.75rem', color: 'rgba(201,168,76,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                {previewTab === 'sibling'
+                  ? (locale === 'hi' ? 'लाइव अनुभव · टैप करके देखें' : 'LIVE EXPERIENCE · INTERACT BELOW')
+                  : (locale === 'hi' ? 'बनाने के आसान चरण' : 'STEP-BY-STEP BUILDER PREVIEW')}
               </p>
             </motion.div>
           </motion.div>

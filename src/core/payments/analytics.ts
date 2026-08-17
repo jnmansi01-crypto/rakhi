@@ -255,3 +255,162 @@ export function trackExperienceCompleted(cardId: string, templateId: string) {
     console.error('[Analytics] Failed to push experience_completed to dataLayer:', err);
   }
 }
+
+// Tracks when user enters creation flow after selecting template
+export function trackSenderCreationStarted(templateId: string) {
+  try {
+    const { name: productName } = getProductDetails(templateId);
+    const templatePrice = getTemplatePrice(templateId);
+
+    const payload = {
+      event: 'sender_creation_started',
+      template_id: templateId,
+      template_name: productName,
+      price: templatePrice,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_creation_started to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_creation_started to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Names step
+export function trackSenderNamesCompleted(templateId: string, locale: string) {
+  try {
+    const payload = {
+      event: 'sender_names_completed',
+      template_id: templateId,
+      locale: locale,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_names_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_names_completed to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Letter step
+export function trackSenderLetterCompleted(templateId: string, isTemplateSelected: boolean, letterLength: number) {
+  try {
+    const payload = {
+      event: 'sender_letter_completed',
+      template_id: templateId,
+      is_template_selected: isTemplateSelected,
+      letter_length: letterLength,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_letter_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_letter_completed to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Photos step
+export function trackSenderPhotosCompleted(templateId: string, photosCount: number) {
+  try {
+    const payload = {
+      event: 'sender_photos_completed',
+      template_id: templateId,
+      photos_count: photosCount,
+      has_photos: photosCount > 0,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_photos_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_photos_completed to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Voice step when voice is recorded
+export function trackSenderVoiceCompleted(templateId: string) {
+  try {
+    const payload = {
+      event: 'sender_voice_completed',
+      template_id: templateId,
+      has_voice: true,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_voice_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_voice_completed to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Voice step when voice is skipped
+export function trackSenderVoiceSkipped(templateId: string) {
+  try {
+    const payload = {
+      event: 'sender_voice_skipped',
+      template_id: templateId,
+      has_voice: false,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_voice_skipped to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_voice_skipped to dataLayer:', err);
+  }
+}
+
+// Tracks completion of Gift step
+export function trackSenderGiftCompleted(templateId: string, giftType: string) {
+  try {
+    const payload = {
+      event: 'sender_gift_completed',
+      template_id: templateId,
+      gift_type: giftType,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_gift_completed to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_gift_completed to dataLayer:', err);
+  }
+}
+
+// Tracks reaching final Review screen
+export function trackSenderReviewReached(templateId: string) {
+  try {
+    const payload = {
+      event: 'sender_review_reached',
+      template_id: templateId,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed sender_review_reached to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push sender_review_reached to dataLayer:', err);
+  }
+}
+
+// Tracks when user explicitly clicks Preview button
+export function trackPreviewStarted(templateId: string, cardId: string) {
+  try {
+    const payload = {
+      event: 'preview_started',
+      template_id: templateId,
+      card_id: cardId,
+    };
+
+    const dl = getDataLayer();
+    dl.push(payload);
+    console.log('[Analytics] Pushed preview_started to dataLayer:', payload);
+  } catch (err) {
+    console.error('[Analytics] Failed to push preview_started to dataLayer:', err);
+  }
+}
+

@@ -39,6 +39,14 @@ export function useAudioRecorder(onRecordingComplete: (blob: Blob, url: string) 
         // Read the actual mimeType used during recording (fallback to browser standard)
         const mimeType = mr.mimeType || 'audio/webm';
         const blob = new Blob(chunks.current, { type: mimeType });
+
+        // Guard: iOS Safari can sometimes produce a 0-byte blob — discard silently
+        if (blob.size === 0) {
+          console.warn('Voice recording produced an empty blob — discarding.');
+          stream.getTracks().forEach(t => t.stop());
+          return;
+        }
+
         const url  = URL.createObjectURL(blob);
         onRecordingComplete(blob, url);
         

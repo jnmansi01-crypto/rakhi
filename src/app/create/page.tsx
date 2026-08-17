@@ -7,7 +7,19 @@ import { compressImage } from '@/core/uploads/imageUtils';
 import { uploadMedia } from '@/core/uploads/cloudinary';
 import { useAudioRecorder } from '@/shared/uploader/useAudioRecorder';
 import { usePayment } from '@/core/payments/usePayment';
-import { trackViewItem, trackCreateCard } from '@/core/payments/analytics';
+import { 
+  trackViewItem, 
+  trackCreateCard,
+  trackSenderCreationStarted,
+  trackSenderNamesCompleted,
+  trackSenderLetterCompleted,
+  trackSenderPhotosCompleted,
+  trackSenderVoiceCompleted,
+  trackSenderVoiceSkipped,
+  trackSenderGiftCompleted,
+  trackSenderReviewReached,
+  trackPreviewStarted
+} from '@/core/payments/analytics';
 import type { GiftType, ExperienceDraft, Locale } from '@/lib/types';
 import { t } from '@/lib/i18n';
 import { getTemplate } from '@/template-engine/index';
@@ -87,11 +99,14 @@ function CreatePageContent() {
     getTemplate(templateId).then(setTemplateConfig);
   }, [templateId]);
 
+  const completedStepsRef = useRef<Set<string>>(new Set());
+
   const viewItemTracked = useRef(false);
   useEffect(() => {
     if (templateConfig && !viewItemTracked.current) {
       viewItemTracked.current = true;
       trackViewItem(templateId);
+      trackSenderCreationStarted(templateId);
     }
   }, [templateConfig, templateId]);
 
@@ -292,7 +307,15 @@ function CreatePageContent() {
           />
         </div>
         <NavBtn
-          onNext={() => form.senderName && form.recipientName ? goNext() : null}
+          onNext={() => {
+            if (form.senderName && form.recipientName) {
+              if (!completedStepsRef.current.has('names')) {
+                completedStepsRef.current.add('names');
+                trackSenderNamesCompleted(templateId, form.locale);
+              }
+              goNext();
+            }
+          }}
           disabled={!form.senderName || !form.recipientName}
           locale={locale}
         />
@@ -402,7 +425,21 @@ function CreatePageContent() {
           <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)', marginTop: -8 }}>
             {form.letterText.length} characters
           </p>
-          <NavBtn onNext={goNext} onBack={goBack} disabled={form.letterText.length < 10} locale={locale} />
+          <NavBtn
+            onNext={() => {
+              if (form.letterText.length >= 10) {
+                if (!completedStepsRef.current.has('letter')) {
+                  completedStepsRef.current.add('letter');
+                  const isTplSelected = TEMPLATES.some(t => t.text === form.letterText);
+                  trackSenderLetterCompleted(templateId, isTplSelected, form.letterText.length);
+                }
+                goNext();
+              }
+            }}
+            onBack={goBack}
+            disabled={form.letterText.length < 10}
+            locale={locale}
+          />
         </div>
       );
     })(),
@@ -457,7 +494,17 @@ function CreatePageContent() {
             ))}
           </div>
         )}
-        <NavBtn onNext={goNext} onBack={goBack} locale={locale} />
+        <NavBtn
+          onNext={() => {
+            if (!completedStepsRef.current.has('photos')) {
+              completedStepsRef.current.add('photos');
+              trackSenderPhotosCompleted(templateId, form.photos.length);
+            }
+            goNext();
+          }}
+          onBack={goBack}
+          locale={locale}
+        />
       </div>
     ),
 
@@ -501,6 +548,14 @@ function CreatePageContent() {
         <NavBtn 
           onNext={() => {
             if (recording) stopRecording();
+            if (!completedStepsRef.current.has('voice')) {
+              completedStepsRef.current.add('voice');
+              if (form.voiceBlob || form.voiceUrl) {
+                trackSenderVoiceCompleted(templateId);
+              } else {
+                trackSenderVoiceSkipped(templateId);
+              }
+            }
             goNext();
           }} 
           onBack={goBack} 
@@ -583,7 +638,20 @@ function CreatePageContent() {
         </div>
 
         <NavBtn
-          onNext={goNext} onBack={goBack}
+          onNext={() => {
+            if (form.giftTitle && form.giftValue) {
+              if (!completedStepsRef.current.has('gift')) {
+                completedStepsRef.current.add('gift');
+                trackSenderGiftCompleted(templateId, form.giftType);
+              }
+              if (!completedStepsRef.current.has('review')) {
+                completedStepsRef.current.add('review');
+                trackSenderReviewReached(templateId);
+              }
+              goNext();
+            }
+          }}
+          onBack={goBack}
           disabled={!form.giftTitle || !form.giftValue}
           locale={locale}
         />
@@ -690,7 +758,10 @@ function CreatePageContent() {
         <div style={{ display: 'flex', gap: 12, width: '100%' }}>
           <button
             onClick={() => {
-              if (shareUrl) setIsPreviewModalOpen(true);
+              if (shareUrl) {
+                trackPreviewStarted(templateId, cardId || '');
+                setIsPreviewModalOpen(true);
+              }
             }}
             style={{ ...btnStyle, flex: 1, background: 'transparent', color: 'var(--gold)' }}
           >
