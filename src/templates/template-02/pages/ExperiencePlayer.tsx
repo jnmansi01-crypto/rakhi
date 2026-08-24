@@ -121,8 +121,8 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
           animate="animate"
           exit="exit"
           onPanEnd={(e, info) => {
-            // Disable swipe navigation on 'rakhi' scene — the slider drag conflicts with page swipe
-            if (scene === 'rakhi') return;
+            // Disable swipe navigation on scenes with internal drag interactions
+            if (scene === 'rakhi' || scene === 'photos') return;
             if (info.offset.x < -40) {
               nextSkipping(scene);
             } else if (info.offset.x > 40 && scene !== 'welcome') {
