@@ -1,7 +1,7 @@
 'use client';
 // Template 02 — Scene 3: Scrapbook Photo Collage Spread
 // Desktop: 3D Realistic Open Book 2-Page Spread.
-// Mobile: Full 100% Width 3D Page Flip Spread (Left Page -> Right Page) with smooth touch/pan swipe navigation.
+// Mobile: Single 100% Full-Width Card Spread with 3D Page Flip Transitions (Left Page -> Right Page).
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -80,37 +80,6 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         .handwritten-label {
           font-family: 'Caveat', cursive;
         }
-        @media (min-width: 601px) {
-          .scrapbook-container {
-            flex-direction: row !important;
-            max-width: 680px !important;
-          }
-          .scrapbook-page-left, .scrapbook-page-right {
-            display: flex !important;
-          }
-          .scrapbook-spine {
-            display: flex !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .scrapbook-container {
-            flex-direction: column !important;
-            max-width: 380px !important;
-            width: 95% !important;
-            min-height: 480px !important;
-            box-shadow: none !important;
-            background: transparent !important;
-          }
-          .scrapbook-spine {
-            display: none !important;
-          }
-          .scrapbook-page-left, .scrapbook-page-right {
-            width: 100% !important;
-            min-height: 460px !important;
-            border-radius: 16px !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 25px rgba(0,0,0,0.06) !important;
-          }
-        }
       ` }} />
 
       {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
@@ -136,260 +105,380 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         </motion.button>
       )}
 
-      {/* 3D Open Book Spread Container with Direct Touch/Pan Gesture Detection */}
-      <motion.div
-        className="scrapbook-container"
-        onPanEnd={(e, info) => {
-          if (info.offset.x < -25 || info.velocity.x < -150) {
-            // Swipe Left (Forward)
-            if (isMobile && mobilePage === 'left') {
-              goToRightPage();
-            } else {
-              handleNext();
+      {/* ── MOBILE VIEW: Single 100% Full-Width Rounded Card with 3D Page Flip ── */}
+      {isMobile ? (
+        <motion.div
+          className="scrapbook-container-mobile"
+          onPanEnd={(e, info) => {
+            if (info.offset.x < -25 || info.velocity.x < -150) {
+              // Swipe Left (Forward)
+              if (mobilePage === 'left') {
+                goToRightPage();
+              } else {
+                handleNext();
+              }
+            } else if (info.offset.x > 25 || info.velocity.x > 150) {
+              // Swipe Right (Backward)
+              if (mobilePage === 'right') {
+                goToLeftPage();
+              } else if (onBack) {
+                handlePrevious();
+              }
             }
-          } else if (info.offset.x > 25 || info.velocity.x > 150) {
-            // Swipe Right (Backward)
-            if (isMobile && mobilePage === 'right') {
-              goToLeftPage();
-            } else if (onBack) {
-              handlePrevious();
-            }
-          }
-        }}
-        style={{
-          width: '98%',
-          maxWidth: 680,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'stretch',
-          minHeight: 460,
-          borderRadius: 12,
-          boxShadow: '0 30px 70px rgba(0,0,0,0.8)',
-          touchAction: 'none',
-        }}
-      >
-        <AnimatePresence mode="wait">
-          {/* LEFT PAGE: Scrapbook Cardstock (Page 1) */}
-          {(!isMobile || mobilePage === 'left') && (
-            <motion.div 
-              key="left-page"
-              className="scrapbook-page-left"
-              initial={{ rotateY: -60, opacity: 0 }}
-              animate={{ rotateY: 0, opacity: 1 }}
-              exit={{ rotateY: -60, opacity: 0 }}
-              transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
-              style={{
-                flex: 1,
-                background: '#faf6ee',
-                borderRadius: '8px 0 0 8px',
-                padding: '20px 16px 40px 16px',
-                display: 'flex', flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-                boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-                transformOrigin: 'left center',
-                transformStyle: 'preserve-3d',
-              }}>
-              {/* Inner cardstock border */}
-              <div style={{
-                position: 'absolute', inset: 10,
-                border: '1px solid rgba(199,151,116,0.3)',
-                borderRadius: 4,
-                pointerEvents: 'none',
-              }} />
-
-              {/* Top Left Handwritten Header */}
-              <div className="handwritten-label" style={{
-                position: 'absolute', top: 16, left: 18, zIndex: 15,
-                color: '#a36f4d', fontSize: '1.3rem',
-                fontWeight: 700,
-                lineHeight: 1.2,
-              }}>
-                {locale === 'hi' ? 'प्यारी यादें...' : 'Our thread of love...'}
-              </div>
-
-              {/* Left Page Photos Container */}
-              <div style={{
-                position: 'relative', width: '100%', flex: 1,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginTop: 24, marginBottom: 24,
-              }}>
-                {leftPagePhotos.map((url, i) => {
-                  const rotation = i === 0 ? -7 : 5;
-                  const yOffset = i === 0 ? -25 : 25;
-                  const xOffset = i === 0 ? -20 : 20;
-                  return (
-                    <motion.div
-                      key={i}
-                      onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(i); }}
-                      initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
-                      whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      style={{
-                        position: 'absolute',
-                        background: '#fff',
-                        padding: '8px 8px 14px 8px',
-                        width: '68%',
-                        maxWidth: 155,
-                        boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-                        border: '1px solid #e2ddd5',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <div style={{
-                        width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
-                      }}>
-                        <img src={url} alt={`Memory ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Swipe Hint */}
-              <div 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (isMobile) {
-                    goToRightPage();
-                  } else {
-                    handleNext();
-                  }
-                }}
+          }}
+          style={{
+            width: '95%',
+            maxWidth: 380,
+            minHeight: 480,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            touchAction: 'none',
+          }}
+        >
+          <AnimatePresence mode="wait">
+            {mobilePage === 'left' ? (
+              <motion.div 
+                key="mobile-left-page"
+                initial={{ rotateY: -75, opacity: 0 }}
+                animate={{ rotateY: 0, opacity: 1 }}
+                exit={{ rotateY: -75, opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
                 style={{
-                  position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
-                  display: 'flex', justifyContent: 'center',
+                  width: '100%',
+                  flex: 1,
+                  minHeight: 460,
+                  background: '#faf6ee',
+                  borderRadius: 16,
+                  padding: '20px 16px 40px 16px',
+                  display: 'flex', flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  boxShadow: '0 25px 60px rgba(0,0,0,0.65), inset 0 0 25px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(199,151,116,0.3)',
+                  transformOrigin: 'left center',
+                  transformStyle: 'preserve-3d',
                 }}
               >
-                <SwipeIndicator
-                  label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {/* Inner cardstock border */}
+                <div style={{
+                  position: 'absolute', inset: 10,
+                  border: '1px solid rgba(199,151,116,0.3)',
+                  borderRadius: 10,
+                  pointerEvents: 'none',
+                }} />
 
-        {/* CENTRAL BINDER SPINE (Desktop Only) */}
-        <div className="scrapbook-spine" style={{
-          width: 24,
-          background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
-          position: 'relative', zIndex: 25,
-          display: 'flex', flexDirection: 'column',
-          justifyContent: 'space-around', alignItems: 'center',
-        }}>
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
+                {/* Top Left Handwritten Header */}
+                <div className="handwritten-label" style={{
+                  position: 'absolute', top: 16, left: 18, zIndex: 15,
+                  color: '#a36f4d', fontSize: '1.3rem',
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                }}>
+                  {locale === 'hi' ? 'प्यारी यादें...' : 'Our thread of love...'}
+                </div>
+
+                {/* Left Page Photos Container */}
+                <div style={{
+                  position: 'relative', width: '100%', flex: 1,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginTop: 24, marginBottom: 24,
+                }}>
+                  {leftPagePhotos.map((url, i) => {
+                    const rotation = i === 0 ? -7 : 5;
+                    const yOffset = i === 0 ? -25 : 25;
+                    const xOffset = i === 0 ? -20 : 20;
+                    return (
+                      <motion.div
+                        key={i}
+                        onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(i); }}
+                        initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                        whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        style={{
+                          position: 'absolute',
+                          background: '#fff',
+                          padding: '8px 8px 14px 8px',
+                          width: '72%',
+                          maxWidth: 170,
+                          boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                          border: '1px solid #e2ddd5',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <div style={{
+                          width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
+                        }}>
+                          <img src={url} alt={`Memory ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Bottom Swipe Hint */}
+                <div 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToRightPage();
+                  }}
+                  style={{
+                    position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
+                    display: 'flex', justifyContent: 'center',
+                  }}
+                >
+                  <SwipeIndicator
+                    label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                  />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="mobile-right-page"
+                initial={{ rotateY: 75, opacity: 0 }}
+                animate={{ rotateY: 0, opacity: 1 }}
+                exit={{ rotateY: 75, opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                style={{
+                  width: '100%',
+                  flex: 1,
+                  minHeight: 460,
+                  background: '#f2e6cf',
+                  borderRadius: 16,
+                  padding: '20px 16px 40px 16px',
+                  display: 'flex', flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  boxShadow: '0 25px 60px rgba(0,0,0,0.65), inset 0 0 25px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(199,151,116,0.3)',
+                  transformOrigin: 'right center',
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                {/* Inner cardstock border */}
+                <div style={{
+                  position: 'absolute', inset: 10,
+                  border: '1px solid rgba(199,151,116,0.3)',
+                  borderRadius: 10,
+                  pointerEvents: 'none',
+                }} />
+
+                {/* Top Right Handwritten Header */}
+                <div className="handwritten-label" style={{
+                  position: 'absolute', top: 16, right: 18, zIndex: 15,
+                  color: '#a36f4d', fontSize: '1.3rem',
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                }}>
+                  {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
+                </div>
+
+                {/* Right Page Photos Container */}
+                <div style={{
+                  position: 'relative', width: '100%', flex: 1,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginTop: 24, marginBottom: 24,
+                }}>
+                  {rightPagePhotos.map((url, i) => {
+                    const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
+                    const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
+                    const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
+                    const globalIdx = 2 + i;
+                    return (
+                      <motion.div
+                        key={globalIdx}
+                        onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(globalIdx); }}
+                        initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                        whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        style={{
+                          position: 'absolute',
+                          background: '#fff',
+                          padding: '8px 8px 14px 8px',
+                          width: '72%',
+                          maxWidth: 170,
+                          boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                          border: '1px solid #e2ddd5',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <div style={{
+                          width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
+                        }}>
+                          <img src={url} alt={`Memory ${globalIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Bottom Swipe Hint */}
+                <div 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext();
+                  }}
+                  style={{
+                    position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
+                    display: 'flex', justifyContent: 'center',
+                  }}
+                >
+                  <SwipeIndicator
+                    label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                    onClick={handleNext}
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      ) : (
+        /* ── DESKTOP VIEW: 2-Page Open Book Spread ── */
+        <motion.div
+          className="scrapbook-container-desktop"
+          style={{
+            width: '98%',
+            maxWidth: 680,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'stretch',
+            minHeight: 460,
+            borderRadius: 12,
+            boxShadow: '0 30px 70px rgba(0,0,0,0.8)',
+          }}
+        >
+          {/* LEFT PAGE */}
+          <div 
+            style={{
+              flex: 1,
+              background: '#faf6ee',
+              borderRadius: '8px 0 0 8px',
+              padding: '20px 16px 40px 16px',
+              display: 'flex', flexDirection: 'column',
+              justifyContent: 'space-between',
+              position: 'relative',
+              boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
+            }}>
+            <div style={{
+              position: 'absolute', inset: 10,
+              border: '1px solid rgba(199,151,116,0.3)',
+              borderRadius: 4,
+              pointerEvents: 'none',
+            }} />
+            <div className="handwritten-label" style={{
+              position: 'absolute', top: 16, left: 18, zIndex: 15,
+              color: '#a36f4d', fontSize: '1.3rem', fontWeight: 700, lineHeight: 1.2,
+            }}>
+              {locale === 'hi' ? 'प्यारी यादें...' : 'Our thread of love...'}
+            </div>
+            <div style={{
+              position: 'relative', width: '100%', flex: 1,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginTop: 24, marginBottom: 24,
+            }}>
+              {leftPagePhotos.map((url, i) => {
+                const rotation = i === 0 ? -7 : 5;
+                const yOffset = i === 0 ? -25 : 25;
+                const xOffset = i === 0 ? -20 : 20;
+                return (
+                  <motion.div
+                    key={i}
+                    onClick={() => { vibrate(); setActiveIdx(i); }}
+                    initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                    whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    style={{
+                      position: 'absolute', background: '#fff',
+                      padding: '8px 8px 14px 8px', width: '68%', maxWidth: 155,
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.2)', border: '1px solid #e2ddd5', cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee' }}>
+                      <img src={url} alt={`Memory ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div onClick={handleNext} style={{ position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25, display: 'flex', justifyContent: 'center' }}>
+              <SwipeIndicator label={locale === 'hi' ? 'स्वाइप' : 'Swipe'} />
+            </div>
+          </div>
+
+          {/* BINDER SPINE */}
+          <div style={{
+            width: 24, background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
+            position: 'relative', zIndex: 25, display: 'flex', flexDirection: 'column',
+            justifyContent: 'space-around', alignItems: 'center',
+          }}>
+            {Array.from({ length: 9 }).map((_, i) => (
+              <div key={i} style={{
                 width: 28, height: 8,
                 background: 'linear-gradient(to bottom, #d4af37, #856414, #d4af37)',
-                borderRadius: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
-                transform: 'rotate(-5deg)',
-              }}
-            />
-          ))}
-        </div>
-
-        <AnimatePresence mode="wait">
-          {/* RIGHT PAGE: Scrapbook Cardstock (Page 2) */}
-          {(!isMobile || mobilePage === 'right') && (
-            <motion.div 
-              key="right-page"
-              className="scrapbook-page-right"
-              initial={{ rotateY: 60, opacity: 0 }}
-              animate={{ rotateY: 0, opacity: 1 }}
-              exit={{ rotateY: 60, opacity: 0 }}
-              transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
-              style={{
-                flex: 1,
-                background: '#f2e6cf',
-                borderRadius: '0 8px 8px 0',
-                padding: '20px 16px 40px 16px',
-                display: 'flex', flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-                boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-                transformOrigin: 'right center',
-                transformStyle: 'preserve-3d',
-              }}>
-              {/* Inner cardstock border */}
-              <div style={{
-                position: 'absolute', inset: 10,
-                border: '1px solid rgba(199,151,116,0.3)',
-                borderRadius: 4,
-                pointerEvents: 'none',
+                borderRadius: 4, boxShadow: '0 2px 4px rgba(0,0,0,0.4)', transform: 'rotate(-5deg)',
               }} />
+            ))}
+          </div>
 
-              {/* Top Right Handwritten Header */}
-              <div className="handwritten-label" style={{
-                position: 'absolute', top: 16, right: 18, zIndex: 15,
-                color: '#a36f4d', fontSize: '1.3rem',
-                fontWeight: 700,
-                lineHeight: 1.2,
-              }}>
-                {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
-              </div>
-
-              {/* Right Page Photos Container */}
-              <div style={{
-                position: 'relative', width: '100%', flex: 1,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginTop: 24, marginBottom: 24,
-              }}>
-                {rightPagePhotos.map((url, i) => {
-                  const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
-                  const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
-                  const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
-                  const globalIdx = 2 + i;
-                  return (
-                    <motion.div
-                      key={globalIdx}
-                      onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(globalIdx); }}
-                      initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
-                      whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      style={{
-                        position: 'absolute',
-                        background: '#fff',
-                        padding: '8px 8px 14px 8px',
-                        width: '68%',
-                        maxWidth: 155,
-                        boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-                        border: '1px solid #e2ddd5',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <div style={{
-                        width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
-                      }}>
-                        <img src={url} alt={`Memory ${globalIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Swipe Hint */}
-              <div 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNext();
-                }}
-                style={{
-                  position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
-                  display: 'flex', justifyContent: 'center',
-                }}
-              >
-                <SwipeIndicator
-                  label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
-                  onClick={handleNext}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+          {/* RIGHT PAGE */}
+          <div 
+            style={{
+              flex: 1,
+              background: '#f2e6cf',
+              borderRadius: '0 8px 8px 0',
+              padding: '20px 16px 40px 16px',
+              display: 'flex', flexDirection: 'column',
+              justifyContent: 'space-between',
+              position: 'relative',
+              boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
+            }}>
+            <div style={{
+              position: 'absolute', inset: 10,
+              border: '1px solid rgba(199,151,116,0.3)',
+              borderRadius: 4, pointerEvents: 'none',
+            }} />
+            <div className="handwritten-label" style={{
+              position: 'absolute', top: 16, right: 18, zIndex: 15,
+              color: '#a36f4d', fontSize: '1.3rem', fontWeight: 700, lineHeight: 1.2,
+            }}>
+              {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
+            </div>
+            <div style={{
+              position: 'relative', width: '100%', flex: 1,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginTop: 24, marginBottom: 24,
+            }}>
+              {rightPagePhotos.map((url, i) => {
+                const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
+                const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
+                const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
+                const globalIdx = 2 + i;
+                return (
+                  <motion.div
+                    key={globalIdx}
+                    onClick={() => { vibrate(); setActiveIdx(globalIdx); }}
+                    initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                    whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    style={{
+                      position: 'absolute', background: '#fff',
+                      padding: '8px 8px 14px 8px', width: '68%', maxWidth: 155,
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.2)', border: '1px solid #e2ddd5', cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee' }}>
+                      <img src={url} alt={`Memory ${globalIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div onClick={handleNext} style={{ position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25, display: 'flex', justifyContent: 'center' }}>
+              <SwipeIndicator label={locale === 'hi' ? 'स्वाइप' : 'Swipe'} onClick={handleNext} />
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Fullscreen Photo Lightbox Modal */}
       <AnimatePresence>
