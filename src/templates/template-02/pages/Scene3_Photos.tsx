@@ -1,6 +1,7 @@
 'use client';
 // Template 02 — Scene 3: Scrapbook Photo Collage Spread
-// Featuring top-left swiftly moving animated back arrow and Swipe / Tap navigation.
+// Desktop: 3D Realistic Open Book 2-Page Spread.
+// Mobile: 1-Page Focused Screen per View (Page 1 -> Page 2) with smooth touch/pan swipe navigation.
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -119,9 +120,30 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         </motion.button>
       )}
 
-      {/* 3D Open Book Spread Container */}
-      <div
+      {/* 3D Open Book Spread Container with Direct Touch/Pan Swipe Handler */}
+      <motion.div
         className="scrapbook-container"
+        onPanEnd={(e, info) => {
+          if (info.offset.x < -25) {
+            // Swipe Left (Forward)
+            if (window.innerWidth <= 600 && mobilePage === 'left') {
+              vibrate();
+              audioEngine.playSwoosh();
+              setMobilePage('right');
+            } else {
+              handleNext();
+            }
+          } else if (info.offset.x > 25) {
+            // Swipe Right (Backward)
+            if (window.innerWidth <= 600 && mobilePage === 'right') {
+              vibrate();
+              audioEngine.playSwoosh();
+              setMobilePage('left');
+            } else if (onBack) {
+              handlePrevious();
+            }
+          }
+        }}
         style={{
           width: '98%',
           maxWidth: 680,
@@ -131,23 +153,15 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           minHeight: 460,
           borderRadius: 12,
           boxShadow: '0 30px 70px rgba(0,0,0,0.8)',
+          touchAction: 'none',
         }}
       >
         {/* LEFT PAGE: Scrapbook Cardstock (Page 1) */}
         <motion.div 
           className="scrapbook-page-left"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0}
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              vibrate();
-              setMobilePage('right');
-            }
-          }}
           initial={{ rotateY: -30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           style={{
             flex: 1,
             background: '#faf6ee',
@@ -157,7 +171,6 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-            touchAction: 'pan-y',
           }}>
           {/* Inner cardstock border */}
           <div style={{
@@ -219,7 +232,9 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           <div 
             onClick={() => {
               if (window.innerWidth <= 600) {
-                vibrate(); setMobilePage('right');
+                vibrate();
+                audioEngine.playSwoosh();
+                setMobilePage('right');
               }
             }}
             style={{
@@ -258,21 +273,9 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         {/* RIGHT PAGE: Scrapbook Cardstock (Page 2) */}
         <motion.div 
           className="scrapbook-page-right"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0}
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x > 40) {
-              vibrate();
-              setMobilePage('left');
-            }
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              handleNext();
-            }
-          }}
           initial={{ rotateY: 30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           style={{
             flex: 1,
             background: '#f2e6cf',
@@ -282,7 +285,6 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-            touchAction: 'pan-y',
           }}>
           {/* Inner cardstock border */}
           <div style={{
@@ -355,7 +357,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
             />
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Fullscreen Photo Lightbox Modal */}
       <AnimatePresence>

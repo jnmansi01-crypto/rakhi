@@ -140,7 +140,9 @@ export function Scene1_Welcome({ senderName, recipientName, locale, onComplete }
             fontSize: '1.05rem', fontWeight: 700, color: '#2b231d',
             margin: '0 0 2px 0', letterSpacing: '0.02em',
           }}>
-            {locale === 'hi' ? 'नो सिबलिंग फाइट्स अलाउड' : 'No Sibling Fights Allowed'}
+            {locale === 'hi'
+              ? 'इस स्क्रैपबुक में किसी भाई-बहन को चोट नहीं पहुंची 🤫'
+              : 'No Siblings Were Harmed Making This 🤫'}
           </h2>
 
           <span style={{
@@ -148,7 +150,7 @@ export function Scene1_Welcome({ senderName, recipientName, locale, onComplete }
             fontSize: '0.65rem', fontWeight: 700, color: '#8a623a',
             letterSpacing: '0.12em', textTransform: 'uppercase',
           }}>
-            {locale === 'hi' ? 'आधिकारिक कोड 📜' : 'OFFICIAL SIBLING CODE 📜'}
+            {locale === 'hi' ? 'ऑफिशियल सिबलिंग कोड 📜' : 'OFFICIAL SIBLING CODE 📜'}
           </span>
         </div>
 
