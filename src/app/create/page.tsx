@@ -26,7 +26,7 @@ import { getTemplate } from '@/template-engine/index';
 import type { TemplatePlugin } from '@/template-engine/types';
 
 // ─── Step config ─────────────────────────────────────────────
-const STEPS = ['names','letter','photos','voice','gift','preview'] as const;
+const STEPS = ['names','letter','photos','puzzle_photo','voice','gift','preview'] as const;
 type Step = typeof STEPS[number];
 
 interface FormState {
@@ -34,6 +34,8 @@ interface FormState {
   recipientName: string;
   letterText: string;
   photos: File[];
+  puzzlePhoto: File | null;
+  puzzlePhotoPreview: string | null;
   voiceBlob: Blob | null;
   voiceUrl: string | null; // local preview
   giftType: GiftType;
@@ -44,7 +46,7 @@ interface FormState {
 
 const INITIAL: FormState = {
   senderName: '', recipientName: '', letterText: '',
-  photos: [], voiceBlob: null, voiceUrl: null,
+  photos: [], puzzlePhoto: null, puzzlePhotoPreview: null, voiceBlob: null, voiceUrl: null,
   giftType: 'surprise_message', giftTitle: '', giftValue: '',
   locale: 'en',
 };
@@ -180,6 +182,10 @@ function CreatePageContent() {
         form.photos.map(f => uploadMedia(f, 'image'))
       );
       
+      const puzzlePhotoUrl = form.puzzlePhoto
+        ? await uploadMedia(form.puzzlePhoto, 'image')
+        : null;
+
       const voiceUrl = form.voiceBlob 
         ? await uploadMedia(form.voiceBlob, 'video')
         : null;
@@ -193,6 +199,7 @@ function CreatePageContent() {
         giftTitle:     form.giftTitle,
         giftValue:     form.giftValue,
         photoUrls:     photoUrls,
+        puzzlePhotoUrl: puzzlePhotoUrl,
         voiceUrl:      voiceUrl,
         locale:        form.locale,
         templateId:    templateId,
@@ -502,6 +509,93 @@ function CreatePageContent() {
             }
             goNext();
           }}
+          onBack={goBack}
+          locale={locale}
+        />
+      </div>
+    ),
+
+    puzzle_photo: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <label style={labelStyle}>
+          {locale === 'hi' ? 'स्मृति पहेली फ़ोटो (Jigsaw Puzzle Photo)' : '3x3 Memory Jigsaw Puzzle Photo'}
+        </label>
+
+        <div style={{
+          background: 'rgba(212, 175, 55, 0.1)',
+          border: '1px solid rgba(212, 175, 55, 0.3)',
+          borderRadius: 12,
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+        }}>
+          <span style={{ fontSize: '1.4rem' }}>🧩</span>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'rgba(255,248,240,0.85)', lineHeight: 1.4 }}>
+            {locale === 'hi'
+              ? 'यह खास फ़ोटो 3x3 मेमोरी जिग्सॉ पहेली गेम के रूप में स्लाइस होगी! अपनी सबसे पसंदीदा फ़ोटो चुनें।'
+              : 'This special image will be transformed into the interactive 3x3 Memory Jigsaw Puzzle game! Choose your favorite shared memory or picture together.'}
+          </span>
+        </div>
+
+        <label style={{
+          ...inputStyle,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          gap: 12, height: 160, cursor: 'pointer',
+          borderStyle: 'dashed', textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {form.puzzlePhotoPreview ? (
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img
+                src={form.puzzlePhotoPreview}
+                alt="Puzzle Preview"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+              />
+              <div style={{
+                position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+                fontWeight: 600, fontSize: '0.85rem',
+              }}>
+                📷 Tap to Change Puzzle Photo
+              </div>
+            </div>
+          ) : (
+            <>
+              <span style={{ fontSize: '2.5rem' }}>🧩</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(255,248,240,0.6)' }}>
+                {isCompressing 
+                  ? (locale === 'hi' ? 'प्रोसेस कर रहे हैं...' : 'Processing...') 
+                  : (locale === 'hi' ? 'पहेली के लिए फ़ोटो चुनें (1 फ़ोटो)' : 'Upload Puzzle Photo (1 Photo)')}
+              </span>
+            </>
+          )}
+
+          <input
+            type="file" accept="image/*" style={{ display: 'none' }}
+            disabled={isCompressing}
+            onChange={async e => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setIsCompressing(true);
+              try {
+                const compressed = await compressImage(file);
+                const previewUrl = URL.createObjectURL(compressed);
+                update('puzzlePhoto', compressed);
+                update('puzzlePhotoPreview', previewUrl);
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setIsCompressing(false);
+              }
+            }}
+          />
+        </label>
+
+        <NavBtn
+          onNext={() => goNext()}
           onBack={goBack}
           locale={locale}
         />
@@ -850,6 +944,7 @@ function CreatePageContent() {
     names:   locale === 'hi' ? 'नाम'         : 'Names',
     letter:  locale === 'hi' ? 'पत्र'        : 'Letter',
     photos:  locale === 'hi' ? 'फ़ोटो'       : 'Photos',
+    puzzle_photo: locale === 'hi' ? 'पहेली'  : 'Puzzle',
     voice:   locale === 'hi' ? 'आवाज़'       : 'Voice',
     gift:    locale === 'hi' ? 'उपहार'       : 'Gift',
     preview: locale === 'hi' ? 'बनाएं'       : 'Create',

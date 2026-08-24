@@ -12,6 +12,7 @@ export interface RakhiExperience {
   giftTitle: string;
   giftValue: string;            // URL, code, or message depending on type
   photoUrls: string[];
+  puzzlePhotoUrl?: string | null;
   voiceUrl: string | null;
   locale: Locale;
   createdAt: number;

@@ -1,14 +1,13 @@
 'use client';
-// Template 02 — Scene 3: Photos
-// Premium 3D open scrapbook spread with a scattered photo collage 
-// across two cardstock pages, decorated with neutral Rakhi-themed annotations.
+// Template 02 — Scene 3: Scrapbook Photo Collage Spread
+// 3D Realistic Open Book with polaroids & handwritten captions.
+// Optimized layout to prevent text overlap & image clipping.
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
+import { useHaptics } from '@/shared/components/useHaptics';
 import type { Locale } from '@/lib/types';
-import { btnStyle } from '@/shared/inputs/inputs';
 
 interface Props {
   photoUrls: string[];
@@ -20,7 +19,12 @@ interface Props {
 
 export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, onComplete }: Props) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
   const { vibrate } = useHaptics();
+
+  // Split photos across left and right pages
+  const leftPagePhotos = photoUrls.slice(0, 2);
+  const rightPagePhotos = photoUrls.slice(2, 5);
 
   const handleNext = () => {
     vibrate();
@@ -28,24 +32,17 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
     onComplete();
   };
 
-  // Separate photos between left and right pages
-  const leftPagePhotos = photoUrls.slice(0, 2);
-  const rightPagePhotos = photoUrls.slice(2, 5);
-
-  const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
-
   return (
     <div style={{
       position: 'absolute', inset: 0,
-      background: '#120e0d',
-      backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
+      background: '#150f0d',
+      backgroundImage: 'radial-gradient(circle at center, #241916 0%, #0d0807 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
       overflowY: 'auto',
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
         .handwritten-label {
           font-family: 'Caveat', cursive;
         }
@@ -55,66 +52,23 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
       <div
         className="scrapbook-container"
         style={{
-          width: '95%',
+          width: '98%',
           maxWidth: 680,
           display: 'flex',
-          position: 'relative',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
+          justifyContent: 'center',
+          alignItems: 'stretch',
+          minHeight: 460,
+          perspective: 1200,
+          boxShadow: '0 30px 70px rgba(0,0,0,0.8)',
           borderRadius: 12,
-          overflow: 'hidden',
-          background: '#3d160e',
-          padding: '8px',
         }}
       >
-        <style dangerouslySetInnerHTML={{ __html: `
-          .scrapbook-container {
-            flex-direction: row;
-            aspect-ratio: 1.32;
-            height: auto;
-            perspective: 1000px;
-          }
-          .scrapbook-page-left {
-            display: flex !important;
-            transform-origin: right center;
-          }
-          .scrapbook-page-right {
-            display: flex !important;
-            transform-origin: left center;
-          }
-          @media (max-width: 600px) {
-            .scrapbook-container {
-              flex-direction: column !important;
-              aspect-ratio: 0.72 !important;
-              height: auto !important;
-            }
-            .scrapbook-spine {
-              display: none !important;
-            }
-            .scrapbook-page-left {
-              display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'left' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'left' ? '24px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-            .scrapbook-page-right {
-              display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'right' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'right' ? '24px 16px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-          }
-        ` }} />
-
-        {/* LEFT PAGE: Scrapbook Cardstock (Photos 1 & 2) */}
+        {/* LEFT PAGE: Scrapbook Cardstock */}
         <motion.div 
           className="scrapbook-page-left"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Keep container fixed horizontally
+          dragElastic={0}
           onDragEnd={(event, info) => {
             if (window.innerWidth <= 600 && info.offset.x < -40) {
               setMobilePage('right');
@@ -122,129 +76,97 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           }}
           initial={{ rotateY: -30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: -90, opacity: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1,
             background: '#f2e6cf',
             borderRadius: '8px 0 0 8px',
-            padding: '24px 16px',
+            padding: '20px 16px',
             display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'space-between',
+            justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
+            touchAction: 'pan-y',
           }}>
-          {/* Subtle grid lines background */}
+          {/* Inner cardstock border */}
           <div style={{
-            position: 'absolute', inset: 12,
+            position: 'absolute', inset: 10,
             border: '1px solid rgba(199,151,116,0.3)',
             borderRadius: 4,
+            pointerEvents: 'none',
           }} />
 
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
-              <defs>
-                {/* 3D Chawal (Rice) Gradient */}
-                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="60%" stopColor="#fdfcf0" />
-                  <stop offset="100%" stopColor="#d4cdab" />
-                </radialGradient>
-                {/* 3D Roli (Crimson powder) Gradient */}
-                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#d42617" />
-                  <stop offset="70%" stopColor="#9c150b" />
-                  <stop offset="100%" stopColor="#690a03" />
-                </radialGradient>
-              </defs>
-              {/* Rice grain shadows */}
-              <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(35 40 40)"/>
-              <ellipse cx="65" cy="38" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-15 64 36)"/>
-              {/* Rice grain bodies */}
-              <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(35 40 40)"/>
-              <ellipse cx="64" cy="36" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-15 64 36)"/>
-              {/* Roli splatters */}
-              <circle cx="27" cy="71" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="26" cy="70" r="6" fill="url(#roli3d)"/>
-              <circle cx="34" cy="80" r="3.5" fill="url(#roli3d)"/>
-
-              {/* Gold Dust Scatter */}
-              <circle cx="25" cy="120" r="2.2" fill="#d4af37" opacity="0.8"/>
-              <circle cx="80" cy="80" r="1.5" fill="#e5c07b" opacity="0.9"/>
-              <circle cx="95" cy="130" r="2.0" fill="#d4af37" opacity="0.8"/>
-
-              {/* Bottom Right Rice */}
-              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-30 250 380)"/>
-              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-30 250 380)"/>
-            </svg>
+          {/* Top Left Handwritten Title (Cleanly Positioned) */}
+          <div className="handwritten-label" style={{
+            position: 'absolute', top: 16, left: 18, zIndex: 15,
+            color: '#654f3b', fontSize: '1.3rem',
+            fontWeight: 700,
+            lineHeight: 1.2,
+          }}>
+            {locale === 'hi' ? 'प्यार के कच्चे धागे...' : 'Our thread of love...'}
           </div>
 
-          {/* Left Collage Content */}
-          <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Left Page Photos Container */}
+          <div style={{
+            position: 'relative', width: '100%', flex: 1,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            marginTop: 24, marginBottom: 24,
+          }}>
             {leftPagePhotos.map((url, i) => {
-              const rotation = i === 0 ? -6 : 8;
-              const yOffset = i === 0 ? -40 : 50;
-              const xOffset = i === 0 ? -15 : 15;
+              const rotation = i === 0 ? -6 : 6;
+              const yOffset = i === 0 ? -28 : 28;
+              const xOffset = i === 0 ? -22 : 22;
               return (
                 <motion.div
                   key={i}
                   onClick={() => { vibrate(); setActiveIdx(i); }}
-                  whileHover={{ scale: 1.08, zIndex: 10, rotate: 0 }}
+                  initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                  whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
                     position: 'absolute',
-                    width: '78%',
-                    maxWidth: 160,
+                    width: '65%',
+                    maxWidth: 145,
                     background: '#fff',
-                    padding: '8px 8px 20px 8px',
-                    boxShadow: '0 8px 18px rgba(0,0,0,0.18)',
+                    padding: '8px 8px 14px 8px',
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
                     border: '1px solid #e2ddd5',
-                    transform: `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`,
                     zIndex: 5 + i,
+                    cursor: 'pointer',
                   }}
                 >
+                  {/* Washi Tape Accent */}
                   <div style={{
-                    position: 'absolute', top: -10, left: '30%', width: 45, height: 14,
-                    background: 'rgba(242,238,209,0.5)', border: '1px dashed rgba(0,0,0,0.05)',
+                    position: 'absolute', top: -8, left: '30%', width: 45, height: 14,
+                    background: 'rgba(242,238,209,0.7)', border: '1px dashed rgba(0,0,0,0.08)',
                   }} />
-                  <div style={{ width: '100%', height: 110, background: '#1c1b18', overflow: 'hidden' }}>
-                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ width: '100%', height: 112, background: '#1c1b18', overflow: 'hidden', borderRadius: 2 }}>
+                    <img
+                      src={url}
+                      alt=""
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'top center',
+                      }}
+                    />
                   </div>
-                  <p className="handwritten-label" style={{ fontSize: '0.95rem', color: '#554734', textAlign: 'center', margin: '6px 0 0 0' }}>
-                    {i === 0 
-                      ? (locale === 'hi' ? 'बचपन की अटखेलियां' : 'Sweet Childhood') 
-                      : (locale === 'hi' ? 'वो नोक-झोंक और प्यार' : 'Playful Fights')
-                    }
-                  </p>
                 </motion.div>
               );
             })}
+          </div>
 
-            {/* Sticky note handwritten caption */}
-            {leftPagePhotos.length > 0 && (
-              <div className="handwritten-label" style={{
-                position: 'absolute', bottom: 12, left: 16,
-                transform: 'rotate(-4deg)',
-                color: '#654f3b', fontSize: '1.25rem',
-                lineHeight: 1.2,
-              }}>
-                {locale === 'hi' ? 'प्यार के कच्चे धागे, रिश्ते पक्के...' : 'Our thread of love...'}
-              </div>
-            )}
-            {/* Visual swipe prompt on mobile */}
-            <div className="mobile-only" style={{
-              position: 'absolute', bottom: 4, right: 16,
-              fontSize: '0.65rem',
-              color: '#c79774',
-              fontWeight: 600,
-              opacity: 0.8,
-              letterSpacing: '0.05em',
-              animation: 'pulse 2s infinite',
-            }}>
-              {locale === 'hi' ? '← स्वाइप करके और फोटो देखें' : '← Swipe left to see more photos'}
-            </div>
+          {/* Bottom Left Mobile Swipe Hint (Separated from Title) */}
+          <div className="mobile-only" style={{
+            position: 'absolute', bottom: 12, left: 18, zIndex: 15,
+            fontSize: '0.68rem',
+            color: '#a36f4d',
+            fontWeight: 600,
+            opacity: 0.85,
+            letterSpacing: '0.04em',
+          }}>
+            {locale === 'hi' ? '← स्वाइप करके और फोटो देखें' : '← Swipe left to see more photos'}
           </div>
         </motion.div>
 
@@ -252,11 +174,11 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         <div className="scrapbook-spine" style={{
           width: 24,
           background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
-          position: 'relative', zIndex: 10,
+          position: 'relative', zIndex: 25,
           display: 'flex', flexDirection: 'column',
           justifyContent: 'space-around', alignItems: 'center',
         }}>
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 9 }).map((_, i) => (
             <div
               key={i}
               style={{
@@ -270,12 +192,12 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           ))}
         </div>
 
-        {/* RIGHT PAGE: Scrapbook Cardstock (Photos 3, 4 & 5) */}
+        {/* RIGHT PAGE: Scrapbook Cardstock */}
         <motion.div 
           className="scrapbook-page-right"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Keep container fixed horizontally
+          dragElastic={0}
           onDragEnd={(event, info) => {
             if (window.innerWidth <= 600 && info.offset.x > 40) {
               setMobilePage('left');
@@ -286,106 +208,95 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           }}
           initial={{ rotateY: 30, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: 90, opacity: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1,
             background: '#f2e6cf',
             borderRadius: '0 8px 8px 0',
-            padding: '24px 16px 20px 16px',
+            padding: '20px 16px',
             display: 'flex', flexDirection: 'column',
             justifyContent: 'space-between',
             position: 'relative',
             boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
+            touchAction: 'pan-y',
           }}>
+          {/* Inner cardstock border */}
           <div style={{
-            position: 'absolute', inset: 12,
+            position: 'absolute', inset: 10,
             border: '1px solid rgba(199,151,116,0.3)',
             borderRadius: 4,
+            pointerEvents: 'none',
           }} />
 
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
-              {/* Top Right Cluster */}
-              <ellipse cx="251" cy="42" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 40)"/>
-              <ellipse cx="250" cy="40" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 40)"/>
-              <circle cx="263" cy="56" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="262" cy="55" r="6" fill="url(#roli3d)"/>
-
-              {/* Gold Dust Scatter */}
-              <circle cx="270" cy="90" r="2.2" fill="#d4af37" opacity="0.8"/>
-              <circle cx="215" cy="140" r="1.5" fill="#d4af37" opacity="0.7"/>
-              <circle cx="235" cy="210" r="1.2" fill="#e5c07b" opacity="0.8"/>
-
-              {/* Bottom Left Cluster */}
-              <circle cx="35" cy="381" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="34" cy="380" r="6" fill="url(#roli3d)"/>
-              <ellipse cx="51" cy="377" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-40 50 375)"/>
-              <ellipse cx="50" cy="375" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-40 50 375)"/>
-            </svg>
+          {/* Top Right Handwritten Header (Cleanly Positioned) */}
+          <div className="handwritten-label" style={{
+            position: 'absolute', top: 16, right: 18, zIndex: 15,
+            color: '#a36f4d', fontSize: '1.3rem',
+            fontWeight: 700,
+            lineHeight: 1.2,
+          }}>
+            {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
           </div>
 
-          {/* Right Collage Content */}
-          <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Right Page Photos Container */}
+          <div style={{
+            position: 'relative', width: '100%', flex: 1,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            marginTop: 24, marginBottom: 24,
+          }}>
             {rightPagePhotos.map((url, i) => {
-              const rotation = i === 0 ? 5 : i === 1 ? -6 : 4;
-              const yOffset = i === 0 ? -50 : i === 1 ? 40 : 100;
-              const xOffset = i === 0 ? -25 : i === 1 ? 25 : -10;
+              const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
+              const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
+              const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
               const globalIdx = 2 + i;
               return (
                 <motion.div
                   key={globalIdx}
                   onClick={() => { vibrate(); setActiveIdx(globalIdx); }}
+                  initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                  whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
                     position: 'absolute',
                     background: '#fff',
-                    padding: '8px 8px 24px 8px',
-                    width: 120,
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.25)',
+                    padding: '8px 8px 14px 8px',
+                    width: '65%',
+                    maxWidth: 145,
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                    border: '1px solid #e2ddd5',
                     cursor: 'pointer',
-                    transform: `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`,
                     zIndex: 5 + i,
                   }}
                 >
                   <div style={{
-                    position: 'absolute', top: -10, left: '30%', width: 40, height: 14,
-                    background: 'rgba(242,238,209,0.5)', border: '1px dashed rgba(0,0,0,0.05)',
+                    position: 'absolute', top: -8, left: '30%', width: 45, height: 14,
+                    background: 'rgba(242,238,209,0.7)', border: '1px dashed rgba(0,0,0,0.08)',
                   }} />
-                  <div style={{ width: '100%', height: 105, background: '#1c1b18', overflow: 'hidden' }}>
-                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ width: '100%', height: 112, background: '#1c1b18', overflow: 'hidden', borderRadius: 2 }}>
+                    <img
+                      src={url}
+                      alt=""
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'top center',
+                      }}
+                    />
                   </div>
-                  <p className="handwritten-label" style={{ fontSize: '0.95rem', color: '#554734', textAlign: 'center', margin: '4px 0 0 0' }}>
-                    {locale === 'hi' ? 'हर मुश्किल में साथ' : 'Love & Protection'}
-                  </p>
                 </motion.div>
               );
             })}
-
-            {/* Handwritten overlay text */}
-            <div className="handwritten-label" style={{
-              position: 'absolute', top: 12, right: 16,
-              transform: 'rotate(5deg)',
-              color: '#a36f4d', fontSize: '1.25rem',
-            }}>
-              {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
-            </div>
           </div>
 
-          {/* Swipe swipe guide prompting next page instead of button */}
-          <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
+          {/* Bottom Right Prompt */}
+          <div style={{ zIndex: 15, textAlign: 'center', position: 'absolute', bottom: 12, right: 18, left: 18 }}>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.9 }}
               style={{
                 fontSize: '0.72rem',
                 color: '#8c7662',
                 fontWeight: 600,
-                letterSpacing: '0.05em',
-                alignSelf: 'center',
-                animation: 'pulse 2s infinite',
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
               }}
               onClick={handleNext}
@@ -417,21 +328,16 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
               exit={{ scale: 0.9, rotate: 0 }}
               style={{
                 background: '#fff',
-                padding: '16px 16px 40px 16px',
+                padding: '16px',
+                borderRadius: 8,
                 width: '100%',
                 maxWidth: 320,
                 boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
               }}
             >
-              <div style={{ width: '100%', height: 300, background: '#1c1b18', overflow: 'hidden' }}>
+              <div style={{ width: '100%', height: 320, background: '#1c1b18', overflow: 'hidden', borderRadius: 4 }}>
                 <img src={photoUrls[activeIdx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
-              <p className="handwritten-label" style={{
-                fontSize: '1.4rem', color: '#3d2b1f', textAlign: 'center',
-                margin: '16px 0 0 0',
-              }}>
-                {locale === 'hi' ? 'हमारा खूबसूरत पल' : 'A special moment'}
-              </p>
             </motion.div>
           </motion.div>
         )}

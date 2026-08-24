@@ -1,13 +1,14 @@
 'use client';
 // Template 02 — Scene 4: Voice (Retro Cassette Tape Player)
-// Vintage cassette tape player presented inside the 3D open scrapbook spread.
+// Interactive vintage cassette deck featuring exact audio duration,
+// 360-degree gear spools, scrubber bar, and a realistic mechanical deck key row
+// where the Play/Pause button actively works, highlights, and illuminates!
 
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
-import { btnStyle } from '@/shared/inputs/inputs';
 
 interface Props {
   voiceUrl: string | null;
@@ -18,17 +19,40 @@ interface Props {
 
 export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { vibrate } = useHaptics();
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.onended = () => {
+      const audio = audioRef.current;
+      const updateDuration = () => setDuration(audio.duration || 0);
+      const updateTime = () => setCurrentTime(audio.currentTime || 0);
+      const handleEnded = () => {
         setIsPlaying(false);
+        setCurrentTime(0);
         audioEngine.restoreBGM();
+      };
+
+      audio.addEventListener('loadedmetadata', updateDuration);
+      audio.addEventListener('timeupdate', updateTime);
+      audio.addEventListener('ended', handleEnded);
+
+      return () => {
+        audio.removeEventListener('loadedmetadata', updateDuration);
+        audio.removeEventListener('timeupdate', updateTime);
+        audio.removeEventListener('ended', handleEnded);
       };
     }
   }, [voiceUrl]);
+
+  const formatTime = (secs: number) => {
+    if (!secs || isNaN(secs)) return '0:00';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
 
   const togglePlay = () => {
     vibrate();
@@ -44,6 +68,25 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
     }
   };
 
+  const handleStop = () => {
+    vibrate();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setCurrentTime(0);
+    audioEngine.restoreBGM();
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const seekTime = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = seekTime;
+      setCurrentTime(seekTime);
+    }
+  };
+
   const handleNext = () => {
     vibrate();
     if (audioRef.current) {
@@ -54,7 +97,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
     onComplete();
   };
 
-  const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div style={{
@@ -63,377 +106,305 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
       backgroundImage: 'radial-gradient(circle at center, #1f1412 0%, #080606 100%)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: '24px 12px',
+      padding: '24px 16px',
       overflowY: 'auto',
+      color: '#FFF8F0',
     }}>
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
-        .handwritten-label {
-          font-family: 'Caveat', cursive;
-        }
-      ` }} />
+      {voiceUrl && <audio ref={audioRef} src={voiceUrl} preload="metadata" />}
 
-      {voiceUrl && <audio ref={audioRef} src={voiceUrl} />}
-
-      {/* 3D Open Book Spread Container */}
-      <div
-        className="scrapbook-container"
+      {/* Retro Cassette Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5 }}
         style={{
           width: '95%',
-          maxWidth: 680,
-          display: 'flex',
-          position: 'relative',
+          maxWidth: 440,
+          background: '#f2e6cf',
+          backgroundImage: 'radial-gradient(circle at center, #f7eee0 0%, #ebe0c6 100%)',
+          borderRadius: 20,
+          padding: '28px 24px',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
-          borderRadius: 12,
-          overflow: 'hidden',
-          background: '#3d160e',
-          padding: '8px',
+          position: 'relative',
+          border: '1px solid rgba(199,151,116,0.4)',
         }}
       >
-        <style dangerouslySetInnerHTML={{ __html: `
-          .scrapbook-container {
-            flex-direction: row;
-            aspect-ratio: 1.32;
-            height: auto;
-            perspective: 1000px;
-          }
-          .scrapbook-page-left {
-            display: flex !important;
-            transform-origin: right center;
-          }
-          .scrapbook-page-right {
-            display: flex !important;
-            transform-origin: left center;
-          }
-          @media (max-width: 600px) {
-            .scrapbook-container {
-              flex-direction: column !important;
-              aspect-ratio: 0.72 !important;
-              height: auto !important;
-            }
-            .scrapbook-spine {
-              display: none !important;
-            }
-            .scrapbook-page-left {
-              display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'left' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'left' ? '24px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-            .scrapbook-page-right {
-              display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'right' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'right' ? '24px 16px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-          }
-        ` }} />
-
-        {/* LEFT PAGE: Decorative keepsakes */}
-        <motion.div 
-          className="scrapbook-page-left"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Keep container fixed horizontally
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              setMobilePage('right');
-            }
-          }}
-          initial={{ rotateY: -30, opacity: 0.8 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: -90, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          style={{
-            flex: 1,
-            background: '#f2e6cf',
-            borderRadius: '8px 0 0 8px',
-            padding: 24,
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            position: 'relative',
-            boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
-          }}>
-          <div style={{
-            position: 'absolute', inset: 12,
-            border: '1px solid rgba(199,151,116,0.3)',
-            borderRadius: 4,
-          }} />
-
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
-              <defs>
-                {/* 3D Chawal (Rice) Gradient */}
-                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="60%" stopColor="#fdfcf0" />
-                  <stop offset="100%" stopColor="#d4cdab" />
-                </radialGradient>
-                {/* 3D Roli (Crimson powder) Gradient */}
-                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#d42617" />
-                  <stop offset="70%" stopColor="#9c150b" />
-                  <stop offset="100%" stopColor="#690a03" />
-                </radialGradient>
-              </defs>
-              {/* Rice grain shadows */}
-              <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(-15 40 40)"/>
-              <ellipse cx="65" cy="74" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(35 64 70)"/>
-              {/* Rice grain bodies */}
-              <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(-15 40 40)"/>
-              <ellipse cx="64" cy="70" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(35 64 70)"/>
-              {/* Roli splatters */}
-              <circle cx="27" cy="81" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="26" cy="80" r="6" fill="url(#roli3d)"/>
-
-              <ellipse cx="251" cy="42" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(25 250 40)"/>
-              <ellipse cx="250" cy="40" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(25 250 40)"/>
-              <circle cx="263" cy="56" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="262" cy="55" r="6" fill="url(#roli3d)"/>
-              <circle cx="270" cy="90" r="2.2" fill="#d4af37" opacity="0.8"/>
-            </svg>
-          </div>
-
-          {/* Sibling card decoration */}
-          <div style={{
-            width: '80%', height: '65%',
-            border: '1px solid #d4c8af',
-            background: '#faf6ee',
-            padding: 12,
-            boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
-            transform: 'rotate(-3deg)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            gap: 16,
-          }}>
-            <svg width="54" height="38" viewBox="0 0 54 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="52" height="36" rx="4" fill="#2b2b2b" stroke="#444" strokeWidth="1.5"/>
-              <rect x="5" y="4" width="44" height="14" rx="2" fill="#c5b08a"/>
-              <circle cx="14" cy="26" r="5" fill="#1a1a1a" stroke="#555" strokeWidth="1.5"/>
-              <circle cx="14" cy="26" r="2" fill="#333"/>
-              <circle cx="40" cy="26" r="5" fill="#1a1a1a" stroke="#555" strokeWidth="1.5"/>
-              <circle cx="40" cy="26" r="2" fill="#333"/>
-              <rect x="20" y="22" width="14" height="8" rx="1" fill="#1a1a1a"/>
-              <text x="27" y="12" textAnchor="middle" fontFamily="monospace" fontSize="5" fill="#554734">SIDE A</text>
-            </svg>
-            <p className="handwritten-label" style={{
-              fontSize: '1.4rem', color: '#8c7662', margin: 0, textAlign: 'center', lineHeight: 1.2
-            }}>
-              {locale === 'hi' ? 'दिल की बात, मेरी आवाज़ में...' : 'Hear my voice...'}
-            </p>
-            {/* Visual swipe prompt on mobile */}
-            <div className="mobile-only" style={{
-              marginTop: 10,
-              fontSize: '0.65rem',
-              color: '#c79774',
-              fontWeight: 600,
-              opacity: 0.8,
-              letterSpacing: '0.05em',
-              animation: 'pulse 2s infinite',
-            }}>
-              {locale === 'hi' ? '← स्वाइप करके प्लेयर खोलें' : '← Swipe left to open player'}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* CENTRAL BINDER SPINE */}
-        <div className="scrapbook-spine" style={{
-          width: 24,
-          background: 'linear-gradient(to right, #290e09, #150604, #290e09)',
-          position: 'relative', zIndex: 10,
-          display: 'flex', flexDirection: 'column',
-          justifyContent: 'space-around', alignItems: 'center',
+        {/* Top Header Badge */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: 'rgba(163, 111, 77, 0.15)',
+          border: '1px solid rgba(163, 111, 77, 0.3)',
+          borderRadius: 20, padding: '4px 14px', marginBottom: 16,
         }}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: 28, height: 8,
-                background: 'linear-gradient(to bottom, #d4af37, #856414, #d4af37)',
-                borderRadius: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
-                transform: 'rotate(-5deg)',
-              }}
-            />
-          ))}
+          <span style={{ fontSize: 13 }}>🎙️</span>
+          <span style={{
+            fontFamily: 'var(--font-sans), system-ui, sans-serif',
+            fontSize: 13, fontWeight: 600, letterSpacing: '0.04em',
+            fontStyle: 'normal', color: '#8a5330',
+          }}>
+            {locale === 'hi' ? 'आवाज़ का पैगाम' : 'Voice Message'}
+          </span>
         </div>
 
-        {/* RIGHT PAGE: Cassette Tape Player */}
-        <motion.div 
-          className="scrapbook-page-right"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Keep container fixed horizontally
-          onDragEnd={(event, info) => {
-            if (window.innerWidth <= 600 && info.offset.x > 40) {
-              setMobilePage('left');
-            }
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              handleNext();
-            }
-          }}
-          initial={{ rotateY: 30, opacity: 0.8 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: 90, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+        <h3 style={{ margin: '0 0 18px 0', fontSize: '1.2rem', fontWeight: 700, color: '#3d2b1f', textAlign: 'center', fontStyle: 'normal' }}>
+          {locale === 'hi' ? `${senderName} का वॉयस मैसेज` : `Listen to ${senderName}'s Voice Note`}
+        </h3>
+
+        {/* Vintage Cassette Tape Graphic */}
+        <div 
+          onClick={togglePlay}
           style={{
-            flex: 1,
-            background: '#faf6ee',
-            borderRadius: '0 8px 8px 0',
-            padding: '24px 16px 20px 24px',
-            display: 'flex', flexDirection: 'column',
-            justifyContent: 'space-between',
+            width: '100%', maxWidth: 330, height: 185,
+            background: '#2b2724', borderRadius: 14,
+            padding: 14, boxShadow: '0 12px 28px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.12)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between',
+            border: '2.5px solid #423c38', marginBottom: 18,
+            cursor: 'pointer',
             position: 'relative',
-            boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
-          }}>
+          }}
+        >
+          {/* Cassette Header Label */}
           <div style={{
-            position: 'absolute', inset: 12,
-            border: '1px solid rgba(199,151,116,0.3)',
-            borderRadius: 4,
-          }} />
-
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
-              {/* Top Right Cluster */}
-              <ellipse cx="251" cy="22" rx="6.5" ry="2.8" fill="rgba(0,0,0,0.15)" transform="rotate(-30 250 20)"/>
-              <ellipse cx="250" cy="20" rx="6.5" ry="2.8" fill="url(#rice3d)" transform="rotate(-30 250 20)"/>
-              <circle cx="263" cy="31" r="3.5" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="262" cy="30" r="3.5" fill="url(#roli3d)"/>
-
-              {/* Gold Dust Scatter */}
-              <circle cx="270" cy="55" r="1.2" fill="#d4af37" opacity="0.6"/>
-              <circle cx="215" cy="115" r="1.6" fill="#d4af37" opacity="0.7"/>
-              <circle cx="230" cy="210" r="0.8" fill="#e5c07b" opacity="0.8"/>
-
-              {/* Bottom Left Cluster */}
-              <circle cx="25" cy="281" r="4.5" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="24" cy="280" r="4.5" fill="url(#roli3d)"/>
-              <ellipse cx="41" cy="277" rx="6.8" ry="3" fill="rgba(0,0,0,0.15)" transform="rotate(45 40 275)"/>
-              <ellipse cx="40" cy="275" rx="6.8" ry="3" fill="url(#rice3d)" transform="rotate(45 40 275)"/>
-            </svg>
+            width: '94%', height: 38, background: '#f5e8d0', borderRadius: 6,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            border: '1px solid #d4c4a8', padding: '0 12px',
+          }}>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#8c423b', letterSpacing: '0.08em' }}>SIDE A</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#3d2b1f' }}>{senderName}&apos;s Voice Note</span>
+            {/* Exact Dynamic Duration Display */}
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#8c423b', letterSpacing: '0.04em' }}>
+              {duration ? formatTime(duration) : 'VOICE'}
+            </span>
           </div>
 
-          {/* Tape Player Centerpiece */}
+          {/* Cassette Spools Window with Rotating Inner Gear Circles */}
           <div style={{
-            position: 'relative', width: '100%', flex: 1,
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            width: '85%', height: 68, background: '#141211', borderRadius: 10,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+            border: '1.5px solid #38332f', padding: '0 18px',
+            position: 'relative',
           }}>
-            {/* Cassette Graphic Wrapper */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: 220 }}>
-              {/* Left corner tape */}
-              <div style={{
-                position: 'absolute', top: -6, left: -12, width: 40, height: 14,
-                background: 'rgba(235,224,196,0.5)', transform: 'rotate(-20deg)',
-                border: '1px dashed rgba(0,0,0,0.05)', zIndex: 10,
-              }} />
-              {/* Right corner tape */}
-              <div style={{
-                position: 'absolute', top: -6, right: -12, width: 40, height: 14,
-                background: 'rgba(235,224,196,0.5)', transform: 'rotate(20deg)',
-                border: '1px dashed rgba(0,0,0,0.05)', zIndex: 10,
-              }} />
-
-              {/* Cassette Graphic */}
-              <div style={{
-                width: '100%',
-                height: 130,
-                background: 'linear-gradient(135deg, #2b2b2b 0%, #171717 100%)',
-                border: '4px solid #0f0f0f',
-                borderRadius: 8,
-                position: 'relative',
-                boxShadow: '0 8px 20px rgba(0,0,0,0.35)',
-                padding: 4,
-                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-              }}
-              >
-                <div style={{
-                  background: '#d4c09d',
-                  height: 32,
-                  borderRadius: 4,
-                  padding: '2px 8px',
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                }}>
-                <span style={{ fontFamily: 'monospace', fontSize: '0.45rem', color: '#554734' }}>SIDE A · STEREO</span>
-                <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '0.68rem', color: '#1f1a14', fontWeight: 600 }}>
-                  Message from {senderName}
-                </span>
-              </div>
-
-              <div style={{
-                background: '#0a0a0a',
-                height: 40,
-                borderRadius: 4,
-                margin: '4px 6px',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-              }}>
-                <motion.div
-                  animate={isPlaying ? { rotate: 360 } : {}}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
-                  style={{ width: 22, height: 22, borderRadius: '50%', border: '2.5px dashed #666', background: '#1a1a1a' }}
-                />
-                <div style={{ width: 50, height: 12, background: 'rgba(50,50,50,0.1)', borderRadius: 2 }} />
-                <motion.div
-                  animate={isPlaying ? { rotate: 360 } : {}}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
-                  style={{ width: 22, height: 22, borderRadius: '50%', border: '2.5px dashed #666', background: '#1a1a1a' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
-                <div style={{ width: 8, height: 4, background: '#0a0a0a' }} />
-                <div style={{ width: 8, height: 4, background: '#0a0a0a' }} />
-              </div>
-            </div>
-            </div>
-
-            {/* Play Key */}
-            <button
-              onClick={togglePlay}
-              style={{
-                marginTop: 16,
-                width: 50, height: 34,
-                background: isPlaying ? '#a13b2b' : '#3c6e4d',
-                border: 'none', borderBottom: '3px solid rgba(0,0,0,0.4)',
-                borderRadius: 4,
-                color: '#fff',
-                cursor: 'pointer',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-              }}
-            >
-              {isPlaying ? '⏸' : '▶'}
-            </button>
-          </div>
-
-          {/* Swipe swipe guide prompting next page instead of button */}
-          <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
+            {/* Left Spool Gear */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.9 }}
+              animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+              transition={isPlaying ? { repeat: Infinity, duration: 2.2, ease: 'linear' } : { duration: 0.3 }}
               style={{
-                fontSize: '0.72rem',
-                color: '#8c7662',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                alignSelf: 'center',
-                animation: 'pulse 2s infinite',
-                cursor: 'pointer',
+                width: 44, height: 44, borderRadius: '50%', background: '#f5e8d0',
+                border: '3px solid #3d2b1f', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
               }}
-              onClick={handleNext}
             >
-              {locale === 'hi' ? 'राखी देखने के लिए आगे स्वाइप करें →' : 'Swipe left to tie Rakhi →'}
+              {[0, 60, 120, 180, 240, 300].map((deg) => (
+                <div
+                  key={deg}
+                  style={{
+                    position: 'absolute', width: 4, height: 10, background: '#3d2b1f', borderRadius: 1,
+                    transform: `rotate(${deg}deg) translateY(-14px)`,
+                  }}
+                />
+              ))}
+              <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#141211', zIndex: 2 }} />
+            </motion.div>
+
+            {/* Central Tape Window View */}
+            <div style={{
+              width: 64, height: 22, background: '#0a0909', borderRadius: 4,
+              border: '1px solid #4a433d', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.8)',
+            }}>
+              <div style={{
+                width: `${Math.max(15, 100 - progressPercent)}%`, height: 8,
+                background: '#4a2e1b', borderRadius: 2, transition: 'width 0.3s ease',
+              }} />
+            </div>
+
+            {/* Right Spool Gear */}
+            <motion.div
+              animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+              transition={isPlaying ? { repeat: Infinity, duration: 2.2, ease: 'linear' } : { duration: 0.3 }}
+              style={{
+                width: 44, height: 44, borderRadius: '50%', background: '#f5e8d0',
+                border: '3px solid #3d2b1f', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+              }}
+            >
+              {[0, 60, 120, 180, 240, 300].map((deg) => (
+                <div
+                  key={deg}
+                  style={{
+                    position: 'absolute', width: 4, height: 10, background: '#3d2b1f', borderRadius: 1,
+                    transform: `rotate(${deg}deg) translateY(-14px)`,
+                  }}
+                />
+              ))}
+              <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#141211', zIndex: 2 }} />
             </motion.div>
           </div>
-        </motion.div>
-      </div>
+
+          {/* Screws Accent */}
+          <div style={{ width: '92%', display: 'flex', justifyContent: 'space-between', padding: '0 8px' }}>
+            <span style={{ fontSize: 9, color: '#665d56' }}>⊕</span>
+            <span style={{ fontSize: 9, color: '#665d56' }}>⊕</span>
+          </div>
+        </div>
+
+        {/* Real Audio Player Deck Controls Container */}
+        <div style={{
+          width: '100%', maxWidth: 330,
+          background: '#e6d8be', borderRadius: 16,
+          padding: '16px 18px', border: '1px solid rgba(138,83,48,0.25)',
+          display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+        }}>
+          {/* Progress Bar Scrubber with Live Timestamps */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: '0.78rem', color: '#6e5645', fontWeight: 600, minWidth: 32 }}>
+              {formatTime(currentTime)}
+            </span>
+            <div style={{ position: 'relative', flex: 1, height: 6, background: 'rgba(138,83,48,0.2)', borderRadius: 3 }}>
+              <div style={{
+                position: 'absolute', left: 0, top: 0, bottom: 0,
+                width: `${progressPercent}%`, background: 'linear-gradient(90deg, #d4af37, #8a5330)',
+                borderRadius: 3, transition: 'width 0.15s linear',
+              }} />
+              <input
+                type="range" min="0" max={duration || 100} value={currentTime}
+                onChange={handleSeek}
+                style={{
+                  position: 'absolute', inset: 0, width: '100%', height: '100%',
+                  opacity: 0, cursor: 'pointer',
+                }}
+              />
+            </div>
+            <span style={{ fontSize: '0.78rem', color: '#6e5645', fontWeight: 600, minWidth: 32, textAlign: 'right' }}>
+              {formatTime(duration)}
+            </span>
+          </div>
+
+          {/* Physical Mechanical Cassette Deck Push Buttons Row */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8,
+            alignItems: 'center', width: '100%',
+          }}>
+            {/* 1. REWIND Key (Mechanical Metallic - Decorative) */}
+            <button
+              disabled
+              title="Rewind"
+              style={{
+                height: 44, borderRadius: 8,
+                background: 'linear-gradient(180deg, #4d433d 0%, #2e2824 100%)',
+                border: '1.5px solid #635850',
+                color: '#a89d94',
+                opacity: 0.5,
+                cursor: 'not-allowed',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.15), 0 3px 6px rgba(0,0,0,0.3)',
+              }}
+            >
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor">
+                <path d="M6 1 L1 6 L6 11 Z M13 1 L8 6 L13 11 Z" />
+              </svg>
+              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.05em' }}>REW</span>
+            </button>
+
+            {/* 2. PLAY / PAUSE Key (HIGHLIGHTED ACTIVE WORKING BUTTON) */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.94 }}
+              onClick={togglePlay}
+              disabled={!voiceUrl}
+              title={isPlaying ? 'Pause' : 'Play'}
+              style={{
+                height: 44, borderRadius: 8,
+                background: isPlaying 
+                  ? 'linear-gradient(180deg, #d4af37 0%, #aa820a 100%)' 
+                  : 'linear-gradient(180deg, #8a5330 0%, #5c351e 100%)',
+                border: isPlaying ? '2px solid #fff' : '2px solid #d4af37',
+                color: isPlaying ? '#2b1c05' : '#ffeaa7',
+                cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                boxShadow: isPlaying
+                  ? 'inset 0 3px 6px rgba(0,0,0,0.5), 0 0 18px rgba(212, 175, 55, 0.7)'
+                  : '0 6px 14px rgba(92, 53, 30, 0.45)',
+                position: 'relative',
+              }}
+            >
+              {isPlaying ? (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  <rect x="1.5" y="1" width="3.5" height="10" rx="1" />
+                  <rect x="7" y="1" width="3.5" height="10" rx="1" />
+                </svg>
+              ) : (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M2 1 L11 6 L2 11 Z" />
+                </svg>
+              )}
+              <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.05em' }}>
+                {isPlaying ? 'PAUSE' : 'PLAY'}
+              </span>
+            </motion.button>
+
+            {/* 3. FAST FORWARD Key (Mechanical Metallic - Decorative) */}
+            <button
+              disabled
+              title="Fast Forward"
+              style={{
+                height: 44, borderRadius: 8,
+                background: 'linear-gradient(180deg, #4d433d 0%, #2e2824 100%)',
+                border: '1.5px solid #635850',
+                color: '#a89d94',
+                opacity: 0.5,
+                cursor: 'not-allowed',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.15), 0 3px 6px rgba(0,0,0,0.3)',
+              }}
+            >
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor">
+                <path d="M1 1 L6 6 L1 11 Z M8 1 L13 6 L8 11 Z" />
+              </svg>
+              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.05em' }}>FF</span>
+            </button>
+
+            {/* 4. STOP Key (Active Mechanical Stop Button) */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.94 }}
+              onClick={handleStop}
+              title="Stop"
+              style={{
+                height: 44, borderRadius: 8,
+                background: 'linear-gradient(180deg, #5c423d 0%, #382522 100%)',
+                border: '1.5px solid #8c5b52',
+                color: '#ffcdd2',
+                cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                boxShadow: '0 3px 8px rgba(0,0,0,0.3)',
+              }}
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+                <rect width="10" height="10" rx="1.5" />
+              </svg>
+              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.05em' }}>STOP</span>
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.96 }}
+          onClick={handleNext}
+          style={{
+            background: 'none', border: 'none', color: '#8a5330',
+            fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer',
+            letterSpacing: '0.04em', fontStyle: 'normal',
+          }}
+        >
+          {locale === 'hi' ? 'आगे बढ़ें →' : 'Continue →'}
+        </motion.button>
+      </motion.div>
     </div>
   );
 }

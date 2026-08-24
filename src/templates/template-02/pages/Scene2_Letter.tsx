@@ -1,15 +1,13 @@
 'use client';
 // Template 02 — Scene 2: Letter
 // Immersive 3D open scrapbook spread with a central brass binder coil, 
-// a decorative left-hand page, and the lined letter page on the right.
-// Uses a robust state-based typewriter effect and a single gorgeous 3D Laddoo sweet illustration.
+// focused directly on the lined letter page for an instant, personal reading experience.
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
-import { btnStyle } from '@/shared/inputs/inputs';
 
 interface Props {
   letterText: string;
@@ -25,7 +23,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
   const [isDone, setIsDone] = useState(false);
   const { vibrate } = useHaptics();
 
-  // Robust, state-based typewriter effect (prevents character skipping in all environments)
+  // Typewriter effect
   useEffect(() => {
     if (index < letterText.length) {
       const timeout = setTimeout(() => {
@@ -53,12 +51,6 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
     onComplete();
   };
 
-  const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
-
-  // No auto-switching to page 2 automatically on typing, keeping users on the cover intro page
-  useEffect(() => {
-    // Left empty deliberately to disable the auto-turn behavior
-  }, []);
   return (
     <div 
       onClick={skipTypewriter}
@@ -83,319 +75,61 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
         }
       ` }} />
 
-      {/* 3D Open Book Wrapper */}
+      {/* 3D Open Book Container (Focused on Letter) */}
       <div
         className="scrapbook-container"
         style={{
           width: '95%',
-          maxWidth: 680,
+          maxWidth: 520,
           display: 'flex',
+          flexDirection: 'column',
           position: 'relative',
           boxShadow: '0 25px 60px rgba(0,0,0,0.65)',
-          borderRadius: 12,
+          borderRadius: 16,
           overflow: 'hidden',
-          background: '#3d160e', // Leather backing visible on edges
+          background: '#3d160e',
           padding: '8px',
         }}
       >
-        <style dangerouslySetInnerHTML={{ __html: `
-          .scrapbook-container {
-            flex-direction: row;
-            aspect-ratio: 1.32;
-            height: auto;
-            perspective: 1000px; /* Enable 3D transitions */
-          }
-          .scrapbook-page-left {
-            display: flex !important;
-            transform-origin: right center;
-          }
-          .scrapbook-page-right {
-            display: flex !important;
-            transform-origin: left center;
-          }
-          @media (max-width: 600px) {
-            .scrapbook-container {
-              flex-direction: column !important;
-              aspect-ratio: 0.72 !important;
-              height: auto !important;
-            }
-            .scrapbook-spine {
-              display: none !important;
-            }
-            .scrapbook-page-left {
-              display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'left' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'left' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'left' ? '24px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-            .scrapbook-page-right {
-              display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
-              width: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              height: ${mobilePage === 'right' ? '100%' : '0'} !important;
-              overflow: ${mobilePage === 'right' ? 'visible' : 'hidden'} !important;
-              padding: ${mobilePage === 'right' ? '24px 16px' : '0'} !important;
-              border-radius: 8px !important;
-            }
-          }
-        ` }} />
-
-
-        {/* LEFT PAGE: Scrapbook Cardstock (Decorative / Photo frame) */}
+        {/* Ruled notebook paper with letter text */}
         <motion.div 
-          className="scrapbook-page-left"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Fixed in place, won't slide off-screen
-          onDragEnd={(event, info) => {
-            // Swipe left on the Left page to flip to the Right page
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              setMobilePage('right');
-            }
-          }}
-          initial={{ rotateY: -30, opacity: 0.8 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          exit={{ rotateY: -90, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          style={{
-            flex: 1,
-            background: '#f2e6cf',
-            borderRadius: '8px 0 0 8px',
-            padding: 24,
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            position: 'relative',
-            boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
-            backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, transparent 80%)',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
-          }}>
-          {/* Faint gold frame */}
-          <div style={{
-            position: 'absolute', inset: 12,
-            border: '1px solid rgba(199,151,116,0.3)',
-            borderRadius: 4,
-          }} />
-
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
-              <defs>
-                {/* 3D Chawal (Rice) Gradient */}
-                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="60%" stopColor="#fdfcf0" />
-                  <stop offset="100%" stopColor="#d4cdab" />
-                </radialGradient>
-                {/* 3D Roli (Crimson powder) Gradient */}
-                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#d42617" />
-                  <stop offset="70%" stopColor="#9c150b" />
-                  <stop offset="100%" stopColor="#690a03" />
-                </radialGradient>
-              </defs>
-
-              {/* Top Left Cluster */}
-              {/* Rice shadows */}
-              <ellipse cx="41" cy="42" rx="10" ry="4" fill="rgba(0,0,0,0.18)" transform="rotate(35 40 40)"/>
-              <ellipse cx="65" cy="38" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-15 64 36)"/>
-              {/* Rice bodies */}
-              <ellipse cx="40" cy="40" rx="10" ry="4" fill="url(#rice3d)" transform="rotate(35 40 40)"/>
-              <ellipse cx="64" cy="36" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-15 64 36)"/>
-              
-              {/* Roli splatters with drop shadows */}
-              <circle cx="27" cy="71" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="26" cy="70" r="6" fill="url(#roli3d)"/>
-              <circle cx="34" cy="80" r="3.5" fill="url(#roli3d)"/>
-              <circle cx="21" cy="82" r="2.5" fill="url(#roli3d)"/>
-
-              {/* Scattered Gold Dust */}
-              <circle cx="25" cy="120" r="2.2" fill="#d4af37" opacity="0.8"/>
-              <circle cx="50" cy="110" r="1.5" fill="#e5c07b" opacity="0.9"/>
-              <circle cx="80" cy="80" r="2.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="95" cy="130" r="1.8" fill="#e5c07b" opacity="0.7"/>
-              <circle cx="38" cy="62" r="1.2" fill="#d4af37" opacity="0.9"/>
-
-              {/* Bottom Right Cluster */}
-              <ellipse cx="251" cy="382" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(-40 250 380)"/>
-              <ellipse cx="250" cy="380" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(-40 250 380)"/>
-              <circle cx="239" cy="409" r="7" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="238" cy="408" r="7" fill="url(#roli3d)"/>
-            </svg>
-          </div>
-
-          {/* Sibling keepsake card with premium 3D Laddoo sweet (No emojis) */}
-          <div style={{
-            width: '85%', height: '70%',
-            border: '1px solid #d4c8af',
-            background: '#faf6ee',
-            padding: 12,
-            boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
-            transform: 'rotate(-2deg)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            gap: 12,
-            zIndex: 2,
-          }}>
-              {/* Secure container wrapper for Laddoo SVG */}
-              <div style={{ width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg viewBox="0 0 120 120" width="100%" height="100%">
-                  <defs>
-                    <radialGradient id="laddoo3d" cx="35%" cy="35%" r="65%">
-                      <stop offset="0%" stopColor="#fff0ad" />
-                      <stop offset="25%" stopColor="#f5ba42" />
-                      <stop offset="70%" stopColor="#d18315" />
-                      <stop offset="100%" stopColor="#804700" />
-                    </radialGradient>
-                    <radialGradient id="shadow3d" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="rgba(0, 0, 0, 0.45)" />
-                      <stop offset="100%" stopColor="rgba(0, 0, 0, 0)" />
-                    </radialGradient>
-                    <linearGradient id="pistachioGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#a4c263" />
-                      <stop offset="100%" stopColor="#557519" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Soft 3D drop shadow underneath */}
-                  <ellipse cx="60" cy="92" rx="34" ry="10" fill="url(#shadow3d)" />
-
-                  {/* Pleated brown paper liner cup */}
-                  <path d="M 32 78 L 22 90 L 98 90 L 88 78 Z" fill="#4d3124" stroke="#311e15" strokeWidth="1" />
-                  {/* Pleat lines */}
-                  <path d="M 32 78 L 22 90 M 41 80 L 37 90 M 50 81 L 50 90 M 60 81 L 60 90 M 70 81 L 73 90 M 79 80 L 85 90 M 88 78 L 98 90" stroke="#311e15" strokeWidth="0.8" />
-
-                  {/* The 3D Laddoo Sphere */}
-                  <circle cx="60" cy="62" r="32" fill="url(#laddoo3d)" stroke="#6b3a00" strokeWidth="0.5" />
-
-                  {/* Real Pistachio Sliver on top */}
-                  <path d="M 52 46 Q 60 38 68 44 Q 60 52 52 46 Z" fill="url(#pistachioGrad)" stroke="#3e5414" strokeWidth="0.5" />
-                  {/* Saffron thread decoration */}
-                  <path d="M 58 48 Q 66 52 64 62" stroke="#d43f3f" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-                  <path d="M 66 46 Q 74 44 70 54" stroke="#d43f3f" strokeWidth="1" fill="none" strokeLinecap="round" />
-
-                  {/* Tiny shiny silver foil flakes (Varak) */}
-                  <path d="M 42 58 L 48 55 L 45 62 Z" fill="#fff" opacity="0.9" />
-                  <path d="M 72 65 L 75 62 L 78 68 Z" fill="#fff" opacity="0.85" />
-                </svg>
-              </div>
-
-            <p className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} style={{
-              fontSize: locale === 'hi' ? '1.15rem' : '1.4rem', color: '#8c7662', margin: 0, textAlign: 'center', lineHeight: 1.2
-            }}>
-              {locale === 'hi' ? 'मीठी यादें, अटूट बंधन...' : 'Tied with sweetness...'}
-            </p>
-            {/* Visual swipe prompt on mobile */}
-            <div className="mobile-only" style={{
-              marginTop: 10,
-              fontSize: '0.72rem',
-              color: '#C9A84C',
-              fontWeight: 500,
-              opacity: 0.8,
-              letterSpacing: '0.05em',
-              animation: 'pulse 2s infinite',
-            }}>
-              <style dangerouslySetInnerHTML={{ __html: `
-                @keyframes pulse {
-                  0%, 100% { opacity: 0.4; }
-                  50% { opacity: 1; }
-                }
-              ` }} />
-              {locale === 'hi' ? '← स्वाइप करके चिट्ठी पढ़ें' : '← Swipe left to read letter'}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* CENTRAL BINDER SPINE (Realistic brass coil overlay) */}
-        <div className="scrapbook-spine" style={{
-          width: 24,
-          background: 'linear-gradient(to right, #290e09 0%, #150604 50%, #290e09 100%)',
-          position: 'relative',
-          zIndex: 10,
-          display: 'flex', flexDirection: 'column',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-        }}>
-          {/* Spirals */}
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: 28, height: 8,
-                background: 'linear-gradient(to bottom, #d4af37, #856414, #d4af37)',
-                borderRadius: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
-                transform: 'rotate(-5deg)',
-              }}
-            />
-          ))}
-        </div>
-
-        {/* RIGHT PAGE: Ruled notebook paper with letter text */}
-        <motion.div 
-          className="scrapbook-page-right"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0} // Fixed in place, won't slide off-screen
-          onDragEnd={(event, info) => {
-            // Swipe right on the Right page to flip back to the Left page
-            if (window.innerWidth <= 600 && info.offset.x > 40) {
-              setMobilePage('left');
-            }
-            // Swipe left on the Right page to proceed to the next scene (if typewriter done)
-            if (window.innerWidth <= 600 && info.offset.x < -40) {
-              if (isDone) {
-                handleNext();
-              }
-            }
-          }}
-          initial={{ rotateY: 30, opacity: 0.8 }}
+          initial={{ rotateY: 20, opacity: 0.8 }}
           animate={{ rotateY: 0, opacity: 1 }}
           exit={{ rotateY: 90, opacity: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             flex: 1,
             background: '#faf6ee',
-            borderRadius: '0 8px 8px 0',
-            padding: '24px 16px 20px 24px',
+            borderRadius: 12,
+            padding: '28px 24px 24px 24px',
             display: 'flex', flexDirection: 'column',
             position: 'relative',
-            boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)', // Shadow curving into the spine
+            boxShadow: 'inset 0 0 25px rgba(0,0,0,0.08)',
             overflow: 'hidden',
-            cursor: 'grab',
-            touchAction: 'pan-y', // Enables native vertical scrolling
+            minHeight: 440,
           }}>
-          {/* Auto-aligning dynamic notebook lines relative to letter text line height */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            top: 24, bottom: 20,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }} />
 
-          {/* Handcrafted scrapbook accents: 3D Roli splatters, 3D Chawal grains & Gold dust scatter */}
+          {/* Handcrafted scrapbook accents: 3D Roli splatters & Gold dust scatter */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
             <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} viewBox="0 0 300 450" preserveAspectRatio="none">
-              {/* Top Right Cluster */}
+              <defs>
+                <radialGradient id="rice3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#fdfcf0" />
+                  <stop offset="100%" stopColor="#d4cdab" />
+                </radialGradient>
+                <radialGradient id="roli3d" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stopColor="#d42617" />
+                  <stop offset="70%" stopColor="#9c150b" />
+                  <stop offset="100%" stopColor="#690a03" />
+                </radialGradient>
+              </defs>
               <ellipse cx="251" cy="42" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(15 250 40)"/>
               <ellipse cx="250" cy="40" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(15 250 40)"/>
               <circle cx="263" cy="56" r="6" fill="rgba(0,0,0,0.15)"/>
               <circle cx="262" cy="55" r="6" fill="url(#roli3d)"/>
-              <circle cx="258" cy="62" r="3" fill="url(#roli3d)"/>
-
-              {/* Gold Dust Scatter across margins */}
               <circle cx="270" cy="90" r="2.2" fill="#d4af37" opacity="0.8"/>
               <circle cx="220" cy="140" r="1.5" fill="#e5c07b" opacity="0.9"/>
-              <circle cx="245" cy="190" r="2.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="230" cy="250" r="1.2" fill="#e5c07b" opacity="0.7"/>
-              <circle cx="260" cy="300" r="1.8" fill="#d4af37" opacity="0.8"/>
-
-              {/* Bottom Left Cluster */}
-              <circle cx="35" cy="381" r="6" fill="rgba(0,0,0,0.15)"/>
-              <circle cx="34" cy="380" r="6" fill="url(#roli3d)"/>
-              <ellipse cx="51" cy="377" rx="9" ry="3.6" fill="rgba(0,0,0,0.18)" transform="rotate(50 50 375)"/>
-              <ellipse cx="50" cy="375" rx="9" ry="3.6" fill="url(#rice3d)" transform="rotate(50 50 375)"/>
             </svg>
           </div>
 
@@ -404,13 +138,13 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             overflowY: 'auto', flex: 1, zIndex: 2, paddingRight: 4,
           }}>
             <h2 className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} style={{
-              fontSize: locale === 'hi' ? '1.25rem' : '1.4rem', color: '#1a3b5c', margin: '0 0 16px 0',
+              fontSize: locale === 'hi' ? '1.35rem' : '1.5rem', color: '#1a3b5c', margin: '0 0 16px 0',
               fontWeight: 700, lineHeight: 1.6, paddingBottom: 0
             }}>
               {locale === 'hi' ? `प्यारे ${recipientName},` : `Dearest ${recipientName},`}
             </h2>
             <p className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} style={{
-              fontSize: locale === 'hi' ? '1.15rem' : '1.3rem', color: '#2c3e50',
+              fontSize: locale === 'hi' ? '1.2rem' : '1.35rem', color: '#2c3e50',
               lineHeight: 1.85, whiteSpace: 'pre-wrap', margin: 0, paddingBottom: 12
             }}>
               {displayedText}
@@ -421,7 +155,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
                 animate={{ opacity: 1 }}
                 className={locale === 'hi' ? 'hindi-handwritten' : 'handwritten-text'} 
                 style={{
-                  fontSize: locale === 'hi' ? '1.25rem' : '1.35rem', color: '#1a3b5c', margin: '24px 0 0 0',
+                  fontSize: locale === 'hi' ? '1.3rem' : '1.4rem', color: '#1a3b5c', margin: '24px 0 0 0',
                   textAlign: 'right', fontWeight: 700,
                 }}
               >
@@ -430,7 +164,7 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             )}
           </div>
 
-          {/* Swipe swipe guide prompting next page instead of button */}
+          {/* Prompt to proceed */}
           {isDone && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -438,17 +172,18 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
               style={{
                 marginTop: 14,
                 textAlign: 'center',
-                fontSize: '0.72rem',
+                fontSize: '0.8rem',
                 color: '#8c7662',
                 fontWeight: 600,
                 letterSpacing: '0.05em',
                 alignSelf: 'center',
                 animation: 'pulse 2s infinite',
                 cursor: 'pointer',
+                zIndex: 10,
               }}
               onClick={handleNext}
             >
-              {locale === 'hi' ? 'यादें देखने के लिए आगे स्वाइप करें →' : 'Swipe left to view memories →'}
+              {locale === 'hi' ? 'आगे बढ़ने के लिए टैप करें →' : 'Tap to continue →'}
             </motion.div>
           )}
         </motion.div>

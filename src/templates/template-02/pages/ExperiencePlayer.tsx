@@ -6,8 +6,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Scene1_Welcome } from './Scene1_Welcome';
 import { Scene2_Letter }  from './Scene2_Letter';
+import { Scene_Trivia }   from './Scene_Trivia';
 import { Scene3_Photos }  from './Scene3_Photos';
 import { Scene4_Voice }   from './Scene4_Voice';
+import { Scene_PuzzlePage } from './Scene_PuzzlePage';
 import { Scene5_Rakhi }   from './Scene5_Rakhi';
 import { Scene6_Gift }    from './Scene6_Gift';
 import { audioEngine } from '@/shared/audio/audio';
@@ -15,7 +17,7 @@ import { useHaptics } from '@/shared/components/useHaptics';
 import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
-const SCENES = ['welcome', 'letter', 'photos', 'voice', 'rakhi', 'gift'] as const;
+const SCENES = ['welcome', 'letter', 'trivia', 'photos', 'voice', 'puzzle', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
 export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlayerProps) {
@@ -130,6 +132,15 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
             />
           )}
 
+          {scene === 'trivia' && (
+            <Scene_Trivia
+              senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              locale={locale}
+              onComplete={() => nextSkipping('trivia')}
+            />
+          )}
+
           {scene === 'photos' && (
             <Scene3_Photos
               photoUrls={experience.photoUrls}
@@ -146,6 +157,17 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               senderName={experience.senderName}
               locale={locale}
               onComplete={() => nextSkipping('voice')}
+            />
+          )}
+
+          {scene === 'puzzle' && (
+            <Scene_PuzzlePage
+              photoUrls={experience.photoUrls}
+              puzzlePhotoUrl={experience.puzzlePhotoUrl}
+              senderName={experience.senderName}
+              recipientName={experience.recipientName}
+              locale={locale}
+              onComplete={() => nextSkipping('puzzle')}
             />
           )}
 
@@ -170,56 +192,47 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               experienceId={experience.id}
               locale={locale}
               isPreview={isPreview}
-              onComplete={() => {
-                vibrate();
-                window.location.href = `/reply/${experience.id}`;
-              }}
+              onComplete={() => nextSkipping('gift')}
             />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress dots */}
+      {/* Persistent Scene Indicator Dots */}
       <div style={{
-        position: 'fixed', bottom: 28, left: 0, right: 0,
-        display: 'flex', justifyContent: 'center', gap: 8,
-        pointerEvents: 'none', zIndex: 100,
+        position: 'absolute',
+        bottom: 24,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        zIndex: 50,
       }}>
-        {dotScenes.map((s, i) => (
-          <div
+        {dotScenes.map((s, idx) => (
+          <button
             key={s}
-            className={`dot-indicator ${i === currentDotIdx ? 'active' : ''}`}
-            style={{
-              background: i === currentDotIdx ? '#c79774' : 'rgba(199, 151, 116, 0.3)',
-              boxShadow: i === currentDotIdx ? '0 0 8px #c79774' : 'none',
+            onClick={() => {
+              vibrate();
+              audioEngine.playSwoosh();
+              setScene(s);
             }}
+            style={{
+              width: idx === currentDotIdx ? 20 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: idx === currentDotIdx 
+                ? 'linear-gradient(90deg, #ffd700, #ffaa00)'
+                : 'rgba(255,255,255,0.25)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              padding: 0,
+            }}
+            title={s}
           />
         ))}
       </div>
-
-      {/* Back button */}
-      <AnimatePresence>
-        {currentDotIdx > 0 && (
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            onClick={() => previousSkipping(scene)}
-            style={{
-              position: 'fixed', top: 32, left: 24, zIndex: 110,
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(199,151,116,0.2)',
-              borderRadius: '50%', width: 44, height: 44,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
-              cursor: 'pointer', color: '#c79774', fontSize: '1.2rem',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            }}
-          >
-            ←
-          </motion.button>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

@@ -375,29 +375,8 @@ export default function SelectTemplatePage() {
                   ))}
                 </div>
 
-                {/* CTAs - Prominent & Touch-Friendly for Mobile */}
+                {/* CTA - Prominent Select Button */}
                 <div className="template-cta-group" style={{ display: 'flex', gap: 8, zIndex: 3 }}>
-                  <motion.button
-                    className="template-cta-btn-preview"
-                    onClick={(e) => openPreview(e, tpl.previewUrl)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: 100,
-                      background: 'rgba(201,168,76,0.12)',
-                      color: '#C9A84C',
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      border: '1px solid rgba(201,168,76,0.4)',
-                      boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {locale === 'hi' ? 'डेमो' : 'Preview'}
-                  </motion.button>
-
                   <motion.button
                     className="template-cta-btn-select"
                     onClick={(e) => {
@@ -407,14 +386,14 @@ export default function SelectTemplatePage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     style={{
-                      padding: '8px 18px',
+                      padding: '10px 24px',
                       borderRadius: 100,
                       background: 'linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%)',
                       color: '#080408',
-                      fontSize: '0.78rem',
+                      fontSize: '0.85rem',
                       fontWeight: 700,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
+                      letterSpacing: '0.06em',
                       border: '1px solid #E5C97A',
                       boxShadow: '0 4px 15px rgba(201,168,76,0.35)',
                       cursor: 'pointer',
