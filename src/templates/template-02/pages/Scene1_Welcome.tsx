@@ -137,20 +137,20 @@ export function Scene1_Welcome({ senderName, recipientName, locale, onComplete }
 
           <h2 style={{
             fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: '1.05rem', fontWeight: 700, color: '#2b231d',
-            margin: '0 0 2px 0', letterSpacing: '0.02em',
+            fontSize: '1.1rem', fontWeight: 700, color: '#2b231d',
+            margin: '0 0 4px 0', letterSpacing: '0.02em', lineHeight: 1.3,
           }}>
-            {locale === 'hi'
-              ? 'इस स्क्रैपबुक में किसी भाई-बहन को चोट नहीं पहुंची 🤫'
-              : 'No Siblings Were Harmed Making This 🤫'}
+            {locale === 'hi' ? 'कोई भाई-बहन आहत नहीं हुआ' : 'No Siblings Were Harmed'}
           </h2>
 
           <span style={{
-            fontFamily: 'system-ui, sans-serif',
-            fontSize: '0.65rem', fontWeight: 700, color: '#8a623a',
-            letterSpacing: '0.12em', textTransform: 'uppercase',
+            fontFamily: "'Caveat', cursive, system-ui, sans-serif",
+            fontSize: '0.88rem', fontWeight: 700, color: '#8a623a',
+            letterSpacing: '0.06em', display: 'block',
           }}>
-            {locale === 'hi' ? 'ऑफिशियल सिबलिंग कोड 📜' : 'OFFICIAL SIBLING CODE 📜'}
+            {locale === 'hi'
+              ? 'इस स्क्रैपबुक को बनाने के दौरान 🤫'
+              : 'In the making of this scrapbook 🤫'}
           </span>
         </div>
 
