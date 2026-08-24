@@ -18,7 +18,7 @@ import { useHaptics } from '@/shared/components/useHaptics';
 import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
-const SCENES = ['welcome', 'letter', 'trivia', 'photos', 'puzzle', 'voice', 'rakhi', 'gift'] as const;
+const SCENES = ['welcome', 'letter', 'trivia', 'photos', 'voice', 'puzzle', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
 export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlayerProps) {
