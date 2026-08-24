@@ -1,7 +1,7 @@
 'use client';
 // Template 02 — Scene 3: Scrapbook Photo Collage Spread
-// Desktop: 3D Realistic Open Book 2-Page Spread.
-// Mobile: 1-Page Focused Screen per View (Page 1 -> Page 2) with smooth touch/pan swipe navigation.
+// Featuring 3D Book Page Flip transitions on mobile (Left Page -> Right Page)
+// and 2-Page open spread on desktop with responsive swipe navigation.
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -44,6 +44,18 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
     }
   };
 
+  const goToRightPage = () => {
+    vibrate();
+    audioEngine.playSwoosh();
+    setMobilePage('right');
+  };
+
+  const goToLeftPage = () => {
+    vibrate();
+    audioEngine.playSwoosh();
+    setMobilePage('left');
+  };
+
   return (
     <div style={{
       position: 'absolute', inset: 0,
@@ -53,46 +65,32 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
       alignItems: 'center', justifyContent: 'center',
       padding: '24px 12px',
       overflowY: 'auto',
+      perspective: 1200,
     }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .handwritten-label {
           font-family: 'Caveat', cursive;
         }
-        .scrapbook-container {
-          flex-direction: row;
-          perspective: 1200px;
-        }
-        .scrapbook-page-left {
-          display: flex !important;
-        }
-        .scrapbook-page-right {
-          display: flex !important;
+        @media (min-width: 601px) {
+          .scrapbook-container {
+            flex-direction: row !important;
+            max-width: 680px !important;
+          }
+          .scrapbook-page-left, .scrapbook-page-right {
+            display: flex !important;
+          }
+          .scrapbook-spine {
+            display: flex !important;
+          }
         }
         @media (max-width: 600px) {
           .scrapbook-container {
             flex-direction: column !important;
             max-width: 360px !important;
             min-height: 480px !important;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6) !important;
           }
           .scrapbook-spine {
             display: none !important;
-          }
-          .scrapbook-page-left {
-            display: ${mobilePage === 'left' ? 'flex' : 'none'} !important;
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 460px !important;
-            border-radius: 12px !important;
-            box-shadow: none !important;
-          }
-          .scrapbook-page-right {
-            display: ${mobilePage === 'right' ? 'flex' : 'none'} !important;
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 460px !important;
-            border-radius: 12px !important;
-            box-shadow: none !important;
           }
         }
       ` }} />
@@ -120,25 +118,21 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         </motion.button>
       )}
 
-      {/* 3D Open Book Spread Container with Direct Touch/Pan Swipe Handler */}
+      {/* 3D Open Book Spread Container with Direct Touch/Pan Gesture Detection */}
       <motion.div
         className="scrapbook-container"
         onPanEnd={(e, info) => {
-          if (info.offset.x < -25) {
+          if (info.offset.x < -25 || info.velocity.x < -150) {
             // Swipe Left (Forward)
-            if (window.innerWidth <= 600 && mobilePage === 'left') {
-              vibrate();
-              audioEngine.playSwoosh();
-              setMobilePage('right');
+            if (mobilePage === 'left') {
+              goToRightPage();
             } else {
               handleNext();
             }
-          } else if (info.offset.x > 25) {
+          } else if (info.offset.x > 25 || info.velocity.x > 150) {
             // Swipe Right (Backward)
-            if (window.innerWidth <= 600 && mobilePage === 'right') {
-              vibrate();
-              audioEngine.playSwoosh();
-              setMobilePage('left');
+            if (mobilePage === 'right') {
+              goToLeftPage();
             } else if (onBack) {
               handlePrevious();
             }
@@ -156,97 +150,106 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           touchAction: 'none',
         }}
       >
-        {/* LEFT PAGE: Scrapbook Cardstock (Page 1) */}
-        <motion.div 
-          className="scrapbook-page-left"
-          initial={{ rotateY: -30, opacity: 0.8 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          style={{
-            flex: 1,
-            background: '#faf6ee',
-            borderRadius: '8px 0 0 8px',
-            padding: '20px 16px 40px 16px',
-            display: 'flex', flexDirection: 'column',
-            justifyContent: 'space-between',
-            position: 'relative',
-            boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
-          }}>
-          {/* Inner cardstock border */}
-          <div style={{
-            position: 'absolute', inset: 10,
-            border: '1px solid rgba(199,151,116,0.3)',
-            borderRadius: 4,
-            pointerEvents: 'none',
-          }} />
+        <AnimatePresence mode="wait" custom={mobilePage}>
+          {/* LEFT PAGE: Scrapbook Cardstock (Page 1) */}
+          {(typeof window === 'undefined' || window.innerWidth > 600 || mobilePage === 'left') && (
+            <motion.div 
+              key="left-page"
+              className="scrapbook-page-left"
+              initial={{ rotateY: -60, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: -60, opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
+              style={{
+                flex: 1,
+                background: '#faf6ee',
+                borderRadius: '8px 0 0 8px',
+                padding: '20px 16px 40px 16px',
+                display: 'flex', flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                boxShadow: 'inset -15px 0 20px rgba(0,0,0,0.15)',
+                transformOrigin: 'left center',
+                transformStyle: 'preserve-3d',
+              }}>
+              {/* Inner cardstock border */}
+              <div style={{
+                position: 'absolute', inset: 10,
+                border: '1px solid rgba(199,151,116,0.3)',
+                borderRadius: 4,
+                pointerEvents: 'none',
+              }} />
 
-          {/* Top Left Handwritten Header */}
-          <div className="handwritten-label" style={{
-            position: 'absolute', top: 16, left: 18, zIndex: 15,
-            color: '#a36f4d', fontSize: '1.3rem',
-            fontWeight: 700,
-            lineHeight: 1.2,
-          }}>
-            {locale === 'hi' ? 'प्यारी यादें...' : 'Our thread of love...'}
-          </div>
+              {/* Top Left Handwritten Header */}
+              <div className="handwritten-label" style={{
+                position: 'absolute', top: 16, left: 18, zIndex: 15,
+                color: '#a36f4d', fontSize: '1.3rem',
+                fontWeight: 700,
+                lineHeight: 1.2,
+              }}>
+                {locale === 'hi' ? 'प्यारी यादें...' : 'Our thread of love...'}
+              </div>
 
-          {/* Left Page Photos Container */}
-          <div style={{
-            position: 'relative', width: '100%', flex: 1,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginTop: 24, marginBottom: 24,
-          }}>
-            {leftPagePhotos.map((url, i) => {
-              const rotation = i === 0 ? -7 : 5;
-              const yOffset = i === 0 ? -25 : 25;
-              const xOffset = i === 0 ? -20 : 20;
-              return (
-                <motion.div
-                  key={i}
-                  onClick={() => { vibrate(); setActiveIdx(i); }}
-                  initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
-                  whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  style={{
-                    position: 'absolute',
-                    background: '#fff',
-                    padding: '8px 8px 14px 8px',
-                    width: '68%',
-                    maxWidth: 155,
-                    boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-                    border: '1px solid #e2ddd5',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <div style={{
-                    width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
-                  }}>
-                    <img src={url} alt={`Memory ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+              {/* Left Page Photos Container */}
+              <div style={{
+                position: 'relative', width: '100%', flex: 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginTop: 24, marginBottom: 24,
+              }}>
+                {leftPagePhotos.map((url, i) => {
+                  const rotation = i === 0 ? -7 : 5;
+                  const yOffset = i === 0 ? -25 : 25;
+                  const xOffset = i === 0 ? -20 : 20;
+                  return (
+                    <motion.div
+                      key={i}
+                      onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(i); }}
+                      initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                      whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      style={{
+                        position: 'absolute',
+                        background: '#fff',
+                        padding: '8px 8px 14px 8px',
+                        width: '68%',
+                        maxWidth: 155,
+                        boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                        border: '1px solid #e2ddd5',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{
+                        width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
+                      }}>
+                        <img src={url} alt={`Memory ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
 
-          {/* Bottom Swipe Hint */}
-          <div 
-            onClick={() => {
-              if (window.innerWidth <= 600) {
-                vibrate();
-                audioEngine.playSwoosh();
-                setMobilePage('right');
-              }
-            }}
-            style={{
-              position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
-              display: 'flex', justifyContent: 'center',
-            }}
-          >
-            <SwipeIndicator
-              label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
-            />
-          </div>
-        </motion.div>
+              {/* Bottom Swipe Hint */}
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (window.innerWidth <= 600) {
+                    goToRightPage();
+                  } else {
+                    handleNext();
+                  }
+                }}
+                style={{
+                  position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
+                  display: 'flex', justifyContent: 'center',
+                }}
+              >
+                <SwipeIndicator
+                  label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* CENTRAL BINDER SPINE (Desktop Only) */}
         <div className="scrapbook-spine" style={{
@@ -270,93 +273,104 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           ))}
         </div>
 
-        {/* RIGHT PAGE: Scrapbook Cardstock (Page 2) */}
-        <motion.div 
-          className="scrapbook-page-right"
-          initial={{ rotateY: 30, opacity: 0.8 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          style={{
-            flex: 1,
-            background: '#f2e6cf',
-            borderRadius: '0 8px 8px 0',
-            padding: '20px 16px 40px 16px',
-            display: 'flex', flexDirection: 'column',
-            justifyContent: 'space-between',
-            position: 'relative',
-            boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
-          }}>
-          {/* Inner cardstock border */}
-          <div style={{
-            position: 'absolute', inset: 10,
-            border: '1px solid rgba(199,151,116,0.3)',
-            borderRadius: 4,
-            pointerEvents: 'none',
-          }} />
+        <AnimatePresence mode="wait" custom={mobilePage}>
+          {/* RIGHT PAGE: Scrapbook Cardstock (Page 2) */}
+          {(typeof window === 'undefined' || window.innerWidth > 600 || mobilePage === 'right') && (
+            <motion.div 
+              key="right-page"
+              className="scrapbook-page-right"
+              initial={{ rotateY: 60, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: 60, opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
+              style={{
+                flex: 1,
+                background: '#f2e6cf',
+                borderRadius: '0 8px 8px 0',
+                padding: '20px 16px 40px 16px',
+                display: 'flex', flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                boxShadow: 'inset 15px 0 20px rgba(0,0,0,0.15)',
+                transformOrigin: 'right center',
+                transformStyle: 'preserve-3d',
+              }}>
+              {/* Inner cardstock border */}
+              <div style={{
+                position: 'absolute', inset: 10,
+                border: '1px solid rgba(199,151,116,0.3)',
+                borderRadius: 4,
+                pointerEvents: 'none',
+              }} />
 
-          {/* Top Right Handwritten Header */}
-          <div className="handwritten-label" style={{
-            position: 'absolute', top: 16, right: 18, zIndex: 15,
-            color: '#a36f4d', fontSize: '1.3rem',
-            fontWeight: 700,
-            lineHeight: 1.2,
-          }}>
-            {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
-          </div>
+              {/* Top Right Handwritten Header */}
+              <div className="handwritten-label" style={{
+                position: 'absolute', top: 16, right: 18, zIndex: 15,
+                color: '#a36f4d', fontSize: '1.3rem',
+                fontWeight: 700,
+                lineHeight: 1.2,
+              }}>
+                {locale === 'hi' ? 'ये साथ हमेशा का है' : 'Bonded forever'}
+              </div>
 
-          {/* Right Page Photos Container */}
-          <div style={{
-            position: 'relative', width: '100%', flex: 1,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginTop: 24, marginBottom: 24,
-          }}>
-            {rightPagePhotos.map((url, i) => {
-              const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
-              const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
-              const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
-              const globalIdx = 2 + i;
-              return (
-                <motion.div
-                  key={globalIdx}
-                  onClick={() => { vibrate(); setActiveIdx(globalIdx); }}
-                  initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
-                  whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  style={{
-                    position: 'absolute',
-                    background: '#fff',
-                    padding: '8px 8px 14px 8px',
-                    width: '68%',
-                    maxWidth: 155,
-                    boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-                    border: '1px solid #e2ddd5',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <div style={{
-                    width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
-                  }}>
-                    <img src={url} alt={`Memory ${globalIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+              {/* Right Page Photos Container */}
+              <div style={{
+                position: 'relative', width: '100%', flex: 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginTop: 24, marginBottom: 24,
+              }}>
+                {rightPagePhotos.map((url, i) => {
+                  const rotation = i === 0 ? 6 : i === 1 ? -6 : 4;
+                  const yOffset = i === 0 ? -28 : i === 1 ? 28 : 0;
+                  const xOffset = i === 0 ? -22 : i === 1 ? 22 : 0;
+                  const globalIdx = 2 + i;
+                  return (
+                    <motion.div
+                      key={globalIdx}
+                      onClick={(e) => { e.stopPropagation(); vibrate(); setActiveIdx(globalIdx); }}
+                      initial={{ x: xOffset, y: yOffset, rotate: rotation, scale: 1 }}
+                      whileHover={{ scale: 1.08, zIndex: 30, rotate: 0, x: xOffset, y: yOffset }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      style={{
+                        position: 'absolute',
+                        background: '#fff',
+                        padding: '8px 8px 14px 8px',
+                        width: '68%',
+                        maxWidth: 155,
+                        boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                        border: '1px solid #e2ddd5',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{
+                        width: '100%', aspectRatio: '4/3', overflow: 'hidden', background: '#eee',
+                      }}>
+                        <img src={url} alt={`Memory ${globalIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
 
-          {/* Bottom Swipe Hint */}
-          <div 
-            onClick={handleNext}
-            style={{
-              position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
-              display: 'flex', justifyContent: 'center',
-            }}
-          >
-            <SwipeIndicator
-              label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
-              onClick={handleNext}
-            />
-          </div>
-        </motion.div>
+              {/* Bottom Swipe Hint */}
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                style={{
+                  position: 'absolute', bottom: 8, left: 18, right: 18, zIndex: 25,
+                  display: 'flex', justifyContent: 'center',
+                }}
+              >
+                <SwipeIndicator
+                  label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                  onClick={handleNext}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Fullscreen Photo Lightbox Modal */}
