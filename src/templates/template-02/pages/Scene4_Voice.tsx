@@ -8,6 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
+import { SwipeIndicator } from '../components/SwipeIndicator';
 import type { Locale } from '@/lib/types';
 
 interface Props {
@@ -15,9 +16,11 @@ interface Props {
   senderName: string;
   locale: Locale;
   onComplete: () => void;
+  onBack?: () => void;
 }
 
-export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props) {
+export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete, onBack }: Props) {
+  const activeVoiceUrl = voiceUrl || '/audio/prettyjohn1-upbeat-exciting-background-music-free-523621.mp3';
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -45,7 +48,7 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
         audio.removeEventListener('ended', handleEnded);
       };
     }
-  }, [voiceUrl]);
+  }, [activeVoiceUrl]);
 
   const formatTime = (secs: number) => {
     if (!secs || isNaN(secs)) return '0:00';
@@ -110,7 +113,30 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
       overflowY: 'auto',
       color: '#FFF8F0',
     }}>
-      {voiceUrl && <audio ref={audioRef} src={voiceUrl} preload="metadata" />}
+      {activeVoiceUrl && <audio ref={audioRef} src={activeVoiceUrl} preload="metadata" />}
+
+      {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
+      {onBack && (
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); onBack(); }}
+          animate={{ x: [-4, 4, -4] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            position: 'absolute', top: 16, left: 16,
+            width: 38, height: 38, borderRadius: '50%',
+            background: 'rgba(242, 230, 207, 0.15)',
+            border: '1px solid rgba(199, 151, 116, 0.4)',
+            color: '#f2e6cf', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.2rem', cursor: 'pointer', zIndex: 30,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          }}
+          title="Go Back"
+        >
+          ←
+        </motion.button>
+      )}
 
       {/* Retro Cassette Container */}
       <motion.div
@@ -314,7 +340,6 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.94 }}
               onClick={togglePlay}
-              disabled={!voiceUrl}
               title={isPlaying ? 'Pause' : 'Play'}
               style={{
                 height: 44, borderRadius: 8,
@@ -392,18 +417,10 @@ export function Scene4_Voice({ voiceUrl, senderName, locale, onComplete }: Props
         </div>
 
         {/* Continue Button */}
-        <motion.button
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
+        <SwipeIndicator
+          label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
           onClick={handleNext}
-          style={{
-            background: 'none', border: 'none', color: '#8a5330',
-            fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer',
-            letterSpacing: '0.04em', fontStyle: 'normal',
-          }}
-        >
-          {locale === 'hi' ? 'आगे बढ़ें →' : 'Continue →'}
-        </motion.button>
+        />
       </motion.div>
     </div>
   );

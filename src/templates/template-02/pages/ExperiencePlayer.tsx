@@ -1,6 +1,7 @@
 'use client';
 // src/templates/template-02/pages/ExperiencePlayer.tsx
-// Self-contained ExperiencePlayer for Template 02 (Nostalgia Scrapbook theme).
+// Self-contained ExperiencePlayer for Template 02 (Nostalgia Scrapbook theme)
+// Featuring 3D Book Page Flip transitions, touch/drag swipe gesture handlers, and animated back navigation.
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,11 +18,12 @@ import { useHaptics } from '@/shared/components/useHaptics';
 import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
-const SCENES = ['welcome', 'letter', 'trivia', 'photos', 'voice', 'puzzle', 'rakhi', 'gift'] as const;
+const SCENES = ['welcome', 'letter', 'trivia', 'photos', 'puzzle', 'voice', 'rakhi', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
 export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlayerProps) {
   const [scene, setScene] = useState<SceneName>('welcome');
+  const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next');
   const { locale } = experience;
   const { vibrate } = useHaptics();
 
@@ -41,12 +43,12 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
       audioEngine.playBGM();
     }
     audioEngine.playSwoosh();
+    setFlipDirection('next');
     const idx = SCENES.indexOf(current);
     let nextIdx = idx + 1;
     while (nextIdx < SCENES.length) {
       const s = SCENES[nextIdx];
       if (s === 'photos' && experience.photoUrls.length === 0) { nextIdx++; continue; }
-      if (s === 'voice'  && !experience.voiceUrl)             { nextIdx++; continue; }
       break;
     }
     if (nextIdx < SCENES.length) setScene(SCENES[nextIdx]);
@@ -54,12 +56,12 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
 
   const previousSkipping = (current: SceneName) => {
     audioEngine.playSwoosh();
+    setFlipDirection('prev');
     const idx = SCENES.indexOf(current);
     let prevIdx = idx - 1;
     while (prevIdx >= 0) {
       const s = SCENES[prevIdx];
       if (s === 'photos' && experience.photoUrls.length === 0) { prevIdx--; continue; }
-      if (s === 'voice'  && !experience.voiceUrl)             { prevIdx--; continue; }
       break;
     }
     if (prevIdx >= 0) setScene(SCENES[prevIdx]);
@@ -67,10 +69,39 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
 
   const dotScenes = SCENES.filter(s => {
     if (s === 'photos' && experience.photoUrls.length === 0) return false;
-    if (s === 'voice'  && !experience.voiceUrl) return false;
     return true;
   });
   const currentDotIdx = dotScenes.indexOf(scene);
+
+  // 3D Scrapbook Page Flip Animation Variants
+  const pageVariants = {
+    initial: (direction: 'next' | 'prev') => ({
+      rotateY: direction === 'next' ? 90 : -90,
+      opacity: 0,
+      scale: 0.94,
+      boxShadow: direction === 'next' ? '-30px 0 60px rgba(0,0,0,0.85)' : '30px 0 60px rgba(0,0,0,0.85)',
+    }),
+    animate: {
+      rotateY: 0,
+      opacity: 1,
+      scale: 1,
+      boxShadow: '0 20px 50px rgba(0,0,0,0.65)',
+      transition: {
+        duration: 0.7,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    },
+    exit: (direction: 'next' | 'prev') => ({
+      rotateY: direction === 'next' ? -90 : 90,
+      opacity: 0,
+      scale: 0.94,
+      boxShadow: direction === 'next' ? '30px 0 60px rgba(0,0,0,0.85)' : '-30px 0 60px rgba(0,0,0,0.85)',
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    }),
+  };
 
   return (
     <div style={{
@@ -79,38 +110,32 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
       backgroundImage: 'radial-gradient(circle at center, #2c1b18 0%, #110908 100%)',
       color: '#FFF8F0',
       overflow: 'hidden',
-      perspective: 1200,
+      perspective: 1400,
     }}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" custom={flipDirection}>
         <motion.div
           key={scene}
-          initial={{ 
-            opacity: 0, 
-            scale: 0.94, 
-            rotateY: 8, 
-            rotateX: 4 
-          }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1, 
-            rotateY: 0, 
-            rotateX: 0 
-          }}
-          exit={{ 
-            opacity: 0, 
-            scale: 0.94, 
-            rotateY: -8, 
-            rotateX: -4 
-          }}
-          transition={{ 
-            duration: 0.65, 
-            ease: [0.25, 1, 0.5, 1] 
+          custom={flipDirection}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          onPanEnd={(e, info) => {
+            // Disable swipe navigation on 'rakhi' scene — the slider drag conflicts with page swipe
+            if (scene === 'rakhi') return;
+            if (info.offset.x < -40) {
+              nextSkipping(scene);
+            } else if (info.offset.x > 40 && scene !== 'welcome') {
+              previousSkipping(scene);
+            }
           }}
           style={{ 
             position: 'absolute', 
             inset: 0,
             transformStyle: 'preserve-3d',
+            transformOrigin: flipDirection === 'next' ? 'left center' : 'right center',
             backfaceVisibility: 'hidden',
+            touchAction: 'none',
           }}
         >
           {scene === 'welcome' && (
@@ -129,6 +154,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               recipientName={experience.recipientName}
               locale={locale}
               onComplete={() => nextSkipping('letter')}
+              onBack={() => previousSkipping('letter')}
             />
           )}
 
@@ -138,6 +164,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               recipientName={experience.recipientName}
               locale={locale}
               onComplete={() => nextSkipping('trivia')}
+              onBack={() => previousSkipping('trivia')}
             />
           )}
 
@@ -148,6 +175,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               recipientName={experience.recipientName}
               locale={locale}
               onComplete={() => nextSkipping('photos')}
+              onBack={() => previousSkipping('photos')}
             />
           )}
 
@@ -157,6 +185,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               senderName={experience.senderName}
               locale={locale}
               onComplete={() => nextSkipping('voice')}
+              onBack={() => previousSkipping('voice')}
             />
           )}
 
@@ -168,6 +197,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               recipientName={experience.recipientName}
               locale={locale}
               onComplete={() => nextSkipping('puzzle')}
+              onBack={() => previousSkipping('puzzle')}
             />
           )}
 
@@ -177,6 +207,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               senderName={experience.senderName}
               locale={locale}
               onComplete={() => nextSkipping('rakhi')}
+              onBack={() => previousSkipping('rakhi')}
             />
           )}
 
@@ -193,6 +224,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
               locale={locale}
               isPreview={isPreview}
               onComplete={() => nextSkipping('gift')}
+              onBack={() => previousSkipping('gift')}
             />
           )}
         </motion.div>
@@ -215,6 +247,7 @@ export function CosmicExperiencePlayer({ experience, isPreview }: ExperiencePlay
             onClick={() => {
               vibrate();
               audioEngine.playSwoosh();
+              setFlipDirection(idx > currentDotIdx ? 'next' : 'prev');
               setScene(s);
             }}
             style={{

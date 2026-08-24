@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
+import { SwipeIndicator } from '../components/SwipeIndicator';
 import type { Locale } from '@/lib/types';
 import confetti from 'canvas-confetti';
 import { btnStyle } from '@/shared/inputs/inputs';
@@ -18,9 +19,10 @@ interface Props {
   senderName: string;
   locale: Locale;
   onComplete: () => void;
+  onBack?: () => void;
 }
 
-export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: Props) {
+export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete, onBack }: Props) {
   const [value, setValue] = useState(0);
   const [isTied, setIsTied] = useState(false);
   const { vibrate } = useHaptics();
@@ -74,6 +76,29 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
       overflowY: 'auto',
       transition: 'all 1.2s ease-in-out',
     }}>
+      {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
+      {onBack && (
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); onBack(); }}
+          animate={{ x: [-4, 4, -4] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            position: 'absolute', top: 16, left: 16,
+            width: 38, height: 38, borderRadius: '50%',
+            background: 'rgba(242, 230, 207, 0.15)',
+            border: '1px solid rgba(199, 151, 116, 0.4)',
+            color: '#f2e6cf', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.2rem', cursor: 'pointer', zIndex: 35,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          }}
+          title="Go Back"
+        >
+          ←
+        </motion.button>
+      )}
+
       {/* Dynamic celebratory aura glow overlay when tied */}
       {isTied && (
         <motion.div
@@ -503,30 +528,28 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           {/* Bottom ornament */}
           <div style={{ width: '50%', height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)', marginBottom: 4, alignSelf: 'center' }} />
 
-          {/* Swipe swipe guide prompting next page instead of button */}
+          {/* Swipe guide prompting next page */}
           <div style={{ zIndex: 10, textAlign: 'center', marginTop: 12 }}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isTied ? { opacity: 0.9 } : { opacity: 0.3 }}
-              style={{
-                fontSize: '0.72rem',
-                color: isTied ? '#8c7662' : '#c8b6a6',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                alignSelf: 'center',
-                animation: isTied ? 'pulse 2s infinite' : 'none',
-                cursor: isTied ? 'pointer' : 'not-allowed',
-              }}
-              onClick={() => {
-                if (isTied) {
-                  handleNext();
-                }
-              }}
-            >
-              {isTied 
-                ? (locale === 'hi' ? 'उपहार खोलने के लिए आगे स्वाइप करें →' : 'Swipe left to unwrap gift →')
-                : (locale === 'hi' ? 'आगे बढ़ने के लिए पहले राखी बांधें' : 'Complete the ritual to proceed')}
-            </motion.div>
+            {isTied ? (
+              <SwipeIndicator
+                label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                onClick={handleNext}
+              />
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.3 }}
+                style={{
+                  fontSize: '0.72rem',
+                  color: '#c8b6a6',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  cursor: 'not-allowed',
+                }}
+              >
+                {locale === 'hi' ? 'आगे बढ़ने के लिए पहले राखी बांधें' : 'Complete the ritual to proceed'}
+              </motion.div>
+            )}
           </div>
         </motion.div>
 

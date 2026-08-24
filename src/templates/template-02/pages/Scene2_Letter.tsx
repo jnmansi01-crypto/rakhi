@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { SwipeIndicator } from '../components/SwipeIndicator';
 import { useHaptics } from '@/shared/components/useHaptics';
 import { audioEngine } from '@/shared/audio/audio';
 import type { Locale } from '@/lib/types';
@@ -15,9 +16,10 @@ interface Props {
   recipientName: string;
   locale: Locale;
   onComplete: () => void;
+  onBack?: () => void;
 }
 
-export function Scene2_Letter({ letterText, senderName, recipientName, locale, onComplete }: Props) {
+export function Scene2_Letter({ letterText, senderName, recipientName, locale, onComplete, onBack }: Props) {
   const [displayedText, setDisplayedText] = useState('');
   const [index, setIndex] = useState(0);
   const [isDone, setIsDone] = useState(false);
@@ -74,6 +76,29 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
           font-weight: normal !important;
         }
       ` }} />
+
+      {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
+      {onBack && (
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); onBack(); }}
+          animate={{ x: [-4, 4, -4] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            position: 'absolute', top: 16, left: 16,
+            width: 38, height: 38, borderRadius: '50%',
+            background: 'rgba(242, 230, 207, 0.15)',
+            border: '1px solid rgba(199, 151, 116, 0.4)',
+            color: '#f2e6cf', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.2rem', cursor: 'pointer', zIndex: 30,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          }}
+          title="Go Back"
+        >
+          ←
+        </motion.button>
+      )}
 
       {/* 3D Open Book Container (Focused on Letter) */}
       <div
@@ -164,27 +189,14 @@ export function Scene2_Letter({ letterText, senderName, recipientName, locale, o
             )}
           </div>
 
-          {/* Prompt to proceed */}
+          {/* Dribbble-inspired Swipe Indicator */}
           {isDone && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.9 }}
-              style={{
-                marginTop: 14,
-                textAlign: 'center',
-                fontSize: '0.8rem',
-                color: '#8c7662',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                alignSelf: 'center',
-                animation: 'pulse 2s infinite',
-                cursor: 'pointer',
-                zIndex: 10,
-              }}
-              onClick={handleNext}
-            >
-              {locale === 'hi' ? 'आगे बढ़ने के लिए टैप करें →' : 'Tap to continue →'}
-            </motion.div>
+            <div style={{ marginTop: 14, zIndex: 10 }}>
+              <SwipeIndicator
+                label={locale === 'hi' ? 'स्वाइप' : 'Swipe'}
+                onClick={handleNext}
+              />
+            </div>
           )}
         </motion.div>
       </div>

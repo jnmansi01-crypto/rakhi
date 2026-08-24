@@ -1,6 +1,7 @@
 'use client';
 // Template 02 — Scene 6: Gift Reveal (4-Parcel Mystery Box Game)
-// 4 wrapped paper parcels — only 1 contains the real gift! Recipient picks until they find it.
+// 4 wrapped paper parcels — 1 randomly selected winning parcel holds the surprise!
+// Every recipient & experience gets a unique randomized winning parcel (01, 02, 03, or 04).
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +22,7 @@ interface Props {
   locale: Locale;
   isPreview?: boolean;
   onComplete: () => void;
+  onBack?: () => void;
 }
 
 export function Scene6_Gift({
@@ -35,9 +37,23 @@ export function Scene6_Gift({
   locale,
   isPreview,
   onComplete,
+  onBack,
 }: Props) {
-  // Parcel 2 is the winning box holding the gift!
-  const WINNING_PARCEL_ID = 2;
+  // Dynamically select winning parcel ID (1, 2, 3, or 4) randomly per session!
+  const [winningParcelId] = useState<number>(() => {
+    if (experienceId && !experienceId.startsWith('demo')) {
+      // For real experiences: hash experienceId + session timestamp for per-session randomness
+      let hash = 0;
+      const seed = experienceId + '-' + Math.floor(Date.now() / 1000);
+      for (let i = 0; i < seed.length; i++) {
+        hash = (hash << 5) - hash + seed.charCodeAt(i);
+        hash |= 0;
+      }
+      return (Math.abs(hash) % 4) + 1;
+    }
+    // Preview/demo mode: pure random 1, 2, 3, or 4
+    return Math.floor(Math.random() * 4) + 1;
+  });
 
   const [openedParcels, setOpenedParcels] = useState<number[]>([]);
   const [isWinningOpened, setIsWinningOpened] = useState(false);
@@ -76,7 +92,7 @@ export function Scene6_Gift({
     if (isWinningOpened || openedParcels.includes(parcelId)) return;
     vibrate();
 
-    if (parcelId === WINNING_PARCEL_ID) {
+    if (parcelId === winningParcelId) {
       // Winning Parcel Found!
       audioEngine.playPaper?.();
       audioEngine.playMagic?.();
@@ -136,6 +152,29 @@ export function Scene6_Gift({
       overflowY: 'auto',
       color: '#FFF8F0',
     }}>
+      {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
+      {onBack && (
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); onBack(); }}
+          animate={{ x: [-4, 4, -4] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            position: 'absolute', top: 16, left: 16,
+            width: 38, height: 38, borderRadius: '50%',
+            background: 'rgba(242, 230, 207, 0.15)',
+            border: '1px solid rgba(199, 151, 116, 0.4)',
+            color: '#f2e6cf', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.2rem', cursor: 'pointer', zIndex: 35,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          }}
+          title="Go Back"
+        >
+          ←
+        </motion.button>
+      )}
+
       <style dangerouslySetInnerHTML={{ __html: `
         .gift-handwritten {
           font-family: 'Caveat', cursive;
@@ -265,7 +304,7 @@ export function Scene6_Gift({
               }}
             >
               {PARCELS.map((parcel) => {
-                const isOpenedEmpty = openedParcels.includes(parcel.id) && parcel.id !== WINNING_PARCEL_ID;
+                const isOpenedEmpty = openedParcels.includes(parcel.id) && parcel.id !== winningParcelId;
                 return (
                   <motion.div
                     key={parcel.id}
@@ -372,7 +411,9 @@ export function Scene6_Gift({
                 color: '#c79774',
                 marginBottom: 6,
               }}>
-                {locale === 'hi' ? 'सही पोटली 02 खोली गई!' : 'WINNING PARCEL 02 UNWRAPPED!'}
+                {locale === 'hi'
+                  ? `सही पोटली 0${winningParcelId} खोली गई!`
+                  : `WINNING PARCEL 0${winningParcelId} UNWRAPPED!`}
               </span>
 
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#3d2b1f', margin: '0 0 6px 0' }}>

@@ -29,7 +29,7 @@ export default function GiftPage({ params }: { params: { id: string } }) {
           '/images/mithai.png',
           '/images/wrist.png'
         ],
-        voiceUrl: null,
+        voiceUrl: '/audio/prettyjohn1-upbeat-exciting-background-music-free-523621.mp3',
         locale: 'en',
         templateId: isTemplate02 ? 'template-02' : 'rakhi-2025',
         createdAt: Date.now(),

@@ -23,7 +23,7 @@ class AudioEngine {
     if (typeof window === 'undefined') return;
     if (this.bgmAudio) return; // Already playing
 
-    this.bgmAudio = new Audio('/audio/musicforpeople-indian-music-491998.mp3');
+    this.bgmAudio = new Audio('/audio/prettyjohn1-upbeat-exciting-background-music-free-523621.mp3');
     this.bgmAudio.loop = true;
     this.bgmAudio.crossOrigin = 'anonymous';
 
@@ -38,12 +38,12 @@ class AudioEngine {
     }
     
     this.bgmAudio.play().then(() => {
-      // Fade in smoothly
+      // Fade in smoothly to upbeat volume
       if (this.bgmGain) {
-        this.bgmGain.gain.linearRampToValueAtTime(0.15, this.ctx!.currentTime + 2);
+        this.bgmGain.gain.linearRampToValueAtTime(0.22, this.ctx!.currentTime + 1.8);
       } else if (this.bgmAudio) {
         // Fallback
-        this.bgmAudio.volume = 0.15;
+        this.bgmAudio.volume = 0.22;
       }
     }).catch(e => console.warn('BGM autoplay blocked by browser:', e));
   }
