@@ -1,9 +1,9 @@
 'use client';
 // Template 02 — Scene 3: Scrapbook Photo Collage Spread
-// Featuring 3D Book Page Flip transitions on mobile (Left Page -> Right Page)
-// and 2-Page open spread on desktop with responsive swipe navigation.
+// Desktop: 3D Realistic Open Book 2-Page Spread.
+// Mobile: Full 100% Width 3D Page Flip Spread (Left Page -> Right Page) with smooth touch/pan swipe navigation.
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { audioEngine } from '@/shared/audio/audio';
 import { useHaptics } from '@/shared/components/useHaptics';
@@ -22,7 +22,16 @@ interface Props {
 export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, onComplete, onBack }: Props) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [mobilePage, setMobilePage] = useState<'left' | 'right'>('left');
+  const [isMobile, setIsMobile] = useState(false);
   const { vibrate } = useHaptics();
+
+  // Detect screen size on mount & resize
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 600);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Split photos across left and right pages
   const leftPagePhotos = photoUrls.slice(0, 2);
@@ -37,7 +46,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
   const handlePrevious = () => {
     vibrate();
     audioEngine.playSwoosh();
-    if (mobilePage === 'right') {
+    if (mobilePage === 'right' && isMobile) {
       setMobilePage('left');
     } else if (onBack) {
       onBack();
@@ -86,17 +95,26 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         @media (max-width: 600px) {
           .scrapbook-container {
             flex-direction: column !important;
-            max-width: 360px !important;
+            max-width: 380px !important;
+            width: 95% !important;
             min-height: 480px !important;
+            box-shadow: none !important;
+            background: transparent !important;
           }
           .scrapbook-spine {
             display: none !important;
+          }
+          .scrapbook-page-left, .scrapbook-page-right {
+            width: 100% !important;
+            min-height: 460px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 25px rgba(0,0,0,0.06) !important;
           }
         }
       ` }} />
 
       {/* Top-Left Swiftly Moving Animated Back Arrow Button */}
-      {(onBack || mobilePage === 'right') && (
+      {(onBack || (mobilePage === 'right' && isMobile)) && (
         <motion.button
           onClick={handlePrevious}
           animate={{ x: [-4, 4, -4] }}
@@ -124,14 +142,14 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
         onPanEnd={(e, info) => {
           if (info.offset.x < -25 || info.velocity.x < -150) {
             // Swipe Left (Forward)
-            if (mobilePage === 'left') {
+            if (isMobile && mobilePage === 'left') {
               goToRightPage();
             } else {
               handleNext();
             }
           } else if (info.offset.x > 25 || info.velocity.x > 150) {
             // Swipe Right (Backward)
-            if (mobilePage === 'right') {
+            if (isMobile && mobilePage === 'right') {
               goToLeftPage();
             } else if (onBack) {
               handlePrevious();
@@ -150,9 +168,9 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           touchAction: 'none',
         }}
       >
-        <AnimatePresence mode="wait" custom={mobilePage}>
+        <AnimatePresence mode="wait">
           {/* LEFT PAGE: Scrapbook Cardstock (Page 1) */}
-          {(typeof window === 'undefined' || window.innerWidth > 600 || mobilePage === 'left') && (
+          {(!isMobile || mobilePage === 'left') && (
             <motion.div 
               key="left-page"
               className="scrapbook-page-left"
@@ -232,7 +250,7 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
               <div 
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (window.innerWidth <= 600) {
+                  if (isMobile) {
                     goToRightPage();
                   } else {
                     handleNext();
@@ -273,9 +291,9 @@ export function Scene3_Photos({ photoUrls, senderName, recipientName, locale, on
           ))}
         </div>
 
-        <AnimatePresence mode="wait" custom={mobilePage}>
+        <AnimatePresence mode="wait">
           {/* RIGHT PAGE: Scrapbook Cardstock (Page 2) */}
-          {(typeof window === 'undefined' || window.innerWidth > 600 || mobilePage === 'right') && (
+          {(!isMobile || mobilePage === 'right') && (
             <motion.div 
               key="right-page"
               className="scrapbook-page-right"
