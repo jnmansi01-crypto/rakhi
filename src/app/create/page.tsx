@@ -105,12 +105,33 @@ function CreatePageContent() {
 
   const viewItemTracked = useRef(false);
   useEffect(() => {
-    if (templateConfig && !viewItemTracked.current) {
+    const isDemo = searchParams.get('demo') === 'true' || searchParams.get('previewOnly') === 'true';
+    if (templateConfig && !viewItemTracked.current && !isDemo) {
       viewItemTracked.current = true;
       trackViewItem(templateId);
       trackSenderCreationStarted(templateId);
     }
-  }, [templateConfig, templateId]);
+  }, [templateConfig, templateId, searchParams]);
+
+  useEffect(() => {
+    if (searchParams.get('demo') === 'true') {
+      setForm({
+        senderName: 'Aarav',
+        recipientName: 'Ananya',
+        letterText: 'Happy Raksha Bandhan! 🌸\n\nThank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. This Rakhi is a small token of the huge love I carry for you.\n\nAlways yours ❤️',
+        photos: [],
+        puzzlePhoto: null,
+        puzzlePhotoPreview: '/Jigsaw.png',
+        voiceBlob: null,
+        voiceUrl: null,
+        giftType: 'voucher',
+        giftTitle: 'Baskin Robbins Ice Cream Voucher',
+        giftValue: '500',
+        locale: 'en',
+      });
+      setPhotoPreviews(['/Image 2.png', '/Image 4.png', '/Image 5.png', '/Image 6.png', '/Image 7.png']);
+    }
+  }, [searchParams]);
 
   const [step, setStep]         = useState<Step>('names');
   const [form, setForm]         = useState<FormState>(INITIAL);

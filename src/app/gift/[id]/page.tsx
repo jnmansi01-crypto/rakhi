@@ -16,19 +16,18 @@ export default function GiftPage({ params }: { params: { id: string } }) {
       const isTemplate02 = params.id === 'demo-scrapbook';
       const mockExp: RakhiExperience = {
         id: params.id,
-        senderName: 'Mansi',
-        recipientName: 'Pagga',
+        senderName: isTemplate02 ? 'Aarav' : 'Mansi',
+        recipientName: isTemplate02 ? 'Ananya' : 'Pagga',
         letterText: isTemplate02
-          ? 'From childhood fights over the remote to growing up and sharing our biggest secrets, our bond has only grown stronger. Thank you for making my childhood magical and for always believing in me.\n\nHappy Raksha Bandhan to my partner in crime!'
+          ? 'Happy Raksha Bandhan! 🌸\n\nThank you for always being my biggest supporter, my partner in crime, and my best friend. Even though we fight over silly things, I know I can always count on you.\n\nI am so lucky to have you in my life. This Rakhi is a small token of the huge love I carry for you.\n\nAlways yours ❤️'
           : 'Dear sibling, through all of life\'s highs and lows, you have been my constant support. On this beautiful day of Rakhi, I wish you endless happiness, peace, and success. Thank you for just being you.',
         giftType: 'voucher',
         giftTitle: 'Baskin Robbins Ice Cream Voucher',
         giftValue: '500',
-        photoUrls: [
-          '/images/siblings.png',
-          '/images/mithai.png',
-          '/images/wrist.png'
-        ],
+        photoUrls: isTemplate02
+          ? ['/Image 2.png', '/Image 4.png', '/Image 5.png', '/Image 6.png', '/Image 7.png']
+          : ['/images/siblings.png', '/images/mithai.png', '/images/wrist.png'],
+        puzzlePhotoUrl: isTemplate02 ? '/Jigsaw.png' : undefined,
         voiceUrl: '/audio/prettyjohn1-upbeat-exciting-background-music-free-523621.mp3',
         locale: 'en',
         templateId: isTemplate02 ? 'template-02' : 'rakhi-2025',
@@ -50,7 +49,7 @@ export default function GiftPage({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   useEffect(() => {
-    if (experience && !loading && !missing) {
+    if (experience && !loading && !missing && !experience.id.startsWith('demo')) {
       const openedKey = `loment_exp_opened_tracked_${experience.id}`;
       if (typeof window !== 'undefined' && !sessionStorage.getItem(openedKey)) {
         sessionStorage.setItem(openedKey, 'true');
