@@ -144,86 +144,178 @@ export default function SelectTemplatePage() {
   };
 
   return (
-    <div className="select-page-container" style={{
-      minHeight: '100vh',
-      background: '#080408',
-      backgroundImage: 'radial-gradient(circle at center, #160a16 0%, #070307 100%)',
-      color: '#FFF8F0',
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      padding: '40px 24px',
-      overflowX: 'hidden',
-    }}>
-      {/* Brand Header */}
+    <>
+      {/* ── FIXED TOP FLASH SALE COUNTDOWN BAR ── */}
       <div style={{
-        position: 'absolute', top: 24, left: 24,
-        display: 'flex', alignItems: 'center', gap: 8,
-        zIndex: 10,
+        position: 'fixed',
+        top: 0, left: 0, right: 0,
+        background: 'linear-gradient(90deg, #4a1525 0%, #b31919 40%, #8a1c14 70%, #4a1525 100%)',
+        borderBottom: '2px solid #ffd700',
+        padding: '8px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        zIndex: 1000,
+        boxShadow: '0 4px 25px rgba(212,66,53,0.5)',
       }}>
-        <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-        <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.95rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-          Loment
+        <span style={{ fontSize: '0.8rem', color: '#ffd700', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          {locale === 'hi' ? '🔥 रक्षाबंधन फ्लैश सेल • 75% तक डिस्काउंट' : '🔥 RAKSHA BANDHAN MEGA SALE • UP TO 75% OFF'}
         </span>
+        <span style={{ height: 12, width: 1, background: 'rgba(255,255,255,0.4)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'monospace', fontWeight: 800, fontSize: '0.85rem', color: '#fff' }}>
+          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
+            {String(timeLeft.hours).padStart(2, '0')}h
+          </span>
+          :
+          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
+            {String(timeLeft.minutes).padStart(2, '0')}m
+          </span>
+          :
+          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
+            {String(timeLeft.seconds).padStart(2, '0')}s
+          </span>
+        </div>
       </div>
 
-      {/* Locale Toggle */}
-      <button
-        onClick={() => { vibrate(); setLocale(l => l === 'en' ? 'hi' : 'en'); }}
-        style={{
-          position: 'absolute', top: 24, right: 24,
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(201,168,76,0.3)',
-          color: '#C9A84C',
-          borderRadius: 20, padding: '6px 14px',
-          fontSize: '0.8rem', cursor: 'pointer',
-          fontFamily: 'var(--font-sans)',
+      <div className="select-page-container" style={{
+        minHeight: '100vh',
+        background: '#080408',
+        backgroundImage: 'radial-gradient(circle at center, #160a16 0%, #070307 100%)',
+        color: '#FFF8F0',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        padding: '80px 24px 40px 24px',
+        overflowX: 'hidden',
+      }}>
+        {/* Brand Header */}
+        <div style={{
+          position: 'absolute', top: 48, left: 24,
+          display: 'flex', alignItems: 'center', gap: 8,
           zIndex: 10,
-        }}
-      >
-        {locale === 'en' ? 'हिन्दी' : 'English'}
-      </button>
+        }}>
+          <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+          <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.95rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            Loment
+          </span>
+        </div>
 
-      {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: 40, maxWidth: 460 }}>
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Locale Toggle */}
+        <button
+          onClick={() => { vibrate(); setLocale(l => l === 'en' ? 'hi' : 'en'); }}
           style={{
-            fontFamily: 'var(--font-sans)', fontSize: '0.78rem',
-            color: '#C9A84C', letterSpacing: '0.15em',
-            textTransform: 'uppercase', marginBottom: 10,
+            position: 'absolute', top: 48, right: 24,
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(201,168,76,0.3)',
+            color: '#C9A84C',
+            borderRadius: 20, padding: '6px 14px',
+            fontSize: '0.8rem', cursor: 'pointer',
+            fontFamily: 'var(--font-sans)',
+            zIndex: 10,
           }}
         >
-          {locale === 'hi' ? 'राखी अनुभव' : 'DIGITAL RITUAL'}
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          style={{
-            fontFamily: 'Georgia, serif',
-            fontSize: 'clamp(2rem, 6vw, 2.6rem)',
-            fontWeight: 400,
-            lineHeight: 1.2,
-            marginBottom: 12,
-          }}
-        >
-          {locale === 'hi' ? 'अनुभव का स्वरूप चुनें' : 'Choose Your Experience'}
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={{
-            fontFamily: 'var(--font-sans)', fontSize: '0.88rem',
-            color: 'rgba(255,248,240,0.6)', lineHeight: 1.6,
-          }}
-        >
-          {locale === 'hi'
-            ? 'चुनें कि इस राखी आप अपने भाई या बहन को कैसे सरप्राइज देना चाहते हैं।'
-            : 'Choose how you want to surprise your sibling this Rakhi.'}
-        </motion.p>
-      </div>
+          {locale === 'en' ? 'हिन्दी' : 'English'}
+        </button>
+
+        {/* Header with PROMINENT DIGITAL COUNTDOWN HERO BOX */}
+        <div style={{ textAlign: 'center', marginBottom: 32, maxWidth: 500, width: '100%' }}>
+          {/* HUGE SALE URGENCY HERO CARD */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{
+              background: 'linear-gradient(135deg, rgba(179,25,25,0.25) 0%, rgba(74,21,37,0.45) 100%)',
+              border: '1.5px solid rgba(255,215,0,0.4)',
+              borderRadius: 20,
+              padding: '16px 20px',
+              marginBottom: 24,
+              marginTop: 12,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8,
+              boxShadow: '0 10px 30px rgba(179,25,25,0.25), inset 0 0 20px rgba(255,215,0,0.08)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <span style={{ fontSize: '0.85rem', color: '#ff7043', fontWeight: 800, letterSpacing: '0.04em' }}>
+                {locale === 'hi' ? '⚡ रक्षाबंधन स्पेशल ऑफर' : '⚡ RAKSHA BANDHAN FESTIVAL OFFER'}
+              </span>
+              <span style={{ background: '#ffd700', color: '#080408', fontSize: '0.65rem', fontWeight: 900, padding: '2px 8px', borderRadius: 12, textTransform: 'uppercase' }}>
+                75% OFF
+              </span>
+            </div>
+            
+            {/* Big Flip Digital Countdown Clock */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                  {String(timeLeft.hours).padStart(2, '0')}
+                </div>
+                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>HOURS</span>
+              </div>
+              <span style={{ fontSize: '1.3rem', color: '#ffd700', fontWeight: 800, marginBottom: 14 }}>:</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                  {String(timeLeft.minutes).padStart(2, '0')}
+                </div>
+                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>MINUTES</span>
+              </div>
+              <span style={{ fontSize: '1.3rem', color: '#ffd700', fontWeight: 800, marginBottom: 14 }}>:</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ff7043', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                  {String(timeLeft.seconds).padStart(2, '0')}
+                </div>
+                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>SECONDS</span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255,248,240,0.8)', margin: 0 }}>
+              {locale === 'hi'
+                ? '⚠️ टाइमर समाप्त होने पर कीमतें ₹1,100 और ₹999 पर वापस आ जाएंगी!'
+                : '⚠️ Prices revert to ₹1,100 & ₹999 when timer expires!'}
+            </p>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              fontFamily: 'var(--font-sans)', fontSize: '0.78rem',
+              color: '#C9A84C', letterSpacing: '0.15em',
+              textTransform: 'uppercase', marginBottom: 10,
+            }}
+          >
+            {locale === 'hi' ? 'राखी अनुभव' : 'LIMITED FESTIVAL SLOTS'}
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: 'clamp(2rem, 6vw, 2.6rem)',
+              fontWeight: 400,
+              lineHeight: 1.2,
+              marginBottom: 12,
+            }}
+          >
+            {locale === 'hi' ? 'अनुभव का स्वरूप चुनें' : 'Choose Your Experience'}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            style={{
+              fontFamily: 'var(--font-sans)', fontSize: '0.88rem',
+              color: 'rgba(255,248,240,0.6)', lineHeight: 1.6,
+            }}
+          >
+            {locale === 'hi'
+              ? 'चुनें कि इस राखी आप अपने भाई या बहन को कैसे सरप्राइज देना चाहते हैं।'
+              : 'Choose how you want to surprise your sibling this Rakhi.'}
+          </motion.p>
+        </div>
 
       {/* Flex container showing square cards side-by-side on desktop, scaled on mobile */}
       <div 
@@ -786,6 +878,7 @@ export default function SelectTemplatePage() {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }
 
