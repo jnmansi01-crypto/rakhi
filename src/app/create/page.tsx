@@ -254,22 +254,21 @@ function CreatePageContent() {
   const share = async () => {
     if (!shareUrl) return;
     
-    const shareText = locale === 'hi'
-      ? `मैंने आपके लिए एक डिजिटल राखी गिफ्ट बनाया है! 🌸 इसे खोलने के लिए यहाँ क्लिक करें:`
-      : `I made a digital Rakhi gift for you! 🌸 Click here to open it:`;
+    const fullMessage = locale === 'hi'
+      ? `थोड़ी नोक-झोंक, ढेर सारा प्यार! 🤫✨ आपके लिए एक खास डिजिटल राखी सरप्राइज बनाया है।\n\nअपना सरप्राइज खोलने के लिए यहाँ टैप करें:\n${shareUrl}`
+      : `No siblings were harmed making this, but core memories were unlocked! 🤫✨ I created a custom digital Rakhi experience just for you.\n\nTap to open your surprise:\n${shareUrl}`;
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (navigator.share && window.isSecureContext) {
       navigator.share({ 
-        title: 'Your Rakhi Gift 🌸', 
-        text: shareText,
-        url: shareUrl
+        title: 'Your Digital Rakhi Surprise 🌸', 
+        text: fullMessage,
       }).catch(() => {});
     } else if (isMobile) {
-      window.location.href = `whatsapp://send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+      window.location.href = `whatsapp://send?text=${encodeURIComponent(fullMessage)}`;
     } else {
-      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank');
+      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`, '_blank');
     }
   };
 
