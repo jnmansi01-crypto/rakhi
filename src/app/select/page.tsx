@@ -17,6 +17,13 @@ export default function SelectTemplatePage() {
 
   const [previewTab, setPreviewTab] = useState<'sibling' | 'creation'>('sibling');
 
+  useEffect(() => {
+    document.body.classList.add('sender-flow');
+    return () => {
+      document.body.classList.remove('sender-flow');
+    };
+  }, []);
+
   // ── 24-Hour Offer Countdown Timer ────────────────────────────
   const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number }>({
     hours: 23,
@@ -233,6 +240,11 @@ export default function SelectTemplatePage() {
         }}
       >
         <style dangerouslySetInnerHTML={{ __html: `
+          html, body {
+            overflow-y: auto !important;
+            height: auto !important;
+            touch-action: auto !important;
+          }
           @media (max-width: 600px) {
             .select-page-container {
               justify-content: flex-start !important;
