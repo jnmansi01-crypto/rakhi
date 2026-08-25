@@ -143,7 +143,7 @@ function CreatePageContent() {
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [copied, setCopied]     = useState(false);
   const { loading: paymentLoading, error: paymentError, paymentStatusMessage, payAndShare } = usePayment();
-  const { recording, startRecording, stopRecording } = useAudioRecorder((blob, url) => {
+  const { recording, errorMsg: audioErrorMsg, startRecording, stopRecording } = useAudioRecorder((blob, url) => {
     update('voiceBlob', blob);
     update('voiceUrl', url);
   });
@@ -654,6 +654,18 @@ function CreatePageContent() {
         {form.voiceUrl && form.voiceUrl.startsWith('blob:') && !recording && (
           <audio controls src={form.voiceUrl}
             style={{ width: '100%', borderRadius: 8 }} />
+        )}
+
+        {audioErrorMsg && (
+          <div style={{
+            background: 'rgba(138,43,26,0.25)',
+            border: '1px solid #8a2b1a',
+            borderRadius: 12, padding: '10px 14px',
+            fontSize: '0.76rem', color: '#ff8a65', lineHeight: 1.4,
+            textAlign: 'center',
+          }}>
+            ⚠️ {audioErrorMsg}
+          </div>
         )}
 
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,248,240,0.5)' }}>
