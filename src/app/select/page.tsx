@@ -17,12 +17,72 @@ export default function SelectTemplatePage() {
 
   const [previewTab, setPreviewTab] = useState<'sibling' | 'creation'>('sibling');
 
+  // ── 24-Hour Offer Countdown Timer ────────────────────────────
+  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number }>({
+    hours: 23,
+    minutes: 54,
+    seconds: 12,
+  });
+
   useEffect(() => {
-    document.body.classList.add('sender-flow');
-    return () => {
-      document.body.classList.remove('sender-flow');
-    };
+    let endTime: number;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_select_offer_end_time') : null;
+    if (stored) {
+      endTime = parseInt(stored, 10);
+    } else {
+      endTime = Date.now() + (23 * 3600 + 54 * 60 + 12) * 1000;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('loment_select_offer_end_time', endTime.toString());
+      }
+    }
+
+    const interval = setInterval(() => {
+      const diff = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      const hours = Math.floor(diff / 3600);
+      const minutes = Math.floor((diff % 3600) / 60);
+      const seconds = diff % 60;
+      setTimeLeft({ hours, minutes, seconds });
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  // ── Dynamic Slot Claim Reduction (Every 45 mins) ───────────────
+  const [claimOffset, setClaimOffset] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_slot_claim_start_time') : null;
+    if (stored) {
+      startTime = parseInt(stored, 10);
+    } else {
+      startTime = Date.now();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('loment_slot_claim_start_time', startTime.toString());
+      }
+    }
+
+    const updateOffset = () => {
+      const elapsedMs = Math.max(0, Date.now() - startTime);
+      // Calculate how many 45-minute blocks have passed
+      const blocks45Mins = Math.floor(elapsedMs / (45 * 60 * 1000));
+      // For each 45 min block, 4 additional slots are claimed
+      setClaimOffset(blocks45Mins * 4);
+    };
+
+    updateOffset();
+    const interval = setInterval(updateOffset, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Compute dynamic slot counts
+  const t1ClaimedNum = Math.min(1243, 938 + claimOffset);
+  const t1RemainingNum = Math.max(7, 1250 - t1ClaimedNum);
+  const t1PercentNum = Math.min(99, Math.round((t1ClaimedNum / 1250) * 100));
+
+  const t2ClaimedNum = Math.min(1493, 1140 + claimOffset);
+  const t2RemainingNum = Math.max(7, 1500 - t2ClaimedNum);
+  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1500) * 100));
 
   const templates = [
     {
@@ -32,7 +92,14 @@ export default function SelectTemplatePage() {
       visual: 'linear-gradient(135deg, #4a1525 0%, #8a1c14 100%)',
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
-      price: '299',
+      originalPrice: '1,100',
+      price: '300',
+      discount: '73% OFF',
+      claimedSlots: t1ClaimedNum.toLocaleString(),
+      totalSlots: '1,250',
+      claimedPercent: `${t1PercentNum}%`,
+      remainingSlots: t1RemainingNum.toLocaleString(),
+      activeUsers: '128',
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
@@ -43,7 +110,14 @@ export default function SelectTemplatePage() {
       visual: 'linear-gradient(135deg, #2b1f1d 0%, #5c4033 100%)',
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
+      originalPrice: '999',
       price: '250',
+      discount: '75% OFF',
+      claimedSlots: t2ClaimedNum.toLocaleString(),
+      totalSlots: '1,500',
+      claimedPercent: `${t2PercentNum}%`,
+      remainingSlots: t2RemainingNum.toLocaleString(),
+      activeUsers: '184',
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }
@@ -248,24 +322,6 @@ export default function SelectTemplatePage() {
               visibility: visible !important;
               opacity: 1 !important;
             }
-            .template-cta-btn-preview {
-              flex: 1 !important;
-              padding: 12px 14px !important;
-              font-size: 0.85rem !important;
-              background: rgba(201,168,76,0.15) !important;
-              color: #C9A84C !important;
-              border: 1px solid rgba(201,168,76,0.5) !important;
-              border-radius: 12px !important;
-            }
-            .template-cta-btn-select {
-              flex: 1.2 !important;
-              padding: 12px 16px !important;
-              font-size: 0.85rem !important;
-              background: linear-gradient(135deg, #C9A84C 0%, #A37C1E 100%) !important;
-              color: #080408 !important;
-              border: 1px solid #E5C97A !important;
-              border-radius: 12px !important;
-            }
           }
         ` }} />
         {templates.map((tpl, i) => {
@@ -283,8 +339,7 @@ export default function SelectTemplatePage() {
               onClick={() => handleSelect(tpl.id)}
               style={{
                 flex: '1 1 0px',
-                maxWidth: 340,
-                aspectRatio: '1/1',
+                maxWidth: 360,
                 background: 'rgba(255,255,255,0.02)',
                 border: isHovered 
                   ? `1.5px solid ${tpl.glowColor}` 
@@ -312,7 +367,7 @@ export default function SelectTemplatePage() {
                 zIndex: 0,
               }} />
 
-              {/* Upper Header Row */}
+              {/* Upper Header Row: Badge & Discount Pill */}
               <div style={{ zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <span className="template-badge" style={{
                   background: 'rgba(201,168,76,0.12)',
@@ -328,28 +383,28 @@ export default function SelectTemplatePage() {
                   {tpl.badge}
                 </span>
 
-                {/* Price display tag */}
-                <span className="template-price" style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1rem',
-                  fontWeight: 600,
+                {/* Save Discount Badge */}
+                <span style={{
+                  background: 'linear-gradient(135deg, #d44235, #b31919)',
                   color: '#FFF8F0',
-                  background: 'rgba(255,255,255,0.06)',
-                  padding: '4px 12px',
-                  borderRadius: 12,
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  padding: '4px 8px',
+                  borderRadius: 20,
+                  boxShadow: '0 2px 8px rgba(212,66,53,0.3)',
+                  letterSpacing: '0.05em',
                 }}>
-                  ₹{tpl.price}/-
+                  {tpl.discount}
                 </span>
               </div>
 
               {/* Title & Description */}
-              <div style={{ zIndex: 2, margin: '16px 0' }}>
+              <div style={{ zIndex: 2, margin: '14px 0 8px 0' }}>
                 <h2 className="template-title" style={{
                   fontFamily: 'Georgia, serif',
                   fontSize: '1.4rem',
                   fontWeight: 400,
-                  marginBottom: 8,
+                  marginBottom: 6,
                   display: 'flex', alignItems: 'center', gap: 10,
                 }}>
                   {getSelectPageIcon(tpl.id)} {tpl.name}
@@ -359,9 +414,57 @@ export default function SelectTemplatePage() {
                   fontSize: '0.82rem',
                   color: 'rgba(255,248,240,0.7)',
                   lineHeight: 1.45,
+                  margin: 0,
                 }}>
                   {tpl.desc}
                 </p>
+              </div>
+
+              {/* Urgency Progress Meter & Live Visitors */}
+              <div style={{
+                zIndex: 2,
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12,
+                padding: '10px 12px',
+                margin: '10px 0',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 6,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#ffd700', fontWeight: 600 }}>
+                  <span>🔥 {tpl.claimedSlots} / {tpl.totalSlots} slots claimed</span>
+                  <span style={{ color: '#ff7043' }}>{tpl.claimedPercent} full</span>
+                </div>
+                {/* Progress Bar */}
+                <div style={{ width: '100%', height: 4, background: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' }}>
+                  <div style={{ width: tpl.claimedPercent, height: '100%', background: 'linear-gradient(90deg, #ff7043, #ffd700)', borderRadius: 2 }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: 'rgba(255,248,240,0.5)' }}>
+                  <span>⚡ {tpl.activeUsers} creating right now</span>
+                  <span style={{ color: '#81c784', fontWeight: 600 }}>Only {tpl.remainingSlots} left!</span>
+                </div>
+              </div>
+
+              {/* Price Display Block */}
+              <div style={{ zIndex: 2, display: 'flex', alignItems: 'baseline', gap: 10, margin: '4px 0 12px 0' }}>
+                <span style={{
+                  fontSize: '0.9rem',
+                  color: 'rgba(255,248,240,0.45)',
+                  textDecoration: 'line-through',
+                  fontWeight: 500,
+                }}>
+                  ₹{tpl.originalPrice}/-
+                </span>
+                <span style={{
+                  fontSize: '1.45rem',
+                  fontWeight: 700,
+                  color: '#ffd700',
+                  textShadow: '0 2px 10px rgba(255,215,0,0.3)',
+                  fontFamily: 'Georgia, serif',
+                }}>
+                  ₹{tpl.price}/-
+                </span>
               </div>
 
               {/* Footer row with highlights / interactive select button */}
@@ -400,7 +503,7 @@ export default function SelectTemplatePage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    {locale === 'hi' ? 'चुनें' : 'Select'}
+                    {locale === 'hi' ? 'चुनें' : 'SELECT'}
                   </motion.button>
                 </div>
               </div>
