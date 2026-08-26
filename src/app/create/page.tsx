@@ -1070,7 +1070,15 @@ function CreatePageContent() {
         borderBottom: '1px solid rgba(201,168,76,0.15)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div 
+            style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+            onClick={() => {
+              if (shareUrl) {
+                // Hidden Developer Bypass for Mobile Testing
+                setIsPreviewModalOpen(true);
+              }
+            }}
+          >
             <img src="/images/loment-logo.svg" alt="Loment Logo" style={{ width: 22, height: 22, objectFit: 'contain' }} />
             <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.95rem', color: '#FFF8F0', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Loment

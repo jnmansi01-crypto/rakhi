@@ -618,7 +618,7 @@ export default function Template02LandingPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {[
-              { num: '1', title: 'Set Up The Plot Twist', desc: 'Enter Aarav & Ananya’s names, select pre-written note & upload photos.' },
+              { num: '1', title: 'Set Up The Plot Twist', desc: 'Enter your & your sibling\'s names, select pre-written note & upload photos.' },
               { num: '2', title: 'Unlock Special Price (₹250/-)', desc: 'Instant activation with 75% festival offer discount.' },
               { num: '3', title: 'Drop It On WhatsApp', desc: 'Send your custom digital Rakhi parcel link directly.' },
             ].map((step, idx) => (
