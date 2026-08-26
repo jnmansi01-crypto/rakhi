@@ -168,7 +168,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
     }
     if (step === 10) {
       // Final message appears -> auto complete
-      const t = setTimeout(() => onComplete(), 5000); // Wait 5 seconds so they can read and enjoy
+      const t = setTimeout(() => onComplete(), 1500); // Wait 1.5 seconds so they can read and enjoy
       return () => clearTimeout(t);
     }
   }, [step, onComplete, vibrate]);
@@ -284,8 +284,8 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             transition={{ duration: 0.5 }}
             className="hint-text"
             style={{ 
-              position: 'absolute', top: step >= 3 ? '15%' : '25%', 
-              color: '#FFF0DC', opacity: 0.8, letterSpacing: '0.1em', zIndex: 30, pointerEvents: 'none',
+              position: 'absolute', top: step >= 3 ? '15%' : '80%', 
+              color: '#FFF0DC', opacity: 0.8, letterSpacing: '0.1em', zIndex: 40, pointerEvents: 'none',
               textAlign: 'center', width: '100%', textShadow: '0 2px 10px rgba(0,0,0,0.8)'
             }}
           >
@@ -306,7 +306,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
             }
             transition={{ duration: p.type === 'dust' ? 1.5 + Math.random() : 2.5 + Math.random() * 2, ease: p.type === 'dust' ? 'easeOut' : 'linear' }}
             style={{
-              position: 'absolute', zIndex: 5, pointerEvents: 'none',
+              position: 'absolute', zIndex: 25, pointerEvents: 'none',
               width: p.type === 'dust' ? Math.random() * 25 + 15 : 6,
               height: p.type === 'dust' ? Math.random() * 25 + 15 : 12,
               borderRadius: p.type === 'dust' ? '50%' : '2px',

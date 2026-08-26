@@ -165,8 +165,8 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 background: 'linear-gradient(135deg, #7A1B29, #4A0B14)',
                 border: '1px solid rgba(201,168,76,0.6)',
                 borderRadius: 8,
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
+                opacity: isFlipped ? 0 : 1,
+                transition: 'opacity 0.2s ease-in-out',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
                 overflow: 'hidden'
@@ -178,8 +178,7 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 <div style={{
                   width: 30, height: 30, borderRadius: '50%',
                   background: 'radial-gradient(circle, #C9A84C, #A07830)',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.5)', zIndex: 2,
-                  WebkitBackfaceVisibility: 'hidden'
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.5)', zIndex: 2
                 }} />
               </div>
 
@@ -189,8 +188,8 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 background: isMatched ? 'linear-gradient(135deg, #FFF8F0, #E5C97A)' : '#FFF8F0',
                 border: `2px solid ${isMatched ? '#C9A84C' : '#CCC'}`,
                 borderRadius: 8,
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
+                opacity: isFlipped ? 1 : 0,
+                transition: 'opacity 0.2s ease-in-out',
                 transform: 'rotateY(180deg)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 textAlign: 'center', padding: 8,
