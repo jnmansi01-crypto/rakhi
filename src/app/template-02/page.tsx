@@ -104,35 +104,48 @@ export default function Template02LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // ── Dynamic Slot Claim Reduction (Every 45 mins) ───────────────
+  // ── Dynamic Slot Claim & Active Users (Thrilling Updates) ───────────────
   const [claimOffset, setClaimOffset] = useState(0);
+  const [activeUsersOffset, setActiveUsersOffset] = useState(0);
 
   useEffect(() => {
     let startTime: number;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_slot_claim_start_time') : null;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_slot_claim_start_time_v2') : null;
     if (stored) {
       startTime = parseInt(stored, 10);
     } else {
       startTime = Date.now();
       if (typeof window !== 'undefined') {
-        localStorage.setItem('loment_slot_claim_start_time', startTime.toString());
+        localStorage.setItem('loment_slot_claim_start_time_v2', startTime.toString());
       }
     }
 
     const updateOffset = () => {
       const elapsedMs = Math.max(0, Date.now() - startTime);
-      const blocks45Mins = Math.floor(elapsedMs / (45 * 60 * 1000));
-      setClaimOffset(blocks45Mins * 4);
+      // Increase by 1 slot every 1.5 minutes (90000ms)
+      const blocks = Math.floor(elapsedMs / 90000);
+      setClaimOffset(blocks);
     };
 
     updateOffset();
-    const interval = setInterval(updateOffset, 60000);
+    const interval = setInterval(updateOffset, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveUsersOffset(prev => {
+        const bump = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        return Math.min(22, Math.max(-14, prev + bump));
+      });
+    }, 28000); // Fluctuate every 28 seconds
     return () => clearInterval(interval);
   }, []);
 
   const t2ClaimedNum = Math.min(1493, 1140 + claimOffset);
   const t2RemainingNum = Math.max(7, 1500 - t2ClaimedNum);
   const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1500) * 100));
+  const activeUsers = 184 + activeUsersOffset;
 
   const handleCreate = () => {
     vibrate();
@@ -426,7 +439,7 @@ export default function Template02LandingPage() {
                 <div style={{ width: `${t2PercentNum}%`, height: '100%', background: 'linear-gradient(90deg, #c79774, #8a2b1a)', borderRadius: 3 }} />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgba(43,35,29,0.75)' }}>
-                <span>⚡ 184 people creating right now</span>
+                <span>⚡ {activeUsers} people creating right now</span>
                 <span style={{ color: '#2e7d32', fontWeight: 700 }}>Only {t2RemainingNum} left at ₹250!</span>
               </div>
             </div>

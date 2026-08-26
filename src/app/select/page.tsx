@@ -72,33 +72,7 @@ export default function SelectTemplatePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // ── Dynamic Slot Claim Reduction (Every 45 mins) ───────────────
-  const [claimOffset, setClaimOffset] = useState(0);
 
-  useEffect(() => {
-    let startTime: number;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_slot_claim_start_time') : null;
-    if (stored) {
-      startTime = parseInt(stored, 10);
-    } else {
-      startTime = Date.now();
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('loment_slot_claim_start_time', startTime.toString());
-      }
-    }
-
-    const updateOffset = () => {
-      const elapsedMs = Math.max(0, Date.now() - startTime);
-      // Calculate how many 45-minute blocks have passed
-      const blocks45Mins = Math.floor(elapsedMs / (45 * 60 * 1000));
-      // For each 45 min block, 4 additional slots are claimed
-      setClaimOffset(blocks45Mins * 4);
-    };
-
-    updateOffset();
-    const interval = setInterval(updateOffset, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   // ── Dynamic Active Users (Fluctuates slightly) ───────────────
   const [activeUsersOffset, setActiveUsersOffset] = useState(0);
@@ -113,6 +87,33 @@ export default function SelectTemplatePage() {
         return Math.min(15, Math.max(-10, prev + bump));
       });
     }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // ── Dynamic Slot Claim Reduction (Faster v2) ───────────────
+  const [claimOffset, setClaimOffset] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_slot_claim_start_time_v2') : null;
+    if (stored) {
+      startTime = parseInt(stored, 10);
+    } else {
+      startTime = Date.now();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('loment_slot_claim_start_time_v2', startTime.toString());
+      }
+    }
+
+    const updateOffset = () => {
+      const elapsedMs = Math.max(0, Date.now() - startTime);
+      // Increase by 1 slot every 1.5 minutes (90000ms)
+      const blocks = Math.floor(elapsedMs / 90000);
+      setClaimOffset(blocks);
+    };
+
+    updateOffset();
+    const interval = setInterval(updateOffset, 15000);
     return () => clearInterval(interval);
   }, []);
 
