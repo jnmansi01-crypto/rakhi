@@ -450,24 +450,78 @@ function SuccessPageContent() {
           </p>
         </div>
 
-        <button
-          onClick={share}
-          style={{
-            width: '100%',
-            background: 'linear-gradient(135deg, #e8751a, #a11b1b)',
-            border: 'none',
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: '1rem',
-            padding: '16px',
-            borderRadius: 12,
-            cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(232,117,26,0.3)',
-            transition: 'transform 0.2s',
-          }}
-        >
-          {locale === 'hi' ? 'लिंक साझा करें ↗' : 'Share your link ↗'}
-        </button>
+        {/* Action Buttons */}
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12, marginTop: 10 }}>
+          {/* Primary Share WhatsApp / Web Share Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={share}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, #e8751a, #a11b1b)',
+              border: 'none',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '1rem',
+              padding: '16px',
+              borderRadius: 12,
+              cursor: 'pointer',
+              boxShadow: '0 8px 24px rgba(232,117,26,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
+            <span>{locale === 'hi' ? 'व्हाट्सएप पर शेयर करें 🚀' : 'Share Surprise on WhatsApp 🚀'}</span>
+          </motion.button>
+
+          {/* Secondary Copy Link Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={copyLink}
+            style={{
+              width: '100%',
+              background: copied ? 'rgba(46, 125, 50, 0.2)' : 'rgba(201,168,76,0.08)',
+              border: copied ? '1.5px solid #4caf50' : '1.5px solid rgba(201,168,76,0.3)',
+              color: copied ? '#4caf50' : '#E5C97A',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+              padding: '14px',
+              borderRadius: 12,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <span>{copied ? (locale === 'hi' ? 'लिंक कॉपी हो गया! ✅' : 'Link Copied to Clipboard! ✅') : (locale === 'hi' ? 'कॉपी लिंक 📋' : 'Copy Share Link 📋')}</span>
+          </motion.button>
+
+          {/* Preview Gift Link */}
+          {cardId && (
+            <a
+              href={shareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: '0.85rem',
+                color: 'rgba(255,248,240,0.6)',
+                fontWeight: 500,
+                textDecoration: 'underline',
+                marginTop: 8,
+                display: 'inline-block',
+                textAlign: 'center'
+              }}
+            >
+              {locale === 'hi' ? 'अपना बनाया राखी गिफ्ट देखें 👁️' : 'Preview your created Rakhi gift 👁️'}
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

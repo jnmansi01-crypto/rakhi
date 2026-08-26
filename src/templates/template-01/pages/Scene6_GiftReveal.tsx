@@ -437,29 +437,6 @@ export function Scene6_GiftReveal({ giftType, giftTitle, giftValue, senderName, 
                   {locale === 'hi' ? 'धन्यवाद' : 'Thank You'}
                 </button>
                 
-                <button
-                  onClick={handleDownloadPDF}
-                  disabled={pdfLoading}
-                  style={{
-                    background: pdfLoading
-                      ? 'rgba(201,168,76,0.1)'
-                      : 'linear-gradient(135deg, #C9A84C 0%, #E5C97A 50%, #C9A84C 100%)',
-                    border: '1px solid rgba(201,168,76,0.6)',
-                    borderRadius: 100, padding: '12px 20px',
-                    fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
-                    letterSpacing: '0.1em', textTransform: 'uppercase',
-                    color: pdfLoading ? 'rgba(201,168,76,0.5)' : '#3D1A00',
-                    cursor: pdfLoading ? 'wait' : 'pointer',
-                    fontWeight: 700,
-                    boxShadow: pdfLoading ? 'none' : '0 6px 20px rgba(201,168,76,0.4)',
-                    transition: 'all 0.3s ease',
-                    minWidth: 130,
-                  }}
-                >
-                  {pdfLoading
-                    ? (locale === 'hi' ? 'तैयार हो रहा है…' : 'Preparing…')
-                    : (locale === 'hi' ? '⬇ PDF सेव करें' : '⬇ Save as PDF')}
-                </button>
 
                 <a
                   href="/create"

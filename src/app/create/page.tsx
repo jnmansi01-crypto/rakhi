@@ -26,7 +26,7 @@ import { getTemplate } from '@/template-engine/index';
 import type { TemplatePlugin } from '@/template-engine/types';
 
 // ─── Step config ─────────────────────────────────────────────
-const STEPS = ['names','letter','photos','puzzle_photo','voice','gift','preview'] as const;
+const STEPS = ['names','letter','photos','puzzle_photo','coupons','voice','gift','preview'] as const;
 type Step = typeof STEPS[number];
 
 interface FormState {
@@ -36,6 +36,7 @@ interface FormState {
   photos: File[];
   puzzlePhoto: File | null;
   puzzlePhotoPreview: string | null;
+  selectedCoupons: string[];
   voiceBlob: Blob | null;
   voiceUrl: string | null; // local preview
   giftType: GiftType;
@@ -46,7 +47,7 @@ interface FormState {
 
 const INITIAL: FormState = {
   senderName: '', recipientName: '', letterText: '',
-  photos: [], puzzlePhoto: null, puzzlePhotoPreview: null, voiceBlob: null, voiceUrl: null,
+  photos: [], puzzlePhoto: null, puzzlePhotoPreview: null, selectedCoupons: [], voiceBlob: null, voiceUrl: null,
   giftType: 'surprise_message', giftTitle: '', giftValue: '',
   locale: 'en',
 };
@@ -128,6 +129,7 @@ function CreatePageContent() {
         giftTitle: 'Baskin Robbins Ice Cream Voucher',
         giftValue: '500',
         locale: 'en',
+        selectedCoupons: [],
       });
       setPhotoPreviews(['/Image 2.png', '/Image 4.png', '/Image 5.png', '/Image 6.png', '/Image 7.png']);
     }
@@ -185,11 +187,23 @@ function CreatePageContent() {
 
   const goNext = () => {
     const idx = STEPS.indexOf(step);
-    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+    if (idx < STEPS.length - 1) {
+      let nextStep = STEPS[idx + 1];
+      if (nextStep === 'coupons' && templateId !== 'rakhi-2025') {
+        nextStep = STEPS[idx + 2];
+      }
+      setStep(nextStep);
+    }
   };
   const goBack = () => {
     const idx = STEPS.indexOf(step);
-    if (idx > 0) setStep(STEPS[idx - 1]);
+    if (idx > 0) {
+      let prevStep = STEPS[idx - 1];
+      if (prevStep === 'coupons' && templateId !== 'rakhi-2025') {
+        prevStep = STEPS[idx - 2];
+      }
+      setStep(prevStep);
+    }
   };
 
 
@@ -221,6 +235,7 @@ function CreatePageContent() {
         giftValue:     form.giftValue,
         photoUrls:     photoUrls,
         puzzlePhotoUrl: puzzlePhotoUrl,
+        selectedCoupons: form.selectedCoupons,
         voiceUrl:      voiceUrl,
         locale:        form.locale,
         templateId:    templateId,
@@ -538,7 +553,9 @@ function CreatePageContent() {
     puzzle_photo: (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <label style={labelStyle}>
-          {locale === 'hi' ? 'स्मृति पहेली फ़ोटो (Jigsaw Puzzle Photo)' : '3x3 Memory Jigsaw Puzzle Photo'}
+          {templateId === 'rakhi-2025'
+            ? (locale === 'hi' ? 'सीक्रेट राखी फ़ोटो' : 'Secret Rakhi Photo')
+            : (locale === 'hi' ? 'स्मृति पहेली फ़ोटो (Jigsaw Puzzle Photo)' : '3x3 Memory Jigsaw Puzzle Photo')}
         </label>
 
         <div style={{
@@ -550,11 +567,15 @@ function CreatePageContent() {
           alignItems: 'center',
           gap: 12,
         }}>
-          <span style={{ fontSize: '1.4rem' }}>🧩</span>
+          <span style={{ fontSize: '1.4rem' }}>{templateId === 'rakhi-2025' ? '✨' : '🧩'}</span>
           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'rgba(255,248,240,0.85)', lineHeight: 1.4 }}>
-            {locale === 'hi'
-              ? 'यह खास फ़ोटो 3x3 मेमोरी जिग्सॉ पहेली गेम के रूप में स्लाइस होगी! अपनी सबसे पसंदीदा फ़ोटो चुनें।'
-              : 'This special image will be transformed into the interactive 3x3 Memory Jigsaw Puzzle game! Choose your favorite shared memory or picture together.'}
+            {templateId === 'rakhi-2025'
+              ? (locale === 'hi' 
+                  ? 'जब आपका भाई/बहन राखी बनाने के लिए मोतियों को पिरोएगा, तो यह खास फ़ोटो एक-एक करके सामने आएगी!' 
+                  : 'This special image will be revealed piece-by-piece as your sibling strings the beads to build their Rakhi!')
+              : (locale === 'hi'
+                  ? 'यह खास फ़ोटो 3x3 मेमोरी जिग्सॉ पहेली गेम के रूप में स्लाइस होगी! अपनी सबसे पसंदीदा फ़ोटो चुनें।'
+                  : 'This special image will be transformed into the interactive 3x3 Memory Jigsaw Puzzle game! Choose your favorite shared memory or picture together.')}
           </span>
         </div>
 
@@ -579,16 +600,18 @@ function CreatePageContent() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
                 fontWeight: 600, fontSize: '0.85rem',
               }}>
-                📷 Tap to Change Puzzle Photo
+                📷 Tap to Change {templateId === 'rakhi-2025' ? 'Photo' : 'Puzzle Photo'}
               </div>
             </div>
           ) : (
             <>
-              <span style={{ fontSize: '2.5rem' }}>🧩</span>
+              <span style={{ fontSize: '2.5rem' }}>{templateId === 'rakhi-2025' ? '🖼️' : '🧩'}</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(255,248,240,0.6)' }}>
                 {isCompressing 
                   ? (locale === 'hi' ? 'प्रोसेस कर रहे हैं...' : 'Processing...') 
-                  : (locale === 'hi' ? 'पहेली के लिए फ़ोटो चुनें (1 फ़ोटो)' : 'Upload Puzzle Photo (1 Photo)')}
+                  : (templateId === 'rakhi-2025'
+                      ? (locale === 'hi' ? 'फ़ोटो चुनें (1 फ़ोटो)' : 'Upload Secret Photo (1 Photo)')
+                      : (locale === 'hi' ? 'पहेली के लिए फ़ोटो चुनें (1 फ़ोटो)' : 'Upload Puzzle Photo (1 Photo)'))}
               </span>
             </>
           )}
@@ -618,6 +641,65 @@ function CreatePageContent() {
           onNext={() => goNext()}
           onBack={goBack}
           locale={locale}
+        />
+      </div>
+    ),
+
+    coupons: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <label style={labelStyle}>
+          {locale === 'hi' ? '2 कूपन चुनें' : 'Select 2 Sibling Coupons'}
+        </label>
+        
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'rgba(255,248,240,0.7)', margin: 0 }}>
+          {locale === 'hi'
+            ? 'ये कूपन शगुन कार्ड गेम जीतने पर आपके भाई/बहन को मिलेंगे!'
+            : 'These will be awarded when your sibling wins the Shagun Card Memory Game!'}
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          {[
+            { id: 'pizza', label: '1 Free Pizza 🍕' },
+            { id: 'remote', label: 'TV Remote Control 📺' },
+            { id: 'chore', label: 'I do 1 Chore 🧹' },
+            { id: 'movie', label: 'Movie Night 🍿' }
+          ].map(coupon => {
+            const isSelected = form.selectedCoupons.includes(coupon.id);
+            const isDisabled = !isSelected && form.selectedCoupons.length >= 2;
+            return (
+              <div
+                key={coupon.id}
+                onClick={() => {
+                  if (isSelected) {
+                    update('selectedCoupons', form.selectedCoupons.filter(id => id !== coupon.id));
+                  } else if (!isDisabled) {
+                    update('selectedCoupons', [...form.selectedCoupons, coupon.id]);
+                  }
+                }}
+                style={{
+                  background: isSelected ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.03)',
+                  border: `1.5px solid ${isSelected ? '#C9A84C' : 'rgba(255,255,255,0.1)'}`,
+                  borderRadius: 12, padding: '16px 12px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  textAlign: 'center', gap: 8, cursor: isDisabled ? 'not-allowed' : 'pointer',
+                  opacity: isDisabled ? 0.5 : 1, transition: 'all 0.2s',
+                  boxShadow: isSelected ? '0 0 15px rgba(201,168,76,0.3)' : 'none'
+                }}
+              >
+                <span style={{ fontSize: '1.8rem' }}>{coupon.label.slice(-2)}</span>
+                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 600, color: isSelected ? '#C9A84C' : '#FFF8F0' }}>
+                  {coupon.label.slice(0, -2)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <NavBtn
+          onNext={() => goNext()}
+          onBack={goBack}
+          locale={locale}
+          disabled={form.selectedCoupons.length !== 2}
         />
       </div>
     ),
@@ -881,18 +963,7 @@ function CreatePageContent() {
           {locale === 'hi' ? 'आपका गिफ्ट ड्राफ्ट तैयार हो चुका है' : 'Your gift draft has been created'}
         </motion.p>
 
-        <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-          <button
-            onClick={() => {
-              if (shareUrl) {
-                trackPreviewStarted(templateId, cardId || '');
-                setIsPreviewModalOpen(true);
-              }
-            }}
-            style={{ ...btnStyle, flex: 1, background: 'transparent', color: 'var(--gold)' }}
-          >
-            {locale === 'hi' ? 'पूर्वावलोकन' : 'Preview'}
-          </button>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <button
             onClick={() => {
               if (cardId) {
@@ -911,7 +982,7 @@ function CreatePageContent() {
               }
             }}
             disabled={paymentLoading}
-            style={{ ...btnStyle, flex: 1, background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff', opacity: paymentLoading ? 0.7 : 1 }}
+            style={{ ...btnStyle, width: '100%', background: 'linear-gradient(135deg, var(--saffron), var(--deep-red))', border: 'none', color: '#fff', opacity: paymentLoading ? 0.7 : 1 }}
           >
             {paymentLoading
               ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
@@ -976,7 +1047,8 @@ function CreatePageContent() {
     names:   locale === 'hi' ? 'नाम'         : 'Names',
     letter:  locale === 'hi' ? 'पत्र'        : 'Letter',
     photos:  locale === 'hi' ? 'फ़ोटो'       : 'Photos',
-    puzzle_photo: locale === 'hi' ? 'पहेली'  : 'Puzzle',
+    puzzle_photo: locale === 'hi' ? 'सीक्रेट' : 'Secret',
+    coupons: locale === 'hi' ? 'कूपन'        : 'Coupons',
     voice:   locale === 'hi' ? 'आवाज़'       : 'Voice',
     gift:    locale === 'hi' ? 'उपहार'       : 'Gift',
     preview: locale === 'hi' ? 'बनाएं'       : 'Create',

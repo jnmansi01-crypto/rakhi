@@ -153,17 +153,17 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
       // Siblings meet, Confetti pops, Dissolve begins
       triggerConfetti();
       vibrate('FINAL_REVEAL');
-      const t = setTimeout(() => setStep(8), 2000);
+      const t = setTimeout(() => setStep(8), 800); // reduced from 2000
       return () => clearTimeout(t);
     }
     if (step === 8) {
       // Cinematic Rakhi Image & Bokeh appears
-      const t = setTimeout(() => setStep(9), 1500);
+      const t = setTimeout(() => setStep(9), 500); // reduced from 1500
       return () => clearTimeout(t);
     }
     if (step === 9) {
-      // Mithai Box appears
-      const t = setTimeout(() => setStep(10), 2000);
+      // Mithai Box appears (removed visually, just a step buffer now)
+      const t = setTimeout(() => setStep(10), 200); // reduced from 2000
       return () => clearTimeout(t);
     }
     if (step === 10) {
@@ -428,7 +428,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           scale: step >= 8 ? 1.5 : 0.8, 
           y: step >= 8 ? 0 : 30 
         }}
-        transition={{ duration: 3, ease: 'easeOut' }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
         style={{
           position: 'absolute', zIndex: 4, pointerEvents: 'none',
           width: '100%', top: '3%', height: '28%',
@@ -452,7 +452,7 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2, ease: 'easeOut' }}
+            transition={{ duration: 1, ease: 'easeOut' }}
             style={{
               position: 'absolute', bottom: '10%', width: '100%', textAlign: 'center', zIndex: 20
             }}

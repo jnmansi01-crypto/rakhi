@@ -9,14 +9,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Scene1_Arrival }    from './Scene1_Arrival';
 import { Scene2_Envelope }   from './Scene2_Envelope';
 import { Scene3_Photos }     from './Scene3_Photos';
+import { Scene4_Scratch }    from './Scene4_Scratch';
 import { Scene4_Voice }      from './Scene4_Voice';
 import { Scene5_Rakhi }      from './Scene5_Rakhi';
 import { Scene6_GiftReveal } from './Scene6_GiftReveal';
+import { Scene7_Coupons }    from './Scene7_Coupons';
 import { audioEngine } from '@/shared/audio/audio';
 import { trackExperienceCompleted } from '@/core/payments/analytics';
 import type { ExperiencePlayerProps } from '@/template-engine/types';
 
-const SCENES = ['arrival', 'envelope', 'photos', 'voice', 'rakhi', 'gift'] as const;
+const SCENES = ['arrival', 'envelope', 'photos', 'scratch', 'voice', 'rakhi', 'coupons', 'gift'] as const;
 type SceneName = typeof SCENES[number];
 
 const sceneVariants = {
@@ -51,7 +53,9 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
     while (nextIdx < SCENES.length) {
       const s = SCENES[nextIdx];
       if (s === 'photos' && experience.photoUrls.length === 0) { nextIdx++; continue; }
+      if (s === 'scratch' && !experience.puzzlePhotoUrl)       { nextIdx++; continue; }
       if (s === 'voice'  && !experience.voiceUrl)             { nextIdx++; continue; }
+      if (s === 'coupons' && (!experience.selectedCoupons || experience.selectedCoupons.length !== 2)) { nextIdx++; continue; }
       break;
     }
     if (nextIdx < SCENES.length) setScene(SCENES[nextIdx]);
@@ -64,7 +68,9 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
     while (prevIdx >= 0) {
       const s = SCENES[prevIdx];
       if (s === 'photos' && experience.photoUrls.length === 0) { prevIdx--; continue; }
+      if (s === 'scratch' && !experience.puzzlePhotoUrl)       { prevIdx--; continue; }
       if (s === 'voice'  && !experience.voiceUrl)             { prevIdx--; continue; }
+      if (s === 'coupons' && (!experience.selectedCoupons || experience.selectedCoupons.length !== 2)) { prevIdx--; continue; }
       break;
     }
     if (prevIdx >= 0) setScene(SCENES[prevIdx]);
@@ -73,7 +79,9 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
   // Dot indicators (only scenes with content)
   const dotScenes = SCENES.filter(s => {
     if (s === 'photos' && experience.photoUrls.length === 0) return false;
+    if (s === 'scratch' && !experience.puzzlePhotoUrl) return false;
     if (s === 'voice'  && !experience.voiceUrl) return false;
+    if (s === 'coupons' && (!experience.selectedCoupons || experience.selectedCoupons.length !== 2)) return false;
     return true;
   });
   const currentDotIdx = dotScenes.indexOf(scene);
@@ -116,6 +124,12 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
               onComplete={() => nextSkipping('photos')}
             />
           )}
+          {scene === 'scratch' && experience.puzzlePhotoUrl && (
+            <Scene4_Scratch
+              photoUrl={experience.puzzlePhotoUrl}
+              onComplete={() => nextSkipping('scratch')}
+            />
+          )}
           {scene === 'voice' && (
             <Scene4_Voice
               voiceUrl={experience.voiceUrl}
@@ -130,6 +144,13 @@ export function RakhiExperiencePlayer({ experience }: ExperiencePlayerProps) {
               senderName={experience.senderName}
               locale={locale}
               onComplete={() => nextSkipping('rakhi')}
+            />
+          )}
+          {scene === 'coupons' && experience.selectedCoupons && (
+            <Scene7_Coupons
+              coupons={experience.selectedCoupons}
+              onComplete={() => nextSkipping('coupons')}
+              locale={locale}
             />
           )}
           {scene === 'gift' && (
