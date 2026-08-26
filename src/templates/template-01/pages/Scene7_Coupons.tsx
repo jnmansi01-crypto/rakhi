@@ -166,6 +166,7 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 border: '1px solid rgba(201,168,76,0.6)',
                 borderRadius: 8,
                 backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
                 overflow: 'hidden'
@@ -177,7 +178,8 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 <div style={{
                   width: 30, height: 30, borderRadius: '50%',
                   background: 'radial-gradient(circle, #C9A84C, #A07830)',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.5)', zIndex: 2
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.5)', zIndex: 2,
+                  WebkitBackfaceVisibility: 'hidden'
                 }} />
               </div>
 
@@ -188,6 +190,7 @@ export function Scene7_Coupons({ coupons, onComplete, locale }: Props) {
                 border: `2px solid ${isMatched ? '#C9A84C' : '#CCC'}`,
                 borderRadius: 8,
                 backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 textAlign: 'center', padding: 8,

@@ -216,17 +216,30 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
     hapticIntervalRef.current = setInterval(() => vibrate('LIGHT'), 100);
   };
 
-  const handleDragEnd = (event: any, info: any) => {
-    setIsDragging(false);
-    if (hapticIntervalRef.current) clearInterval(hapticIntervalRef.current);
-    
-    // If dragged up sufficiently
-    if (info.offset.y < -150) {
+  const handleDrag = (event: any, info: any) => {
+    // Instantly trigger if dragged upwards even slightly during the drag
+    if (step === 3 && info.offset.y < -15) {
+      setIsDragging(false);
+      if (hapticIntervalRef.current) clearInterval(hapticIntervalRef.current);
       vibrate('FINAL_REVEAL');
       setStep(5); // Snap to center, draw threads
       audioEngine.playSwoosh();
-    } else {
-      vibrate('MEDIUM');
+    }
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    // If handleDrag didn't catch it (e.g., very fast tiny flick), catch it here
+    if (step === 3) {
+      setIsDragging(false);
+      if (hapticIntervalRef.current) clearInterval(hapticIntervalRef.current);
+      
+      if (info.offset.y < -15) {
+        vibrate('FINAL_REVEAL');
+        setStep(5);
+        audioEngine.playSwoosh();
+      } else {
+        vibrate('MEDIUM');
+      }
     }
   };
 
@@ -469,9 +482,11 @@ export function Scene5_Rakhi({ recipientName, senderName, locale, onComplete }: 
         {step >= 3 && (
           <motion.div
             drag={step === 3 ? "y" : false}
-            dragConstraints={{ top: -200, bottom: 0 }}
-            dragElastic={0.2}
+            dragConstraints={{ top: -150, bottom: 0 }}
+            dragElastic={0.5}
+            dragMomentum={false}
             onDragStart={handleDragStart}
+            onDrag={handleDrag}
             onDragEnd={handleDragEnd}
             style={step === 3 ? { 
               y, position: 'absolute', bottom: '15%', zIndex: 30, cursor: 'grab', touchAction: 'none'
