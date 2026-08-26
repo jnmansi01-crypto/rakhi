@@ -64,19 +64,37 @@ export default function Template02LandingPage() {
   });
 
   useEffect(() => {
+    const defaultDuration = (23 * 3600 + 54 * 60 + 12) * 1000;
     let endTime: number;
     const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_select_offer_end_time') : null;
+    
     if (stored) {
       endTime = parseInt(stored, 10);
+      if (endTime < Date.now()) {
+        endTime = Date.now() + defaultDuration;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('loment_select_offer_end_time', endTime.toString());
+        }
+      }
     } else {
-      endTime = Date.now() + (23 * 3600 + 54 * 60 + 12) * 1000;
+      endTime = Date.now() + defaultDuration;
       if (typeof window !== 'undefined') {
         localStorage.setItem('loment_select_offer_end_time', endTime.toString());
       }
     }
 
     const interval = setInterval(() => {
-      const diff = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      let diff = Math.floor((endTime - Date.now()) / 1000);
+      
+      if (diff <= 0) {
+        // Reset the timer
+        endTime = Date.now() + defaultDuration;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('loment_select_offer_end_time', endTime.toString());
+        }
+        diff = Math.floor((endTime - Date.now()) / 1000);
+      }
+      
       const hours = Math.floor(diff / 3600);
       const minutes = Math.floor((diff % 3600) / 60);
       const seconds = diff % 60;

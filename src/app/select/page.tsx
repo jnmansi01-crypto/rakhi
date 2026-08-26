@@ -32,19 +32,37 @@ export default function SelectTemplatePage() {
   });
 
   useEffect(() => {
+    const defaultDuration = (23 * 3600 + 54 * 60 + 12) * 1000;
     let endTime: number;
     const stored = typeof window !== 'undefined' ? localStorage.getItem('loment_select_offer_end_time') : null;
+    
     if (stored) {
       endTime = parseInt(stored, 10);
+      if (endTime < Date.now()) {
+        endTime = Date.now() + defaultDuration;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('loment_select_offer_end_time', endTime.toString());
+        }
+      }
     } else {
-      endTime = Date.now() + (23 * 3600 + 54 * 60 + 12) * 1000;
+      endTime = Date.now() + defaultDuration;
       if (typeof window !== 'undefined') {
         localStorage.setItem('loment_select_offer_end_time', endTime.toString());
       }
     }
 
     const interval = setInterval(() => {
-      const diff = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      let diff = Math.floor((endTime - Date.now()) / 1000);
+      
+      if (diff <= 0) {
+        // Reset the timer
+        endTime = Date.now() + defaultDuration;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('loment_select_offer_end_time', endTime.toString());
+        }
+        diff = Math.floor((endTime - Date.now()) / 1000);
+      }
+      
       const hours = Math.floor(diff / 3600);
       const minutes = Math.floor((diff % 3600) / 60);
       const seconds = diff % 60;
@@ -82,6 +100,22 @@ export default function SelectTemplatePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // ── Dynamic Active Users (Fluctuates slightly) ───────────────
+  const [activeUsersOffset, setActiveUsersOffset] = useState(0);
+
+  useEffect(() => {
+    // Every 4-8 seconds, bump the active users slightly
+    const interval = setInterval(() => {
+      setActiveUsersOffset(prev => {
+        // Random bump between -2 and +3
+        const bump = Math.floor(Math.random() * 6) - 2;
+        // Keep the total drift within -10 to +15
+        return Math.min(15, Math.max(-10, prev + bump));
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Compute dynamic slot counts
   const t1ClaimedNum = Math.min(1243, 938 + claimOffset);
   const t1RemainingNum = Math.max(7, 1250 - t1ClaimedNum);
@@ -106,7 +140,7 @@ export default function SelectTemplatePage() {
       totalSlots: '1,250',
       claimedPercent: `${t1PercentNum}%`,
       remainingSlots: t1RemainingNum.toLocaleString(),
-      activeUsers: '128',
+      activeUsers: (128 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
@@ -124,7 +158,7 @@ export default function SelectTemplatePage() {
       totalSlots: '1,500',
       claimedPercent: `${t2PercentNum}%`,
       remainingSlots: t2RemainingNum.toLocaleString(),
-      activeUsers: '184',
+      activeUsers: (184 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }
