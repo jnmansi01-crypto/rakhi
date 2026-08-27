@@ -1,6 +1,24 @@
+import imageCompression from 'browser-image-compression';
+
 export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'video' = 'image'): Promise<string> {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  let fileToUpload = file;
+
+  // Compress images to drastically speed up upload times on mobile connections
+  if (resourceType === 'image' && file instanceof File) {
+    try {
+      const options = {
+        maxSizeMB: 0.8,
+        maxWidthOrHeight: 1280,
+        useWebWorker: true,
+      };
+      fileToUpload = await imageCompression(file, options);
+    } catch (error) {
+      console.warn('Image compression failed, falling back to original file:', error);
+    }
+  }
 
   // Since we are using demo keys for now, we'll try to hit cloudinary but catch the error if demo keys are rejected
   if (!cloudName || !uploadPreset || cloudName === 'demo') {
@@ -19,7 +37,7 @@ export async function uploadMedia(file: File | Blob, resourceType: 'image' | 'vi
     throw new Error('The selected file appears to be empty or could not be read. Please try a different photo.');
   }
 
-  formData.append('file', file);
+  formData.append('file', fileToUpload);
   formData.append('upload_preset', uploadPreset);
 
   const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
