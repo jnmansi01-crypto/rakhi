@@ -247,37 +247,22 @@ export default function Template02LandingPage() {
         }
       ` }} />
 
-      {/* ── FIXED TOP FLASH SALE COUNTDOWN BAR ── */}
+      {/* ── FIXED TOP URGENCY BAR ── */}
       <div style={{
         position: 'fixed',
         top: 0, left: 0, right: 0,
         background: 'linear-gradient(90deg, #4a1c14 0%, #8a2b1a 40%, #5c2014 70%, #4a1c14 100%)',
-        borderBottom: '2px solid #c79774',
-        padding: '8px 16px',
+        borderBottom: '2px solid #C9A84C',
+        padding: '10px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 12,
         zIndex: 1000,
         boxShadow: '0 4px 20px rgba(138,43,26,0.3)',
       }}>
-        <span style={{ fontSize: '0.78rem', color: '#ffd700', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-          {locale === 'hi' ? '📜 प्लॉट ट्विस्ट ऑफर • 75% डिस्काउंट' : '📜 RAKHI PLOT TWIST OFFER • 75% OFF'}
+        <span style={{ fontSize: '0.85rem', color: '#ffd700', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', textAlign: 'center' }}>
+          {locale === 'hi' ? '🌸 आज रक्षाबंधन है! गिफ्ट तैयार करने का अंतिम दिन।' : '🌸 HAPPY RAKSHA BANDHAN! LAST DAY TO CREATE YOUR GIFT.'}
         </span>
-        <span style={{ height: 12, width: 1, background: 'rgba(255,255,255,0.4)' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'monospace', fontWeight: 800, fontSize: '0.85rem', color: '#fff' }}>
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(199,151,116,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.hours).padStart(2, '0')}h
-          </span>
-          :
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(199,151,116,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.minutes).padStart(2, '0')}m
-          </span>
-          :
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(199,151,116,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.seconds).padStart(2, '0')}s
-          </span>
-        </div>
       </div>
 
       <div className="tpl2-landing-page">
@@ -351,99 +336,36 @@ export default function Template02LandingPage() {
               : 'Instead of sending another plain box, give your sibling a feeling they’ve never experienced before—a personalized 3D memory scrapbook wrapped with a real plot twist.'}
           </p>
 
-          {/* ── PROMINENT DIGITAL COUNTDOWN HERO CLOCK ── */}
+          {/* ── URGENCY ANNOUNCEMENT BOX ── */}
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             style={{
               background: 'linear-gradient(135deg, #4a1c14 0%, #2b130e 100%)',
-              border: '1.5px solid #c79774',
-              borderRadius: 20,
-              padding: '16px 18px',
+              border: '1.5px solid #C9A84C',
+              borderRadius: 16,
+              padding: '16px 20px',
               marginBottom: 18,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 8,
-              boxShadow: '0 12px 35px rgba(74,28,20,0.25)',
+              gap: 6,
+              boxShadow: '0 8px 25px rgba(74,28,20,0.3)',
               color: '#FFF8F0',
+              textAlign: 'center'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <span style={{ fontSize: '0.82rem', color: '#ff8a65', fontWeight: 800, letterSpacing: '0.04em' }}>
-                {locale === 'hi' ? '⚡ रक्षाबंधन स्पेशल ऑफर' : '⚡ RAKSHA BANDHAN FESTIVAL OFFER'}
-              </span>
-              <span style={{ background: '#c79774', color: '#0d0706', fontSize: '0.65rem', fontWeight: 900, padding: '2px 8px', borderRadius: 12, textTransform: 'uppercase' }}>
-                75% OFF
-              </span>
-            </div>
-            
-            {/* Big Flip Digital Countdown Clock */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#0e0706', border: '1px solid #c79774', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.hours).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>HOURS</span>
-              </div>
-              <span style={{ fontSize: '1.3rem', color: '#c79774', fontWeight: 800, marginBottom: 14 }}>:</span>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#0e0706', border: '1px solid #c79774', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.minutes).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>MINUTES</span>
-              </div>
-              <span style={{ fontSize: '1.3rem', color: '#c79774', fontWeight: 800, marginBottom: 14 }}>:</span>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#0e0706', border: '1px solid #c79774', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ff8a65', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.seconds).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>SECONDS</span>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '0.78rem', color: 'rgba(255,248,240,0.85)', margin: 0 }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffd700', letterSpacing: '0.05em' }}>
+              {locale === 'hi' ? '🌸 आज रक्षाबंधन है!' : '🌸 TODAY IS RAKSHA BANDHAN!'}
+            </span>
+            <p style={{ fontSize: '0.85rem', color: 'rgba(255,248,240,0.9)', margin: 0, lineHeight: 1.4 }}>
               {locale === 'hi'
-                ? '⚠️ टाइमर समाप्त होने पर कीमत ₹999 पर वापस आ जाएगी!'
-                : '⚠️ Price reverts to ₹999 when timer expires!'}
+                ? 'अपने भाई/बहन के लिए यह डिजिटल सरप्राइज़ तैयार करने का आज अंतिम दिन है। पोर्टल आज रात बंद हो जाएगा। अभी बनाएँ!'
+                : 'This is the final day to create this digital surprise for your sibling. The portal closes tonight. Create now!'}
             </p>
           </motion.div>
 
-          {/* ── PRICE & SCARCITY CRAFT CARD ── */}
-          <div className="craft-cardstock-light" style={{
-            padding: '16px 18px',
-            marginBottom: 20,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 10,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 10 }}>
-              <span style={{ fontSize: '1rem', color: 'rgba(43,35,29,0.5)', textDecoration: 'line-through', fontWeight: 500 }}>
-                ₹999/-
-              </span>
-              <span style={{ fontSize: '1.85rem', fontWeight: 800, color: '#8a2b1a', fontFamily: 'Playfair Display, Georgia, serif' }}>
-                ₹250/-
-              </span>
-              <span style={{ background: '#8a2b1a', color: '#fff', fontSize: '0.72rem', fontWeight: 700, padding: '3px 9px', borderRadius: 12 }}>
-                SAVE 75%
-              </span>
-            </div>
 
-            {/* Urgency Meter */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#8a2b1a', fontWeight: 700 }}>
-                <span>🔥 {t2ClaimedNum.toLocaleString()} / 1,500 slots claimed</span>
-                <span>{t2PercentNum}% full</span>
-              </div>
-              <div style={{ width: '100%', height: 6, background: 'rgba(43,35,29,0.12)', borderRadius: 3, overflow: 'hidden' }}>
-                <div style={{ width: `${t2PercentNum}%`, height: '100%', background: 'linear-gradient(90deg, #c79774, #8a2b1a)', borderRadius: 3 }} />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgba(43,35,29,0.75)' }}>
-                <span>⚡ {activeUsers} people creating right now</span>
-                <span style={{ color: '#2e7d32', fontWeight: 700 }}>Only {t2RemainingNum} left at ₹250!</span>
-              </div>
-            </div>
-          </div>
 
           {/* Main CTA */}
           <motion.button
@@ -465,7 +387,7 @@ export default function Template02LandingPage() {
               cursor: 'pointer',
             }}
           >
-            {locale === 'hi' ? 'गिफ्ट में एक प्लॉट ट्विस्ट दें (₹250/-) →' : 'GIVE THEM A PLOT TWIST (₹250/-) →'}
+            {locale === 'hi' ? 'अभी अपना बनाएँ (₹250/-) →' : 'CREATE YOURS NOW (₹250/-) →'}
           </motion.button>
         </div>
 

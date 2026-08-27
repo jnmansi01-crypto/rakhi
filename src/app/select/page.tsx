@@ -180,37 +180,22 @@ export default function SelectTemplatePage() {
 
   return (
     <>
-      {/* ── FIXED TOP FLASH SALE COUNTDOWN BAR ── */}
+      {/* ── FIXED TOP URGENCY BAR ── */}
       <div style={{
         position: 'fixed',
         top: 0, left: 0, right: 0,
         background: 'linear-gradient(90deg, #4a1525 0%, #b31919 40%, #8a1c14 70%, #4a1525 100%)',
         borderBottom: '2px solid #ffd700',
-        padding: '8px 16px',
+        padding: '10px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 12,
         zIndex: 1000,
         boxShadow: '0 4px 25px rgba(212,66,53,0.5)',
       }}>
-        <span style={{ fontSize: '0.8rem', color: '#ffd700', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-          {locale === 'hi' ? '🔥 रक्षाबंधन फ्लैश सेल • 75% तक डिस्काउंट' : '🔥 RAKSHA BANDHAN MEGA SALE • UP TO 75% OFF'}
+        <span style={{ fontSize: '0.85rem', color: '#ffd700', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', textAlign: 'center' }}>
+          {locale === 'hi' ? '🌸 आज रक्षाबंधन है! गिफ्ट तैयार करने का अंतिम दिन।' : '🌸 HAPPY RAKSHA BANDHAN! LAST DAY TO CREATE YOUR GIFT.'}
         </span>
-        <span style={{ height: 12, width: 1, background: 'rgba(255,255,255,0.4)' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'monospace', fontWeight: 800, fontSize: '0.85rem', color: '#fff' }}>
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.hours).padStart(2, '0')}h
-          </span>
-          :
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.minutes).padStart(2, '0')}m
-          </span>
-          :
-          <span style={{ background: 'rgba(0,0,0,0.5)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' }}>
-            {String(timeLeft.seconds).padStart(2, '0')}s
-          </span>
-        </div>
       </div>
 
       <div className="select-page-container" style={{
@@ -559,31 +544,7 @@ export default function SelectTemplatePage() {
                 </p>
               </div>
 
-              {/* Urgency Progress Meter & Live Visitors */}
-              <div style={{
-                zIndex: 2,
-                background: 'rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 12,
-                padding: '10px 12px',
-                margin: '10px 0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#ffd700', fontWeight: 600 }}>
-                  <span>🔥 {tpl.claimedSlots} / {tpl.totalSlots} slots claimed</span>
-                  <span style={{ color: '#ff7043' }}>{tpl.claimedPercent} full</span>
-                </div>
-                {/* Progress Bar */}
-                <div style={{ width: '100%', height: 4, background: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ width: tpl.claimedPercent, height: '100%', background: 'linear-gradient(90deg, #ff7043, #ffd700)', borderRadius: 2 }} />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: 'rgba(255,248,240,0.5)' }}>
-                  <span>⚡ {tpl.activeUsers} creating right now</span>
-                  <span style={{ color: '#81c784', fontWeight: 600 }}>Only {tpl.remainingSlots} left!</span>
-                </div>
-              </div>
+
 
               {/* Price Display Block */}
               <div style={{ zIndex: 2, display: 'flex', alignItems: 'baseline', gap: 10, margin: '4px 0 12px 0' }}>
@@ -642,7 +603,7 @@ export default function SelectTemplatePage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    {locale === 'hi' ? 'चुनें' : 'SELECT'}
+                    {locale === 'hi' ? 'अभी अपना बनाएँ' : 'CREATE YOURS NOW'}
                   </motion.button>
                 </div>
               </div>
