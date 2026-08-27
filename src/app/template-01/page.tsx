@@ -135,17 +135,17 @@ export default function Template01LandingPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveUsersOffset(prev => {
-        const bump = Math.floor(Math.random() * 5) - 2; // -2 to +2
-        return Math.min(18, Math.max(-12, prev + bump));
+        const bump = Math.floor(Math.random() * 4) - 1;
+        return Math.min(8, Math.max(-5, prev + bump));
       });
-    }, 25000); // Fluctuate every 25 seconds
+    }, 45000);
     return () => clearInterval(interval);
   }, []);
 
-  const t2ClaimedNum = Math.min(243, 134 + claimOffset);
-  const t2RemainingNum = Math.max(7, 250 - t2ClaimedNum);
-  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 250) * 100));
-  const activeUsers = 34 + activeUsersOffset;
+  const t2ClaimedNum = Math.min(1243, 1152 + claimOffset);
+  const t2RemainingNum = Math.max(7, 1250 - t2ClaimedNum);
+  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1250) * 100));
+  const activeUsers = 142 + activeUsersOffset;
 
   const handleCreate = () => {
     vibrate();
@@ -438,7 +438,7 @@ export default function Template01LandingPage() {
             {/* Urgency Meter */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#C9A84C', fontWeight: 700 }}>
-                <span>🔥 {t2ClaimedNum.toLocaleString()} / 250 slots claimed</span>
+                <span>🔥 {t2ClaimedNum.toLocaleString()} / 1,250 slots claimed</span>
                 <span>{t2PercentNum}% full</span>
               </div>
               <div style={{ width: '100%', height: 6, background: 'rgba(43,35,29,0.12)', borderRadius: 3, overflow: 'hidden' }}>

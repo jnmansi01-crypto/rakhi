@@ -86,7 +86,7 @@ export default function SelectTemplatePage() {
         // Keep the total drift within -5 to +8
         return Math.min(8, Math.max(-5, prev + bump));
       });
-    }, 5000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -118,13 +118,13 @@ export default function SelectTemplatePage() {
   }, []);
 
   // Compute dynamic slot counts
-  const t1ClaimedNum = Math.min(243, 134 + claimOffset);
-  const t1RemainingNum = Math.max(7, 250 - t1ClaimedNum);
-  const t1PercentNum = Math.min(99, Math.round((t1ClaimedNum / 250) * 100));
+  const t1ClaimedNum = Math.min(1243, 1162 + claimOffset);
+  const t1RemainingNum = Math.max(7, 1250 - t1ClaimedNum);
+  const t1PercentNum = Math.min(99, Math.round((t1ClaimedNum / 1250) * 100));
 
-  const t2ClaimedNum = Math.min(293, 156 + claimOffset);
-  const t2RemainingNum = Math.max(7, 300 - t2ClaimedNum);
-  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 300) * 100));
+  const t2ClaimedNum = Math.min(1493, 1394 + claimOffset);
+  const t2RemainingNum = Math.max(7, 1500 - t2ClaimedNum);
+  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1500) * 100));
 
   const templates = [
     {
@@ -138,10 +138,10 @@ export default function SelectTemplatePage() {
       price: '300',
       discount: '73% OFF',
       claimedSlots: t1ClaimedNum.toLocaleString(),
-      totalSlots: '250',
+      totalSlots: '1,250',
       claimedPercent: `${t1PercentNum}%`,
       remainingSlots: t1RemainingNum.toLocaleString(),
-      activeUsers: (34 + activeUsersOffset).toString(),
+      activeUsers: (142 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
@@ -156,10 +156,10 @@ export default function SelectTemplatePage() {
       price: '250',
       discount: '75% OFF',
       claimedSlots: t2ClaimedNum.toLocaleString(),
-      totalSlots: '300',
+      totalSlots: '1,500',
       claimedPercent: `${t2PercentNum}%`,
       remainingSlots: t2RemainingNum.toLocaleString(),
-      activeUsers: (42 + activeUsersOffset).toString(),
+      activeUsers: (184 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }
