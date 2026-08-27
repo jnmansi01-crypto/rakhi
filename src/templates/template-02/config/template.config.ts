@@ -8,7 +8,7 @@ const cosmicTemplate: TemplatePlugin = {
   id: 'template-02',
   name: 'Nostalgia Scrapbook',
   occasion: 'Raksha Bandhan',
-  priceInPaise: 29900, // ₹299
+  priceInPaise: 10000, // ₹100
 
   ExperiencePlayer: CosmicExperiencePlayer,
 

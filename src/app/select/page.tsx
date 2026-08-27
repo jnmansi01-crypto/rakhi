@@ -81,10 +81,10 @@ export default function SelectTemplatePage() {
     // Every 4-8 seconds, bump the active users slightly
     const interval = setInterval(() => {
       setActiveUsersOffset(prev => {
-        // Random bump between -2 and +3
-        const bump = Math.floor(Math.random() * 6) - 2;
-        // Keep the total drift within -10 to +15
-        return Math.min(15, Math.max(-10, prev + bump));
+        // Random bump between -1 and +2 (smaller numbers now)
+        const bump = Math.floor(Math.random() * 4) - 1;
+        // Keep the total drift within -5 to +8
+        return Math.min(8, Math.max(-5, prev + bump));
       });
     }, 5000);
     return () => clearInterval(interval);
@@ -118,13 +118,13 @@ export default function SelectTemplatePage() {
   }, []);
 
   // Compute dynamic slot counts
-  const t1ClaimedNum = Math.min(1243, 938 + claimOffset);
-  const t1RemainingNum = Math.max(7, 1250 - t1ClaimedNum);
-  const t1PercentNum = Math.min(99, Math.round((t1ClaimedNum / 1250) * 100));
+  const t1ClaimedNum = Math.min(243, 134 + claimOffset);
+  const t1RemainingNum = Math.max(7, 250 - t1ClaimedNum);
+  const t1PercentNum = Math.min(99, Math.round((t1ClaimedNum / 250) * 100));
 
-  const t2ClaimedNum = Math.min(1493, 1140 + claimOffset);
-  const t2RemainingNum = Math.max(7, 1500 - t2ClaimedNum);
-  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1500) * 100));
+  const t2ClaimedNum = Math.min(293, 156 + claimOffset);
+  const t2RemainingNum = Math.max(7, 300 - t2ClaimedNum);
+  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 300) * 100));
 
   const templates = [
     {
@@ -135,13 +135,13 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
       originalPrice: '1,100',
-      price: '300',
-      discount: '73% OFF',
+      price: '150',
+      discount: '86% OFF',
       claimedSlots: t1ClaimedNum.toLocaleString(),
-      totalSlots: '1,250',
+      totalSlots: '250',
       claimedPercent: `${t1PercentNum}%`,
       remainingSlots: t1RemainingNum.toLocaleString(),
-      activeUsers: (128 + activeUsersOffset).toString(),
+      activeUsers: (34 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['पारंपरिक संगीत', '3D रेशमी राखी'] : ['Traditional BGM', '3D Silk Rakhi'],
       previewUrl: '/gift/demo-royal?preview=true&template=rakhi-2025',
     },
@@ -153,13 +153,13 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
       originalPrice: '999',
-      price: '250',
-      discount: '75% OFF',
+      price: '100',
+      discount: '90% OFF',
       claimedSlots: t2ClaimedNum.toLocaleString(),
-      totalSlots: '1,500',
+      totalSlots: '300',
       claimedPercent: `${t2PercentNum}%`,
       remainingSlots: t2RemainingNum.toLocaleString(),
-      activeUsers: (184 + activeUsersOffset).toString(),
+      activeUsers: (42 + activeUsersOffset).toString(),
       features: locale === 'hi' ? ['स्क्रैपबुक डायरी', 'रोली चावल अक्षत'] : ['Scrapbook Theme', '3D Roli & Chawal'],
       previewUrl: '/gift/demo-scrapbook?preview=true&template=template-02',
     }

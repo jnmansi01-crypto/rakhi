@@ -142,10 +142,10 @@ export default function Template01LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const t2ClaimedNum = Math.min(1243, 938 + claimOffset);
-  const t2RemainingNum = Math.max(7, 1250 - t2ClaimedNum);
-  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 1250) * 100));
-  const activeUsers = 142 + activeUsersOffset;
+  const t2ClaimedNum = Math.min(243, 134 + claimOffset);
+  const t2RemainingNum = Math.max(7, 250 - t2ClaimedNum);
+  const t2PercentNum = Math.min(99, Math.round((t2ClaimedNum / 250) * 100));
+  const activeUsers = 34 + activeUsersOffset;
 
   const handleCreate = () => {
     vibrate();
@@ -428,17 +428,17 @@ export default function Template01LandingPage() {
                 ₹1100/-
               </span>
               <span style={{ fontSize: '1.85rem', fontWeight: 800, color: '#C9A84C', fontFamily: 'Playfair Display, Georgia, serif' }}>
-                ₹299/-
+                ₹150/-
               </span>
               <span style={{ background: '#C9A84C', color: '#fff', fontSize: '0.72rem', fontWeight: 700, padding: '3px 9px', borderRadius: 12 }}>
-                SAVE 73%
+                SAVE 86%
               </span>
             </div>
 
             {/* Urgency Meter */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#C9A84C', fontWeight: 700 }}>
-                <span>🔥 {t2ClaimedNum.toLocaleString()} / 1,250 slots claimed</span>
+                <span>🔥 {t2ClaimedNum.toLocaleString()} / 250 slots claimed</span>
                 <span>{t2PercentNum}% full</span>
               </div>
               <div style={{ width: '100%', height: 6, background: 'rgba(43,35,29,0.12)', borderRadius: 3, overflow: 'hidden' }}>
@@ -446,7 +446,7 @@ export default function Template01LandingPage() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgba(255,248,240,0.75)' }}>
                 <span>⚡ {activeUsers} people creating right now</span>
-                <span style={{ color: '#4ade80', fontWeight: 700 }}>Only {t2RemainingNum} left at ₹299!</span>
+                <span style={{ color: '#4ade80', fontWeight: 700 }}>Only {t2RemainingNum} left at ₹150!</span>
               </div>
             </div>
           </div>
@@ -471,7 +471,7 @@ export default function Template01LandingPage() {
               cursor: 'pointer',
             }}
           >
-            {locale === 'hi' ? 'गिफ्ट में एक प्लॉट ट्विस्ट दें (₹299/-) →' : 'GIVE THEM A PLOT TWIST (₹299/-) →'}
+            {locale === 'hi' ? 'गिफ्ट में एक प्लॉट ट्विस्ट दें (₹150/-) →' : 'GIVE THEM A PLOT TWIST (₹150/-) →'}
           </motion.button>
         </div>
 
@@ -638,7 +638,7 @@ export default function Template01LandingPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {[
               { num: '1', title: 'Set Up The Plot Twist', desc: 'Enter your & your sibling\'s names, select pre-written note & upload photos.' },
-              { num: '2', title: 'Unlock Special Price (₹299/-)', desc: 'Instant activation with 75% festival offer discount.' },
+              { num: '2', title: 'Unlock Special Price (₹150/-)', desc: 'Instant activation with 86% festival offer discount.' },
               { num: '3', title: 'Drop It On WhatsApp', desc: 'Send your custom digital Rakhi parcel link directly.' },
             ].map((step, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -686,7 +686,7 @@ export default function Template01LandingPage() {
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
               <span style={{ fontSize: '0.8rem', color: 'rgba(43,35,29,0.4)', textDecoration: 'line-through' }}>₹1100</span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#C9A84C', fontFamily: 'Playfair Display, Georgia, serif' }}>₹299/-</span>
+              <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#C9A84C', fontFamily: 'Playfair Display, Georgia, serif' }}>₹150/-</span>
             </div>
           </div>
 
