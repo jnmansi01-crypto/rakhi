@@ -135,8 +135,8 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(232, 117, 26, 0.45)', // orange-gold glow
       badge: locale === 'hi' ? 'क्लासिक' : 'Sacred & Classic',
       originalPrice: '1,100',
-      price: '150',
-      discount: '86% OFF',
+      price: '300',
+      discount: '73% OFF',
       claimedSlots: t1ClaimedNum.toLocaleString(),
       totalSlots: '250',
       claimedPercent: `${t1PercentNum}%`,
@@ -153,8 +153,8 @@ export default function SelectTemplatePage() {
       glowColor: 'rgba(199, 151, 116, 0.45)', // cardstock wood glow
       badge: locale === 'hi' ? 'यादें' : 'Warm & Nostalgic',
       originalPrice: '999',
-      price: '100',
-      discount: '90% OFF',
+      price: '250',
+      discount: '75% OFF',
       claimedSlots: t2ClaimedNum.toLocaleString(),
       totalSlots: '300',
       claimedPercent: `${t2PercentNum}%`,
