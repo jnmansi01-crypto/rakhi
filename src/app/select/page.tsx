@@ -239,63 +239,6 @@ export default function SelectTemplatePage() {
 
         {/* Header with PROMINENT DIGITAL COUNTDOWN HERO BOX */}
         <div style={{ textAlign: 'center', marginBottom: 32, maxWidth: 500, width: '100%' }}>
-          {/* HUGE SALE URGENCY HERO CARD */}
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{
-              background: 'linear-gradient(135deg, rgba(179,25,25,0.25) 0%, rgba(74,21,37,0.45) 100%)',
-              border: '1.5px solid rgba(255,215,0,0.4)',
-              borderRadius: 20,
-              padding: '16px 20px',
-              marginBottom: 24,
-              marginTop: 12,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 8,
-              boxShadow: '0 10px 30px rgba(179,25,25,0.25), inset 0 0 20px rgba(255,215,0,0.08)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <span style={{ fontSize: '0.85rem', color: '#ff7043', fontWeight: 800, letterSpacing: '0.04em' }}>
-                {locale === 'hi' ? '⚡ रक्षाबंधन स्पेशल ऑफर' : '⚡ RAKSHA BANDHAN FESTIVAL OFFER'}
-              </span>
-              <span style={{ background: '#ffd700', color: '#080408', fontSize: '0.65rem', fontWeight: 900, padding: '2px 8px', borderRadius: 12, textTransform: 'uppercase' }}>
-                75% OFF
-              </span>
-            </div>
-            
-            {/* Big Flip Digital Countdown Clock */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.hours).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>HOURS</span>
-              </div>
-              <span style={{ fontSize: '1.3rem', color: '#ffd700', fontWeight: 800, marginBottom: 14 }}>:</span>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ffd700', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.minutes).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>MINUTES</span>
-              </div>
-              <span style={{ fontSize: '1.3rem', color: '#ffd700', fontWeight: 800, marginBottom: 14 }}>:</span>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ background: '#120508', border: '1px solid #ffd700', borderRadius: 8, padding: '6px 12px', fontSize: '1.35rem', fontWeight: 800, color: '#ff7043', fontFamily: 'monospace', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-                  {String(timeLeft.seconds).padStart(2, '0')}
-                </div>
-                <span style={{ fontSize: '0.6rem', color: 'rgba(255,248,240,0.6)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>SECONDS</span>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '0.78rem', color: 'rgba(255,248,240,0.8)', margin: 0 }}>
-              {locale === 'hi'
-                ? '⚠️ टाइमर समाप्त होने पर कीमतें ₹1,100 और ₹999 पर वापस आ जाएंगी!'
-                : '⚠️ Prices revert to ₹1,100 & ₹999 when timer expires!'}
-            </p>
-          </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: -10 }}
