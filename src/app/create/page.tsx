@@ -987,10 +987,10 @@ function CreatePageContent() {
             {paymentLoading
               ? (paymentStatusMessage || (locale === 'hi' ? 'प्रोसेस हो रहा है...' : 'Processing...'))
               : templateId === 'rakhi-2025'
-                ? (locale === 'hi' ? '₹299 का भुगतान करें' : 'Pay ₹299 & Send')
+                ? (locale === 'hi' ? '₹150 का भुगतान करें' : 'Pay ₹150 & Send')
                 : templateId === 'template-02'
-                  ? (locale === 'hi' ? '₹250 का भुगतान करें' : 'Pay ₹250 & Send')
-                  : (locale === 'hi' ? '₹299 का भुगतान करें' : 'Pay ₹299 & Send')
+                  ? (locale === 'hi' ? '₹150 का भुगतान करें' : 'Pay ₹150 & Send')
+                  : (locale === 'hi' ? '₹150 का भुगतान करें' : 'Pay ₹150 & Send')
             }
           </button>
         </div>

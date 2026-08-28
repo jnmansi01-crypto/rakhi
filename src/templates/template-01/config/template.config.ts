@@ -8,7 +8,7 @@ const rakhiTemplate: TemplatePlugin = {
   id: 'rakhi-2025',           // Stable ID — never change, used in Firestore records
   name: 'Template 01',        // Display name in the template registry
   occasion: 'Raksha Bandhan',
-  priceInPaise: 29900,        // ₹299
+  priceInPaise: 15000,        // ₹299
 
 
   ExperiencePlayer: RakhiExperiencePlayer,

@@ -393,7 +393,7 @@ export default function Template01LandingPage() {
               cursor: 'pointer',
             }}
           >
-            {locale === 'hi' ? 'अभी अपना बनाएँ (₹299/-) →' : 'CREATE YOURS NOW (₹299/-) →'}
+            {locale === 'hi' ? 'अभी अपना बनाएँ (₹150/-) →' : 'CREATE YOURS NOW (₹150/-) →'}
           </motion.button>
         </div>
 

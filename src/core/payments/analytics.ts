@@ -49,9 +49,9 @@ export function getProductDetails(templateId: string): { name: string } {
 
 // Get price dynamically for a given template
 export function getTemplatePrice(templateId: string): number {
-  if (templateId === 'rakhi-2025') return 299;
-  if (templateId === 'template-02') return 250;
-  return 299; // Default fallback
+  if (templateId === 'rakhi-2025') return 150;
+  if (templateId === 'template-02') return 150;
+  return 150; // Default fallback
 }
 
 // Tracks checkout initiation before opening Razorpay (GTM Data Layer + GA4 Ecommerce)
