@@ -3,7 +3,7 @@ import { Yatra_One } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from 'next/script';
 import './globals.css';
-import WhatsAppButton from '@/components/WhatsAppButton';
+
 
 const yatraOne = Yatra_One({
   weight: '400',
@@ -74,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
         {children}
         <GoogleAnalytics gaId="G-T3GHS5D74R" />
-        <WhatsAppButton />
+
       </body>
     </html>
   );
